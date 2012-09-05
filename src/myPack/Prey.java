@@ -32,15 +32,13 @@ public class Prey extends Agent {
 	public void doAction(Vector<Agent> worldState) {
 		// TODO Auto-generated method stub
 		
-		
-		System.out.println("actionStarts");
 		double prob = Math.random();
 		double boundary = 0.0;
 		for(int i=0;i<this.actions.size();i++){
 			boundary += this.actions.get(i).prob;
 			if (prob <= boundary) {
 				if (this.safePosition(this.actions.get(i).coordinate, worldState)) {
-					System.out.println("actionDecided");
+					
 					this.position = this.actions.get(i).coordinate;
 					break;
 				}

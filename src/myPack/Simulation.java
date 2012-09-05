@@ -19,14 +19,12 @@ public class Simulation {
 		
 		do{
 			
-			System.out.println("@"+env.worldState.size());
 			env.run();
 			System.out.println(env.print());
 			
-			
 		}while(!env.isDone());
 		
-		
+		System.exit(0);
 				
 
 	}

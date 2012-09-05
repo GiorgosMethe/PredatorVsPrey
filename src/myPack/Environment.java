@@ -34,7 +34,6 @@ public class Environment {
 			
 		for(int i=0;i<worldState.size();i++){
 			
-			System.out.println("!");
 			worldState.elementAt(i).doAction(worldState);
 			
 		}

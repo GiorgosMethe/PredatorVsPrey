@@ -35,23 +35,24 @@ public class Predator extends Agent {
 		
 		double prob = Math.random();
 		double boundary = 0.0;
-		System.out.println("actionStarts with prob: " + prob);
+		
 		for(int i=0;i<this.actions.size();i++){
-			System.out.println("itnernal i"+ i) ;
-			boundary += this.actions.get(i).prob;
-			System.out.println("prob  and boundary "+this.actions.get(i).prob +"  "+ boundary);
+			
+			boundary += this.actions.elementAt(i).prob;
+			
 			if (prob <= boundary) {
-				if (this.safePosition(this.actions.get(i).coordinate, worldState)) {
-					this.position = this.actions.get(i).coordinate;
-					for (int j = 0; j < worldState.size(); i++) {
-						if (Coordinate.compareCoordinates(worldState.get(j).position, this.position) && worldState.get(j) instanceof Prey) {
+				if (this.safePosition(this.actions.elementAt(i).coordinate, worldState)) {
+					this.position = this.actions.elementAt(i).coordinate;
+					for (int j = 0; j < worldState.size(); j++) {
+						
+						if (Coordinate.compareCoordinates(worldState.elementAt(j).position, this.position) && worldState.elementAt(j) instanceof Prey) {
 							worldState.removeElementAt(j);
 						}
 					}
 					break;
 				}
 				else {
-					System.out.println("actionDecided");
+					
 					this.doAction(worldState);
 					break;
 				}
