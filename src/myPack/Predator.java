@@ -16,37 +16,38 @@ public class Predator extends Agent {
 		}
 	}
 	
-	private Vector<RandomAction> actions = new Vector<RandomAction>();
 	
 	public Predator(String name, Coordinate p) {
 		super(name, p);
-		
-		this.actions.addElement(new RandomAction(0.2, this.position.getNorth()));
-		this.actions.addElement(new RandomAction(0.2, this.position.getEast()));
-		this.actions.addElement(new RandomAction(0.2, this.position.getWest()));
-		this.actions.addElement(new RandomAction(0.2, this.position.getSouth()));
-		this.actions.addElement(new RandomAction(0.2, this.position));
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void doAction(Vector<Agent> worldState) {
+	public Agent doAction(Vector<Agent> worldState) {
+		if (this.isDead()) {
+			return null;
+		}
 		// TODO Auto-generated method stub
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
 		
 		double prob = Math.random();
 		double boundary = 0.0;
 		
-		for(int i=0;i<this.actions.size();i++){
+		for(int i=0;i<actions.size();i++){
 			
-			boundary += this.actions.elementAt(i).prob;
-			
+			boundary += actions.elementAt(i).prob;
 			if (prob <= boundary) {
-				if (this.safePosition(this.actions.elementAt(i).coordinate, worldState)) {
-					this.position = this.actions.elementAt(i).coordinate;
+				if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+					this.position = actions.elementAt(i).coordinate;
 					for (int j = 0; j < worldState.size(); j++) {
 						
 						if (Coordinate.compareCoordinates(worldState.elementAt(j).position, this.position) && worldState.elementAt(j) instanceof Prey) {
-							worldState.removeElementAt(j);
+							worldState.elementAt(j).kill();
 						}
 					}
 					break;
@@ -59,7 +60,7 @@ public class Predator extends Agent {
 			}
 		}
 
-		
+		return this;
 	}
 	
 	

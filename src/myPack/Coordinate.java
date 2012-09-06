@@ -6,8 +6,8 @@ public class Coordinate {
 
 	public Coordinate(int x, int y) {
 		super();
-		this.x = x % 11;
-		this.y = y % 11;
+		this.x = (x + 11) % 11;
+		this.y = (y + 11) % 11;
 	}
 
 	public int getX() {
@@ -15,7 +15,7 @@ public class Coordinate {
 	}
 
 	public void setX(int x) {
-		this.x = x % 11;
+		this.x = (x + 11) % 11;
 	}
 
 	public int getY() {
@@ -23,7 +23,7 @@ public class Coordinate {
 	}
 
 	public void setY(int y) {
-		this.y = y % 11;
+		this.y = (y + 11) % 11;
 	}
 
 	public Coordinate getNorth() {
@@ -54,6 +54,10 @@ public class Coordinate {
 
 		return new Coordinate(x, y - 1);
 
+	}
+	
+	public String print() {
+		return "<" + this.x + ", " + this.y + ">";
 	}
 
 }

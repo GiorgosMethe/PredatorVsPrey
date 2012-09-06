@@ -20,7 +20,7 @@ public class Environment {
     public boolean isDone(){
     	
     	for (int i = 0; i < worldState.size(); i++) {
-    		if (worldState.get(i) instanceof Prey) {
+    		if (worldState.get(i) instanceof Prey && worldState.get(i).isAlive()) {
     			return false;
     		}
     	}
@@ -32,10 +32,8 @@ public class Environment {
     
 	public void run(){
 			
-		for(int i=0;i<worldState.size();i++){
-			
-			worldState.elementAt(i).doAction(worldState);
-			
+		for (Agent a : worldState) {
+			a = a.doAction(worldState);
 		}
 	
 	}

@@ -14,32 +14,34 @@ public class Prey extends Agent {
 		}
 	}
 	
-	private Vector<RandomAction> actions = new Vector<RandomAction>();
 	
 	public Prey(String name, Coordinate p) {
 		super(name, p);
-		
-		this.actions.addElement(new RandomAction(0.05, this.position.getNorth()));
-		this.actions.addElement(new RandomAction(0.05, this.position.getEast()));
-		this.actions.addElement(new RandomAction(0.05, this.position.getWest()));
-		this.actions.addElement(new RandomAction(0.05, this.position.getSouth()));
-		this.actions.addElement(new RandomAction(0.8, this.position));
 		// TODO Auto-generated constructor stub
 	}
 	 
 
 	@Override
-	public void doAction(Vector<Agent> worldState) {
+	public Agent doAction(Vector<Agent> worldState) {
+		if (this.isDead()) {
+			return null;
+		}
 		// TODO Auto-generated method stub
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.05, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.05, this.position.getEast()));
+		actions.addElement(new RandomAction(0.05, this.position.getWest()));
+		actions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.8, this.position));
 		
 		double prob = Math.random();
 		double boundary = 0.0;
-		for(int i=0;i<this.actions.size();i++){
-			boundary += this.actions.get(i).prob;
+		for(int i=0;i<actions.size();i++){
+			boundary += actions.get(i).prob;
 			if (prob <= boundary) {
-				if (this.safePosition(this.actions.get(i).coordinate, worldState)) {
+				if (this.safePosition(actions.get(i).coordinate, worldState)) {
 					
-					this.position = this.actions.get(i).coordinate;
+					this.position = actions.get(i).coordinate;
 					break;
 				}
 				else {
@@ -49,7 +51,7 @@ public class Prey extends Agent {
 			}
 		}
 		
-		
+		return this;
 		
 		
 		
