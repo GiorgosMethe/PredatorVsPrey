@@ -8,9 +8,11 @@ public class Simulation {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 	
-		Integer[] manytimesdoingsteps = new Integer[101];
+		int[] manytimesdoingsteps = new int[101];
 		double mean = 0.0;
 		double squaredsum = 0.0;
+		int min = 100000;
+		int max = 0;
 		for (int i = 0; i < 100; i++) {
 			manytimesdoingsteps[i] = 0;
 			Environment env = new Environment();
@@ -26,11 +28,20 @@ public class Simulation {
 			}while(!env.isDone());
 			mean += manytimesdoingsteps[i];
 			squaredsum += (manytimesdoingsteps[i] * manytimesdoingsteps[i]);
+			
+			if(manytimesdoingsteps[i] < min){
+				min = manytimesdoingsteps[i];
+			}
+			
+			if(manytimesdoingsteps[i] > max){
+				max = manytimesdoingsteps[i];
+			}
 		}
 		mean /= 100.0;
 		squaredsum /= 100.0;
 		
-		System.out.println("mean over 100 runs: " + mean);
+		System.out.println("max # of steps: " + max +" min # of steps: "+min);
+		System.out.println("mean over 100 runs: " + mean);	
 		System.out.println("stdev over 100 runs: " + Math.sqrt(squaredsum - (mean * mean)));
 		
 		System.exit(0);
