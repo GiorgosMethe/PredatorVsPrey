@@ -22,7 +22,7 @@ public class Prey extends Agent {
 	 
 
 	@Override
-	public Agent doAction(Vector<Agent> worldState) {
+	public Coordinate doAction(Vector<Agent> worldState) {
 		if (this.isDead()) {
 			return null;
 		}
@@ -36,12 +36,14 @@ public class Prey extends Agent {
 		
 		double prob = Math.random();
 		double boundary = 0.0;
+		Coordinate NewPosition = this.position;
+		
 		for(int i=0;i<actions.size();i++){
 			boundary += actions.get(i).prob;
 			if (prob <= boundary) {
 				if (this.safePosition(actions.get(i).coordinate, worldState)) {
 					
-					this.position = actions.get(i).coordinate;
+					NewPosition = actions.get(i).coordinate;
 					break;
 				}
 				else {
@@ -51,9 +53,7 @@ public class Prey extends Agent {
 			}
 		}
 		
-		return this;
-		
-		
+		return NewPosition;
 		
 	}
 	

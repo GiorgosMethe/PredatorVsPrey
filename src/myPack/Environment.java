@@ -32,10 +32,47 @@ public class Environment {
     
 	public void run(){
 			
+		Action[] AgentActions = new Action[worldState.size()];
+		int i=0;
 		for (Agent a : worldState) {
-			a = a.doAction(worldState);
+			AgentActions[i++] = new Action(a,a.doAction(worldState));
 		}
+		updateWorldState(AgentActions);
+		
 	
+	}
+	
+	public void updateWorldState(Action[] SelectedActions){
+		
+		for(int i=0;i<SelectedActions.length;i++){
+				
+				if(SelectedActions[i].agent instanceof Predator){
+	
+					SelectedActions[i].agent.position = SelectedActions[i].NewPosition;
+					
+					for(int j=0;j<SelectedActions.length;j++){
+						
+						if(SelectedActions[j].agent instanceof Prey){
+							
+							if(Coordinate.compareCoordinates(SelectedActions[j].NewPosition,
+									SelectedActions[i].NewPosition)){
+								
+								SelectedActions[j].agent.kill();
+								
+							}
+							
+						}
+						
+					}
+					
+				}else{
+
+					SelectedActions[i].agent.position = SelectedActions[i].NewPosition;
+				}
+				
+			
+		}
+		
 	}
 	
 	public String print() {

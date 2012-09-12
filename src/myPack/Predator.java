@@ -23,10 +23,8 @@ public class Predator extends Agent {
 	}
 
 	@Override
-	public Agent doAction(Vector<Agent> worldState) {
-		if (this.isDead()) {
-			return null;
-		}
+	public Coordinate doAction(Vector<Agent> worldState) {
+		
 		// TODO Auto-generated method stub
 		Vector<RandomAction> actions = new Vector<RandomAction>();
 		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
@@ -37,19 +35,15 @@ public class Predator extends Agent {
 		
 		double prob = Math.random();
 		double boundary = 0.0;
+		Coordinate NewPosition = this.position;
 		
 		for(int i=0;i<actions.size();i++){
 			
 			boundary += actions.elementAt(i).prob;
 			if (prob <= boundary) {
 				if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
-					this.position = actions.elementAt(i).coordinate;
-					for (int j = 0; j < worldState.size(); j++) {
-						
-						if (Coordinate.compareCoordinates(worldState.elementAt(j).position, this.position) && worldState.elementAt(j) instanceof Prey) {
-							worldState.elementAt(j).kill();
-						}
-					}
+					
+					NewPosition = actions.elementAt(i).coordinate;				
 					break;
 				}
 				else {
@@ -60,7 +54,7 @@ public class Predator extends Agent {
 			}
 		}
 
-		return this;
+		return NewPosition;
 	}
 	
 	
@@ -76,6 +70,28 @@ public class Predator extends Agent {
 		
 		return true;
 	}
+	
+	
+	public Vector<Coordinate> possibleActions(Agent a, Vector<Agent> worldState) {
+		
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+		
+		
+		Vector<Coordinate> PossibleMovements = new Vector<Coordinate>(); 
+		
+		for(int i=0;i<actions.size();i++){
+			if(safePosition(actions.elementAt(i).coordinate, worldState)){
+				PossibleMovements.add(actions.elementAt(i).coordinate);
+			}
+		}
+		return PossibleMovements;
+	}
+	
 	
 	@Override
 	public String print() {

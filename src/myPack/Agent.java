@@ -44,7 +44,7 @@ public abstract class Agent {
 		return this.
 	}
 	 */
-	public abstract Agent doAction(Vector<Agent> worldState);
+	public abstract Coordinate doAction(Vector<Agent> worldState);
 	
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
 	
