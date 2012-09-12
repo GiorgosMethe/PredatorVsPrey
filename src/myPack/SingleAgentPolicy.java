@@ -35,6 +35,9 @@ public class SingleAgentPolicy extends Policy {
 	public Vector<SimpleEntry<Action, Double>> getActions(Agent me,
 			Vector<Agent> worldState, Vector<Action> possibleActions) {
 		
+		
+		return null;
+		
 	}
 
 }
