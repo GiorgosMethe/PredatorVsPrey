@@ -103,7 +103,7 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 		}
 		
 		for(int j=0; j<=possibleActions.size();j++){
-			returnValue.add(new SimpleEntry<Action, Double>(possibleActions.get(j),Double 1/possibleActions.size()));
+			returnValue.add(new SimpleEntry<Action, Double>(possibleActions.get(j),Double(1/possibleActions.size())));
 		}
 		
 		return returnValue;
