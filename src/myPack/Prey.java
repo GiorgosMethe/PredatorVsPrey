@@ -15,8 +15,8 @@ public class Prey extends Agent {
 	}
 	
 	
-	public Prey(String name, Coordinate p) {
-		super(name, p);
+	public Prey(String name, Coordinate p, Policy pi) {
+		super(name, p, pi);
 		// TODO Auto-generated constructor stub
 	}
 	 

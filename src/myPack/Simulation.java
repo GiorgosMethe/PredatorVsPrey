@@ -17,8 +17,8 @@ public class Simulation {
 			manytimesdoingsteps[i] = 0;
 			Environment env = new Environment();
 			
-			env.worldState.add(new Predator("predator", new Coordinate(0, 0)));
-			env.worldState.add(new Prey("prey", new Coordinate(5, 5)));
+			env.worldState.add(new Predator("predator", new Coordinate(0, 0), null));
+			env.worldState.add(new Prey("prey", new Coordinate(5, 5), null));
 			
 			do{
 				(manytimesdoingsteps[i])++;

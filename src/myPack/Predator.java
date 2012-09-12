@@ -17,8 +17,8 @@ public class Predator extends Agent {
 	}
 	
 	
-	public Predator(String name, Coordinate p) {
-		super(name, p);
+	public Predator(String name, Coordinate p, Policy pi) {
+		super(name, p, pi);
 		// TODO Auto-generated constructor stub
 	}
 

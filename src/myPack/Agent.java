@@ -6,14 +6,16 @@ public abstract class Agent {
 
 	public boolean lives;
 	public String name;
-	Coordinate position;
+	public Coordinate position;
+	public Policy pi;
 	
 	
-	public Agent(String name, Coordinate p) {
+	public Agent(String name, Coordinate p, Policy pi) {
 		super();
 		this.lives = true;
 		this.name = name;
 		this.position = p;
+		this.pi = pi;
 	}
 	
 	public boolean isAlive() {
@@ -28,6 +30,20 @@ public abstract class Agent {
 		this.lives = false;
 	}
 	
+	public void setPolicy(Policy pi) {
+		this.pi = pi;
+	}
+	
+	public Policy getPolicy() {
+		return this.pi;
+	}
+	
+	/*
+	public Agent doAction(Vector<Agent> worldState) {
+		this.pi.getAction(worldState, this);
+		return this.
+	}
+	 */
 	public abstract Agent doAction(Vector<Agent> worldState);
 	
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
