@@ -1,19 +1,18 @@
 package myPack;
 
-import java.util.Vector;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Vector;
 
 import javax.xml.ws.Action;
 
 public class SingleAgentRandom extends SingleAgentPolicy {
 
-	
-	public SingleAgentRandom(Agent me){
-		
+	public SingleAgentRandom(Agent me) {
+
 		super(me);
-		
+
 	}
-	
+
 	@Override
 	public void generateV() {
 		// TODO Auto-generated method stub
@@ -24,28 +23,26 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 	public Integer stateIndex(Vector<Agent> worldState) {
 		return null;
 	}
-	
-	
-	
-	
-	protected Vector<SimpleEntry<Integer, Double>> functionP(Vector<Agent> worldState) {
+
+	protected Vector<SimpleEntry<Integer, Double>> functionP(
+			Vector<Agent> worldState) {
+
 		Vector<SimpleEntry<Integer, Double>> p = new Vector<SimpleEntry<Integer, Double>>();
 		Vector<Vector<Agent>> possibleWorlds = new Vector<Vector<Agent>>();
-		
+
 		Agent prey = null;
 		Agent predator = null;
 		for (Agent a : worldState) {
 			if (a instanceof Predator) {
 				predator = a;
-			}
-			else if (a instanceof Prey) {
+			} else if (a instanceof Prey) {
 				prey = a;
 			}
 		}
-		
+
 		// Prey does not move.
 		p.add(new SimpleEntry<Integer, Double>(this.stateIndex(worldState), 0.8));
-		
+
 		// Can prey move south?
 		if (prey.safePosition(prey.position.getSouth(), worldState)) {
 			prey.position = prey.position.getSouth();
@@ -80,36 +77,34 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 		}
 
 		double prob = 0.2 / possibleWorlds.size();
-		
+
 		for (Vector<Agent> possibleWorld : possibleWorlds) {
-			p.add(new SimpleEntry<Integer, Double>(this.stateIndex(possibleWorld), prob));
+			p.add(new SimpleEntry<Integer, Double>(this
+					.stateIndex(possibleWorld), prob));
 		}
-		
+
 		return p;
 	}
-	
-	
+
 	@Override
-	public Vector<SimpleEntry<Action, Double>> getActions(Vector<Agent> worldState, Vector<Action> possibleActions) {
-		
+	public Vector<SimpleEntry<Action, Double>> getActions(
+			Vector<Agent> worldState, Vector<Action> possibleActions) {
+
 		Agent predator = null;
 		final Vector<SimpleEntry<Action, Double>> returnValue = new Vector<SimpleEntry<Action, Double>>();
-		
-    for (Agent a : worldState) {
-      if (a instanceof Predator) {
-        predator = a;
-      }
-    }
-		
-    for (Action a : possibleActions) {
-      returnValue.add(new SimpleEntry<Action, Double>(a, new Double(1/possibleActions.size())));
+
+		for (Agent a : worldState) {
+			if (a instanceof Predator) {
+				predator = a;
+			}
 		}
-		
+
+		for (Action a : possibleActions) {
+			returnValue.add(new SimpleEntry<Action, Double>(a, new Double(
+					1 / possibleActions.size())));
+		}
+
 		return returnValue;
 	}
 
-	
-	
-		}
-
-
+}
