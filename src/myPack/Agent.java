@@ -43,7 +43,7 @@ public abstract class Agent {
 		return this.pi.getOptimalAction(this, worldState, possibleActions);
 	}
 	 */
-	public abstract Agent doAction(Vector<Agent> worldState);
+	public abstract Coordinate doAction(Vector<Agent> worldState);
 	
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
 	
