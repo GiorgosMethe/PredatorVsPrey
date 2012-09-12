@@ -40,8 +40,7 @@ public abstract class Agent {
 	
 	/*
 	public Agent doAction(Vector<Agent> worldState) {
-		this.pi.getAction(worldState, this);
-		return this.
+		return this.pi.getOptimalAction(this, worldState, possibleActions);
 	}
 	 */
 	public abstract Coordinate doAction(Vector<Agent> worldState);
