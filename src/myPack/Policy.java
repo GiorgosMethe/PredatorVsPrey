@@ -11,11 +11,10 @@ public abstract class Policy {
 
 	public abstract Integer stateIndex(Vector<Agent> worldState);
 
-	public abstract Map<Coordinate, Double> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions);
+	public abstract Map<Coordinate, Double> getActions(Agent me, Vector<Agent> worldState, Vector<Coordinate> possibleActions);
 
-	public Coordinate getOptimalAction(Vector<Agent> worldState,
-			Vector<Coordinate> possibleActions) {
-		Map<Coordinate, Double> functionQ = getActions(worldState, possibleActions);
+	public Coordinate getOptimalAction(Agent me, Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+		Map<Coordinate, Double> functionQ = getActions(me, worldState, possibleActions);
 		Double maxValue = null;
 		Coordinate maxAction = null;
 		for (Map.Entry<Coordinate, Double> actionValue : functionQ.entrySet()) {

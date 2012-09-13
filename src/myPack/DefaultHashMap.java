@@ -26,7 +26,6 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 		super(m);
 		this.defaultValue = defaultValue;
 	}
-	
 
 	public DefaultHashMap(int initialCapacity, float loadFactor, V defaultValue) {
 		super(initialCapacity, loadFactor);

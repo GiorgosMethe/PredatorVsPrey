@@ -1,5 +1,6 @@
 package myPack;
 
+import java.util.Map;
 import java.util.Vector;
 
 public abstract class Agent {
@@ -37,15 +38,46 @@ public abstract class Agent {
 		return this.pi;
 	}
 
-	/*
-	 * public Agent doAction(Vector<Agent> worldState) { return
-	 * this.pi.getOptimalAction(this, worldState, possibleActions); }
+	/**
+	 * Assign an integer 0 <= i < 11^2 to a state.
+	 * @param worldState Contains only one predator and one prey.
+	 * @return The integer is computed as dotprod(((prey.position - predator.position) + <10,10> % <11,11>), <11, 1>) 
+	 */
+	public abstract Integer stateIndex(Vector<Agent> worldState);
+	
+	/**
+	 * The reward function. Corresponds to R_{s, s'}^{a}.
+	 * 
+	 */
+	protected abstract Map<Integer, Double> reward(Vector<Agent> worldState);
+	
+	/**
+	 * The probabilistic transition function, given the intermediate state, right after doing the action. 
+	 * 
+	 * This corresponds to P_{s, s'}^{a} with s and a fixed.   
+	 * @param worldState The intermediate state (after the "current" world state, when you have taken an action, 
+	 * 					 but before the "next" world state, when the prey has moved).
+	 * @return A mapping from an integer describing the possible next state s', and the probability that it will occur.
+	 */
+	public abstract Map<Integer, Double> functionP(Vector<Agent> worldState);
+
+	/**
+	 * Return the next position after your chosen action.
+	 * 
 	 */
 	public abstract Coordinate doAction(Vector<Agent> worldState);
 
+	/**
+	 * Is it safe for this agent to move to a new spot c?
+	 * 
+	 */
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
 
-	public Vector<Coordinate> possibleActions(Agent a, Vector<Agent> worldState) {
+	/**
+	 * Computes a list of possible next positions, given the current state.
+	 * 
+	 */
+	public Vector<Coordinate> possibleActions(Vector<Agent> worldState) {
 
 		Vector<Coordinate> PossiblePosition = new Vector<Coordinate>();
 		PossiblePosition.add(this.position.getNorth());

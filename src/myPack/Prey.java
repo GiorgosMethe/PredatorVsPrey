@@ -1,5 +1,6 @@
 package myPack;
 
+import java.util.Map;
 import java.util.Vector;
 
 public class Prey extends Agent {
@@ -70,6 +71,32 @@ public class Prey extends Agent {
 	@Override 
 	public String toString() {
 		return "Prey(\"" + this.name + "\", " + this.position + ">)";
+	}
+
+	@Override
+	public Integer stateIndex(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		Agent predator = null;
+
+		for (Agent a : worldState) {
+			if (a instanceof Predator) {
+				predator = a;
+			}
+		}
+		Coordinate c = Coordinate.difference(predator.position, this.position);
+		return (c.getX() * 11) + c.getY();
+	}
+
+	@Override
+	protected Map<Integer, Double> reward(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return new DefaultHashMap<Integer, Double>(0.0);
+	}
+
+	@Override
+	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("No P function for prey");
 	}
 
 }

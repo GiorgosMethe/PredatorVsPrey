@@ -11,7 +11,7 @@ public class PolicyPredator extends Predator {
 	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
-		return this.pi.getOptimalAction(worldState, this.possibleActions(this, worldState));
+		return this.pi.getOptimalAction(this, worldState, this.possibleActions(worldState));
 	}
 
 }
