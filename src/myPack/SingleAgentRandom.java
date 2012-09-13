@@ -5,6 +5,12 @@ import java.util.Vector;
 
 public class SingleAgentRandom extends SingleAgentPolicy {
 
+	public SingleAgentRandom(Agent me) {
+
+		super(me);
+
+	}
+
 	@Override
 	public void generateV() {
 		// TODO Auto-generated method stub
