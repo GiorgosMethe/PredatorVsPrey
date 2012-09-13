@@ -3,8 +3,6 @@ package myPack;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Vector;
 
-import javax.xml.ws.Action;
-
 public class SingleAgentRandom extends SingleAgentPolicy {
 
 	public SingleAgentRandom(Agent me) {
@@ -87,10 +85,10 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 	}
 
 	@Override
-	public Vector<SimpleEntry<Action, Double>> getActions(Vector<Agent> worldState, Vector<Action> possibleActions) {
-		final Vector<SimpleEntry<Action, Double>> returnValue = new Vector<SimpleEntry<Action, Double>>();
-		for (Action a : possibleActions) {
-			returnValue.add(new SimpleEntry<Action, Double>(a, new Double(1/possibleActions.size())));
+	public Vector<SimpleEntry<Coordinate, Double>> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+		final Vector<SimpleEntry<Coordinate, Double>> returnValue = new Vector<SimpleEntry<Coordinate, Double>>();
+		for (Coordinate a : possibleActions) {
+			returnValue.add(new SimpleEntry<Coordinate, Double>(a, new Double(1/possibleActions.size())));
 		}
 		return returnValue;
 	}

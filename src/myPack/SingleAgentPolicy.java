@@ -3,8 +3,6 @@ package myPack;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Vector;
 
-import javax.xml.ws.Action;
-
 public abstract class SingleAgentPolicy extends Policy {
 
 	public SingleAgentPolicy(Agent me) {
@@ -103,8 +101,8 @@ public abstract class SingleAgentPolicy extends Policy {
 	 *         chooses those.
 	 */
 	@Override
-	public Vector<SimpleEntry<Action, Double>> getActions(
-			Vector<Agent> worldState, Vector<Action> possibleActions) {
+	public Vector<SimpleEntry<Coordinate, Double>> getActions(
+			Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
 		double weightedValueSum = 0;
 		double[] weightedValue = new double[5];
 		for (int i = 0; i < possibleActions.size(); i++) {
@@ -118,10 +116,10 @@ public abstract class SingleAgentPolicy extends Policy {
 			weightedValueSum += weightedValue[i];
 		}
 
-		Vector<SimpleEntry<Action, Double>> returnValue = new Vector<SimpleEntry<Action, Double>>();
+		Vector<SimpleEntry<Coordinate, Double>> returnValue = new Vector<SimpleEntry<Coordinate, Double>>();
 
 		for (int i = 0; i < possibleActions.size(); i++) {
-			returnValue.add(new SimpleEntry<Action, Double>(possibleActions
+			returnValue.add(new SimpleEntry<Coordinate, Double>(possibleActions
 					.get(i), weightedValue[i] / weightedValueSum));
 		}
 		return returnValue;
