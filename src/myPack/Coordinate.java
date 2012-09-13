@@ -26,16 +26,16 @@ public class Coordinate {
 		this.y = (y + 11) % 11;
 	}
 
-	public static boolean compareCoordinates(Coordinate c1, Coordinate c2){
-		
-		return(c1.x == c2.x && c1.y == c2.y);
-	
+	public static boolean compareCoordinates(Coordinate c1, Coordinate c2) {
+
+		return (c1.x == c2.x && c1.y == c2.y);
+
 	}
-	
+
 	public static Coordinate difference(Coordinate c1, Coordinate c2) {
 		return new Coordinate(c1.x - c2.x, c1.y - c2.y);
 	}
-	
+
 	public Coordinate getNorth() {
 
 		return new Coordinate(x - 1, y);
@@ -59,7 +59,7 @@ public class Coordinate {
 		return new Coordinate(x, y - 1);
 
 	}
-	
+
 	public String print() {
 		return "<" + this.x + ", " + this.y + ">";
 	}
