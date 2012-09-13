@@ -49,7 +49,8 @@ public class Environment {
 				for (int j = 0; j < SelectedActions.length; j++) {
 
 					
-					if (SelectedActions[j].agent instanceof Prey) {
+					
+					if (i!=j && SelectedActions[j].agent instanceof Prey) {
 
 						//if there is a prey in the new position of the predator :(
 						if (Coordinate.compareCoordinates(
