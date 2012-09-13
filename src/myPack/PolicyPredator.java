@@ -11,7 +11,6 @@ public class PolicyPredator extends Predator {
 	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
-		System.out.println("possible actions count: " + this.possibleActions(this, worldState).size());
 		return this.pi.getOptimalAction(worldState, this.possibleActions(this, worldState));
 	}
 

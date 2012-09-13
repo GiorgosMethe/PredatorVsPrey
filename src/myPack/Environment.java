@@ -40,7 +40,7 @@ public class Environment {
 	}
 
 	public void updateWorldState(Action[] SelectedActions) {
-
+		
 		for (int i = 0; i < SelectedActions.length; i++) {
 
 			//checking the move of a predator
@@ -94,11 +94,7 @@ public class Environment {
 	}
 
 	public String print() {
-		String returnString = "";
-		for (int i = 0; i < worldState.size(); i++) {
-			returnString += worldState.get(i).print();
-		}
-		return returnString;
+		return this.worldState.toString();
 	}
 
 }

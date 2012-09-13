@@ -19,8 +19,7 @@ public class Simulation {
 
 			// This is not really nice coding. It's only a quick fix; needs redesign?
 			env.worldState.add(new PolicyPredator("predator", new Coordinate(0, 0),
-					null));
-			env.worldState.lastElement().pi = new SingleAgentRandom(env.worldState.lastElement());
+					new SingleAgentRandom()));
 			env.worldState.add(new Prey("prey", new Coordinate(5, 5), null));
 
 			do {

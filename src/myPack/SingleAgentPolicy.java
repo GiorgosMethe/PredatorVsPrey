@@ -5,10 +5,6 @@ import java.util.Vector;
 
 public abstract class SingleAgentPolicy extends Policy {
 
-	public SingleAgentPolicy(Agent me) {
-		super(me);
-	}
-
 	@Override
 	public Integer stateIndex(Vector<Agent> worldState) {
 		// TODO Auto-generated method stub

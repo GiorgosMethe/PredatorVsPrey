@@ -7,7 +7,17 @@ public class Action {
 
 	public Action(Agent agent, Coordinate newPosition) {
 		this.agent = agent;
-		NewPosition = newPosition;
+		this.NewPosition = newPosition;
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return "Action{" + this.agent.toString() + ", " + this.NewPosition.toString() + "}";
+		}
+		catch (NullPointerException e) {
+			return "Oh no! :<";
+		}
 	}
 
 }
