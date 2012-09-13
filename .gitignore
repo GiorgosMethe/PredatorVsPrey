@@ -60,3 +60,9 @@ Thumbs.db
 *.bbl
 *.blg
 *.toc
+
+.classpath
+
+*.prefs
+
+.settings/org.eclipse.jdt.core.prefs
