@@ -5,18 +5,12 @@ import java.util.Vector;
 
 import javax.xml.ws.Action;
 
-public class SingleAgentPolicy extends Policy {
+public abstract class SingleAgentPolicy extends Policy {
 
 	public SingleAgentPolicy(Agent me) {
 		super(me);
 	}
 	
-	@Override
-	public void generateV() {
-		// TODO Auto-generated method stub
-
-	}
-
 	@Override
 	public Integer stateIndex(Vector<Agent> worldState) {
 		// TODO Auto-generated method stub

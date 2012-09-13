@@ -91,25 +91,12 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 	
 	@Override
 	public Vector<SimpleEntry<Action, Double>> getActions(Vector<Agent> worldState, Vector<Action> possibleActions) {
-		
-		Agent predator = null;
 		final Vector<SimpleEntry<Action, Double>> returnValue = new Vector<SimpleEntry<Action, Double>>();
-		
-    for (Agent a : worldState) {
-      if (a instanceof Predator) {
-        predator = a;
-      }
-    }
-		
-    for (Action a : possibleActions) {
-      returnValue.add(new SimpleEntry<Action, Double>(a, new Double(1/possibleActions.size())));
+		for (Action a : possibleActions) {
+			returnValue.add(new SimpleEntry<Action, Double>(a, new Double(1/possibleActions.size())));
 		}
-		
 		return returnValue;
 	}
-
-	
-	
-		}
+}
 
 
