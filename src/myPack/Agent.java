@@ -56,14 +56,12 @@ public abstract class Agent {
 		PossiblePosition.add(this.position.getSouth());
 		PossiblePosition.add(this.position);
 
-		Vector<Coordinate> PossibleMovements = new Vector<Coordinate>();
-
 		for (int i = 0; i < PossiblePosition.size(); i++) {
 			if (!this.safePosition(PossiblePosition.elementAt(i), worldState)) {
-				PossibleMovements.removeElementAt(i);
+				PossiblePosition.removeElementAt(i);
 			}
 		}
-		return PossibleMovements;
+		return PossiblePosition;
 	}
 
 }
