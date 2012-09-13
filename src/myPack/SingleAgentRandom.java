@@ -89,10 +89,7 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 		final Vector<SimpleEntry<Coordinate, Double>> returnValue = new Vector<SimpleEntry<Coordinate, Double>>();
 		for (Coordinate a : possibleActions) {
 			returnValue.add(new SimpleEntry<Coordinate, Double>(a, new Double(1/possibleActions.size())));
-<<<<<<< HEAD
-=======
-	
->>>>>>> sadccx
+
 		}
 		return returnValue;
 	}
