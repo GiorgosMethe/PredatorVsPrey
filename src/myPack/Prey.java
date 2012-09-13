@@ -22,7 +22,7 @@ public class Prey extends Agent {
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 		if (this.isDead()) {
-			return null;
+			return this.position;
 		}
 		// TODO Auto-generated method stub
 		Vector<RandomAction> actions = new Vector<RandomAction>();
