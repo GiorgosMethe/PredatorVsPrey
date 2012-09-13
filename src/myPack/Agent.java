@@ -93,5 +93,8 @@ public abstract class Agent {
 		}
 		return PossiblePosition;
 	}
+	
+	public abstract Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState);
+
 
 }

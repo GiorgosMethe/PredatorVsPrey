@@ -4,17 +4,11 @@ import java.util.Map;
 import java.util.Vector;
 
 public class Predator extends Agent {
+	
+	
 	protected Map<Integer, Double> reward;
 
-	public class RandomAction {
-		public double prob;
-		public Coordinate coordinate;
 
-		public RandomAction(double p, Coordinate c) {
-			this.prob = p;
-			this.coordinate = c;
-		}
-	}
 
 	public Predator(String name, Coordinate p, Policy pi) {
 		super(name, p, pi);
@@ -63,6 +57,9 @@ public class Predator extends Agent {
 	 * @return A table of state indices, and probabilities.
 	 */
 	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
+		
+		
+		
 		Map<Integer, Double> p = new DefaultHashMap<Integer, Double>(0.0);
 		Vector<Vector<Agent>> possibleWorlds = new Vector<Vector<Agent>>();
 
@@ -120,6 +117,29 @@ public class Predator extends Agent {
 
 		return p;
 	}
+	
+	@Override
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState){
+		
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+		
+		for(int i=0;i<actions.size();i++){
+			if(!this.safePosition(actions.elementAt(i).coordinate, worldState)){
+				for(int j=0;j<actions.size();j++){
+					if(i!=j){
+						actions.elementAt(j).prob += actions.elementAt(i).prob/(actions.size()-1); 
+					}
+				}
+			}
+		}
+		return actions;
+	}
+	
 	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {

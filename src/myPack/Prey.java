@@ -5,21 +5,35 @@ import java.util.Vector;
 
 public class Prey extends Agent {
 
-	public class RandomAction {
-		public double prob;
-		public Coordinate coordinate;
-
-		public RandomAction(double p, Coordinate c) {
-			this.prob = p;
-			this.coordinate = c;
-		}
-	}
 
 	public Prey(String name, Coordinate p, Policy pi) {
 		super(name, p, pi);
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState){
+		
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.05, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.05, this.position.getEast()));
+		actions.addElement(new RandomAction(0.05, this.position.getWest()));
+		actions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.8, this.position));
+		
+		for(int i=0;i<actions.size();i++){
+			if(!this.safePosition(actions.elementAt(i).coordinate, worldState)){
+				for(int j=0;j<actions.size();j++){
+					if(i!=j){
+						actions.elementAt(j).prob += actions.elementAt(i).prob/(actions.size()-1); 
+					}
+				}
+			}
+		}
+		return actions;
+	}
+	
+	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 		if (this.isDead()) {

@@ -1,5 +1,6 @@
 package myPack;
 
+import java.util.Map;
 import java.util.Vector;
 
 public class ValueIteration {
@@ -7,39 +8,52 @@ public class ValueIteration {
 	/**
 	 * @param args
 	 */
-	public static Double Value[] = new Double[121];
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		double[][] State = new double[11][11];
+		
+		//initialize the array
+		for(int i=0;i<State.length;i++)
+			for(int j=0;j<State.length;j++)
+				State[i][j] = 0;
 		
 		
-		for(int i=0;i<11;i++){
-			for(int j=0;j<11;j++){
+		
+		for(int i=0;i<State.length;i++){
+			for(int j=0;j<State.length;j++){
 				
-				int stateIndex = (i * 11) + j;
-				Value[stateIndex] = (double) 0;
-				Coordinate PredatorPosition = new Coordinate(i, j);
-				Coordinate PreyPosition = new Coordinate(5, 5);
 				Environment env = new Environment();
-				env.worldState.add(new Predator("Predator", PredatorPosition, null));
-				env.worldState.add(new Prey("Prey", PreyPosition, null));
+				Prey p = new Prey("prey", new Coordinate(5, 5), null);
+				Predator P = new Predator("Predator", new Coordinate(i, j), null);
+				env.addAgent(P);
+				env.addAgent(p);
 				
-				VIterationComp(env.worldState);		
+				Vector<RandomAction> PossiblePredatorActions = P.ProbabilityActions(env.worldState);
+				Vector<RandomAction> PossiblePreyActions = p.ProbabilityActions(env.worldState);
+				
+				System.out.println("World:"+P.toString()+" "+p.toString());
+				System.out.println("--------------------------------------");
+				double Prob = 0;
+				for(int ii=0;ii<PossiblePredatorActions.size();ii++){
+					System.out.println("----");
+					for(int jj=0;jj<PossiblePreyActions.size();jj++){
+						
+						System.out.println("Predator: "+PossiblePredatorActions.elementAt(ii).coordinate.toString());
+						System.out.println("Prey: "+PossiblePredatorActions.elementAt(jj).coordinate.toString());
+						Prob += PossiblePredatorActions.elementAt(ii).prob*
+								PossiblePreyActions.elementAt(jj).prob;
+						
+						System.out.println("Probability: "+Prob);
+						
+					}
+				}
+				
 				
 			}
+			
 		}
+				
 
 	}
 
-	
-	public static double VIterationComp(Vector<Agent> worldState){
-		
-		
-		
-		
-		
-		
-		return 0;
-		
-	}
 }
