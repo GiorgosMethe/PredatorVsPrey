@@ -1,6 +1,6 @@
 package myPack;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map;
 import java.util.Vector;
 
 public abstract class Policy {
@@ -11,16 +11,14 @@ public abstract class Policy {
 
 	public abstract Integer stateIndex(Vector<Agent> worldState);
 
-	public abstract Vector<SimpleEntry<Coordinate, Double>> getActions(
-			Vector<Agent> worldState, Vector<Coordinate> possibleActions);
+	public abstract Map<Coordinate, Double> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions);
 
 	public Coordinate getOptimalAction(Vector<Agent> worldState,
 			Vector<Coordinate> possibleActions) {
-		Vector<SimpleEntry<Coordinate, Double>> functionQ = getActions(worldState,
-				possibleActions);
+		Map<Coordinate, Double> functionQ = getActions(worldState, possibleActions);
 		Double maxValue = null;
 		Coordinate maxAction = null;
-		for (SimpleEntry<Coordinate, Double> actionValue : functionQ) {
+		for (Map.Entry<Coordinate, Double> actionValue : functionQ.entrySet()) {
 			if (maxValue == null || actionValue.getValue() >= maxValue) {
 				maxValue = actionValue.getValue();
 				maxAction = actionValue.getKey();

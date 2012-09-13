@@ -1,10 +1,19 @@
 package myPack;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map;
 import java.util.Vector;
 
 public abstract class SingleAgentPolicy extends Policy {
 
+	protected Map<Integer, Double> reward = new DefaultHashMap<Integer, Double>(0.0);
+	
+	public SingleAgentPolicy() {
+		this.reward.put(0, 0.8 * 10);
+		for (int i = 1; i < 11*11; i++) {
+			this.reward.put(i, 0.0);
+		}
+	}
+	
 	@Override
 	public Integer stateIndex(Vector<Agent> worldState) {
 		// TODO Auto-generated method stub
@@ -23,15 +32,25 @@ public abstract class SingleAgentPolicy extends Policy {
 	}
 
 	/**
+	 * Computes the estimated immediate reward of the Predator.
+	 * 
+	 * @param worldState
+	 * @return
+	 */
+	protected Map<Integer, Double> reward(Vector<Agent> worldState) {
+		return this.reward;
+	}
+	
+	/**
 	 * Computes the state transition probability of the Predator, given the
 	 * Prey's current position.
 	 * 
 	 * @param worldState
 	 * @return A table of state indices, and probabilities.
 	 */
-	protected Vector<SimpleEntry<Integer, Double>> functionP(
+	protected Map<Integer, Double> functionP(
 			Vector<Agent> worldState) {
-		Vector<SimpleEntry<Integer, Double>> p = new Vector<SimpleEntry<Integer, Double>>();
+		Map<Integer, Double> p = new DefaultHashMap<Integer, Double>(0.0);
 		Vector<Vector<Agent>> possibleWorlds = new Vector<Vector<Agent>>();
 
 		Agent prey = null;
@@ -45,7 +64,7 @@ public abstract class SingleAgentPolicy extends Policy {
 		}
 
 		// Prey does not move.
-		p.add(new SimpleEntry<Integer, Double>(this.stateIndex(worldState), 0.8));
+		p.put(this.stateIndex(worldState), 0.8);
 
 		// Can prey move south?
 		if (prey.safePosition(prey.position.getSouth(), worldState)) {
@@ -83,8 +102,7 @@ public abstract class SingleAgentPolicy extends Policy {
 		double prob = 0.2 / possibleWorlds.size();
 
 		for (Vector<Agent> possibleWorld : possibleWorlds) {
-			p.add(new SimpleEntry<Integer, Double>(this
-					.stateIndex(possibleWorld), prob));
+			p.put(this.stateIndex(possibleWorld), prob);
 		}
 
 		return p;
@@ -97,26 +115,23 @@ public abstract class SingleAgentPolicy extends Policy {
 	 *         chooses those.
 	 */
 	@Override
-	public Vector<SimpleEntry<Coordinate, Double>> getActions(
-			Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+	public Map<Coordinate, Double> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
 		double weightedValueSum = 0;
 		double[] weightedValue = new double[5];
 		for (int i = 0; i < possibleActions.size(); i++) {
 			weightedValue[i] = 0;
-			Vector<SimpleEntry<Integer, Double>> probabilities = this
-					.functionP(worldState);
-			for (SimpleEntry<Integer, Double> pValue : probabilities) {
+			Map<Integer, Double> probabilities = this.functionP(worldState);
+			for (Map.Entry<Integer, Double> pValue : probabilities.entrySet()) {
 				weightedValue[i] += ((Double) pValue.getValue())
 						* functionV.get((Integer) pValue.getKey());
 			}
 			weightedValueSum += weightedValue[i];
 		}
 
-		Vector<SimpleEntry<Coordinate, Double>> returnValue = new Vector<SimpleEntry<Coordinate, Double>>();
+		Map<Coordinate, Double> returnValue = new DefaultHashMap<Coordinate, Double>(0.0);
 
 		for (int i = 0; i < possibleActions.size(); i++) {
-			returnValue.add(new SimpleEntry<Coordinate, Double>(possibleActions
-					.get(i), weightedValue[i] / weightedValueSum));
+			returnValue.put(possibleActions.get(i), weightedValue[i] / weightedValueSum);
 		}
 		return returnValue;
 	}

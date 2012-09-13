@@ -1,6 +1,6 @@
 package myPack;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map;
 import java.util.Vector;
 
 public class SingleAgentRandom extends SingleAgentPolicy {
@@ -17,7 +17,7 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 	}
 
 	@Override
-	public Vector<SimpleEntry<Coordinate, Double>> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+	public Map<Coordinate, Double> getActions(Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
 		return null;
 	}
 	
