@@ -70,12 +70,7 @@ public class Predator extends Agent {
 	}
 
 	@Override
-	public String print() {
-		return "Predator(\"" + this.name + "\", " + this.position + ")";
-	}
-	
-	@Override
 	public String toString() {
-		return this.print();
+		return "Predator(\"" + this.name + "\", " + this.position + ")";
 	}
 }

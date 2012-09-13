@@ -45,8 +45,6 @@ public abstract class Agent {
 
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
 
-	public abstract String print();
-
 	public Vector<Coordinate> possibleActions(Agent a, Vector<Agent> worldState) {
 
 		Vector<Coordinate> PossiblePosition = new Vector<Coordinate>();

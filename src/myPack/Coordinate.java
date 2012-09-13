@@ -60,13 +60,9 @@ public class Coordinate {
 
 	}
 
-	public String print() {
-		return "<" + this.x + ", " + this.y + ">";
-	}
-	
 	@Override
 	public String toString() {
-		return this.print();
+		return "<" + this.x + ", " + this.y + ">";
 	}
 
 }

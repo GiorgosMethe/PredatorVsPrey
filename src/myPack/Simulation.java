@@ -25,7 +25,7 @@ public class Simulation {
 			do {
 				(manytimesdoingsteps[i])++;
 				env.run();
-				System.out.println(env.print());
+				System.out.println(env);
 
 			} while (!env.isDone());
 			mean += manytimesdoingsteps[i];

@@ -66,15 +66,10 @@ public class Prey extends Agent {
 
 		return true;
 	}
-
-	@Override
-	public String print() {
-		return "Prey(\"" + this.name + "\", " + this.position + ">)";
-	}
 	
 	@Override 
 	public String toString() {
-		return this.print();
+		return "Prey(\"" + this.name + "\", " + this.position + ">)";
 	}
 
 }

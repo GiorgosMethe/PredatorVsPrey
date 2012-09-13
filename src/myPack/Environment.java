@@ -93,7 +93,7 @@ public class Environment {
 
 	}
 
-	public String print() {
+	public String toString() {
 		return this.worldState.toString();
 	}
 
