@@ -19,11 +19,13 @@ public class ValueIteration {
 
 		double gamma = 0.9;
 		double delta;
+		int cnt = 0;
+		
 
 		do {
 			
 			delta = 0;
-
+			cnt++;
 			for (int i = 0; i < State.length; i++) {
 				for (int j = 0; j < State.length; j++) {
 
@@ -77,7 +79,7 @@ public class ValueIteration {
 				}
 			}
 
-		} while (delta > 0.1);
+		} while (delta > 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001);
 
 		for (int i = 0; i < State.length; i++) {
 			System.out.println();
@@ -86,6 +88,8 @@ public class ValueIteration {
 			}
 		}
 
+		System.out.println("\nDelta = " + delta);
+		System.out.println("\ncnt "+cnt);
 	}
 
 	public static double rewardFunction(Coordinate a1, Coordinate a2) {
