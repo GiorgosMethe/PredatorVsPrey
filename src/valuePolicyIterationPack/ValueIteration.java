@@ -12,8 +12,9 @@ public class ValueIteration {
 
 	public static void main(String[] args) {
 
-		ValueIterationImpl(new Coordinate(5, 5), 0.7);
-		ValueIterationImplSw(new Coordinate(5,5),0.7);
+		
+		ValueIterationImpl(new Coordinate(10, 10), 0.7);
+		ValueIterationImplSw(new Coordinate(10,10),0.7);
 
 	}
 	
@@ -88,6 +89,8 @@ public class ValueIteration {
 	}
 
 	public static void ValueIterationImplSw(Coordinate PreyPosition, double discountFactor) {
+		
+		long start = System.currentTimeMillis();
 
 		double[][] State = new double[6][6];
 		double delta;
@@ -172,15 +175,27 @@ public class ValueIteration {
 
 			}
 
-		} while (delta > Math.pow(10, -9));
+		} while (delta > Math.pow(10, -5));
+		
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("\nSmall 6x6 World Implementation");
+		System.out.println("\nSweeps = " + algorithmSweeps);
+		System.out.println("Execution time was " + (end-start) + "ms");
+		
 		ValuesMirroring(State , PreyPosition);
 		
-		System.out.println("\n Sweeps = " + algorithmSweeps);
+		
 	}
 
 
 	public static void ValueIterationImpl(Coordinate PreyPosition, double discountFactor) {
 
+		
+		long start = System.currentTimeMillis();
+		
+		
 		double[][] State = new double[11][11];
 		double delta;
 		double preValue;
@@ -266,8 +281,12 @@ public class ValueIteration {
 
 		} while (delta > Math.pow(10, -5));
 
+		long end = System.currentTimeMillis();
+		System.out.println("Normal 11x11 World Implementation");
+		System.out.println("\nSweeps = " + algorithmSweeps);
+		System.out.println("Execution time was " + (end-start) + "ms");
 		PrintValueIteration(State);
-		System.out.println("\n Sweeps = " + algorithmSweeps);
+		
 	}
 
 	public static double rewardFunction(Coordinate a1, Coordinate a2) {
