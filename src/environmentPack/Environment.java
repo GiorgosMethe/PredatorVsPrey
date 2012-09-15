@@ -1,10 +1,15 @@
-package myPack;
+package environmentPack;
 
 import java.util.Vector;
 
+import actionPack.Action;
+import agentsPack.Agent;
+import agentsPack.Predator;
+import agentsPack.Prey;
+
 public class Environment {
 
-	Vector<Agent> worldState = new Vector<Agent>();
+	public Vector<Agent> worldState = new Vector<Agent>();
 
 	public Environment() {
 
@@ -40,19 +45,18 @@ public class Environment {
 	}
 
 	public void updateWorldState(Action[] SelectedActions) {
-		
+
 		for (int i = 0; i < SelectedActions.length; i++) {
 
-			//checking the move of a predator
+			// checking the move of a predator
 			if (SelectedActions[i].agent instanceof Predator) {
 
 				for (int j = 0; j < SelectedActions.length; j++) {
 
-					
-					
-					if (i!=j && SelectedActions[j].agent instanceof Prey) {
+					if (i != j && SelectedActions[j].agent instanceof Prey) {
 
-						//if there is a prey in the new position of the predator :(
+						// if there is a prey in the new position of the
+						// predator :(
 						if (Coordinate.compareCoordinates(
 								SelectedActions[j].NewPosition,
 								SelectedActions[i].NewPosition)) {
@@ -61,10 +65,10 @@ public class Environment {
 
 						}
 
-					}else if (i!=j && SelectedActions[j].agent instanceof Predator) {
-						
-						
-						//if two predators select the same position to move
+					} else if (i != j
+							&& SelectedActions[j].agent instanceof Predator) {
+
+						// if two predators select the same position to move
 						if (Coordinate.compareCoordinates(
 								SelectedActions[i].NewPosition,
 								SelectedActions[j].NewPosition)) {
@@ -73,20 +77,19 @@ public class Environment {
 							SelectedActions[j].NewPosition = SelectedActions[j].agent.position;
 
 						}
-						
-						
-						
+
 					}
 
 				}
 
-			//checking the move of a prey
+				// checking the move of a prey
 			} else {
-				
-				//We checked the move of the prey in the safe position function in its class.
+
+				// We checked the move of the prey in the safe position function
+				// in its class.
 
 			}
-			
+
 			SelectedActions[i].agent.position = SelectedActions[i].NewPosition;
 
 		}

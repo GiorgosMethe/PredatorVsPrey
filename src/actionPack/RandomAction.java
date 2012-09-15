@@ -1,7 +1,9 @@
-package myPack;
+package actionPack;
+
+import environmentPack.Coordinate;
 
 public class RandomAction {
-	
+
 	public double prob;
 	public Coordinate coordinate;
 

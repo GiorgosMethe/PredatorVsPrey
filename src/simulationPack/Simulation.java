@@ -1,4 +1,9 @@
-package myPack;
+package simulationPack;
+
+import agentsPack.Prey;
+import agentsPack.SingleAgentRandom;
+import environmentPack.Coordinate;
+import environmentPack.Environment;
 
 public class Simulation {
 
@@ -17,9 +22,10 @@ public class Simulation {
 			manytimesdoingsteps[i] = 0;
 			Environment env = new Environment();
 
-			// This is not really nice coding. It's only a quick fix; needs redesign?
-			env.worldState.add(new PolicyPredator("predator", new Coordinate(0, 0),
-					new SingleAgentRandom()));
+			// This is not really nice coding. It's only a quick fix; needs
+			// redesign?
+			env.worldState.add(new PolicyPredator("predator", new Coordinate(0,
+					0), new SingleAgentRandom()));
 			env.worldState.add(new Prey("prey", new Coordinate(5, 5), null));
 
 			do {

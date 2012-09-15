@@ -1,10 +1,12 @@
-package myPack;
+package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
 
-public class Prey extends Agent {
+import actionPack.RandomAction;
+import environmentPack.Coordinate;
 
+public class Prey extends Agent {
 
 	public Prey(String name, Coordinate p, Policy pi) {
 		super(name, p, pi);
@@ -12,28 +14,28 @@ public class Prey extends Agent {
 	}
 
 	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState){
-		
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
+
 		Vector<RandomAction> actions = new Vector<RandomAction>();
 		actions.addElement(new RandomAction(0.05, this.position.getNorth()));
 		actions.addElement(new RandomAction(0.05, this.position.getEast()));
 		actions.addElement(new RandomAction(0.05, this.position.getWest()));
 		actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 		actions.addElement(new RandomAction(0.8, this.position));
-		
-		for(int i=0;i<actions.size();i++){
-			if(!this.safePosition(actions.elementAt(i).coordinate, worldState)){
-				for(int j=0;j<actions.size();j++){
-					if(i!=j){
-						actions.elementAt(j).prob += actions.elementAt(i).prob/(actions.size()-1); 
+
+		for (int i = 0; i < actions.size(); i++) {
+			if (!this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+				for (int j = 0; j < actions.size(); j++) {
+					if (i != j) {
+						actions.elementAt(j).prob += actions.elementAt(i).prob
+								/ (actions.size() - 1);
 					}
 				}
 			}
 		}
 		return actions;
 	}
-	
-	
+
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 		if (this.isDead()) {
@@ -74,15 +76,19 @@ public class Prey extends Agent {
 
 		for (int i = 0; i < worldState.size(); i++) {
 			Agent a = worldState.elementAt(i);
-			if (a != this && Coordinate.compareCoordinates(c, a.position)) {
+			if (a instanceof Predator
+					&& Coordinate.compareCoordinates(c, a.position)) {
+				return false;
+			} else if (a instanceof Prey
+					&& Coordinate.compareCoordinates(c, a.position) && a.lives) {
 				return false;
 			}
 		}
 
 		return true;
 	}
-	
-	@Override 
+
+	@Override
 	public String toString() {
 		return "Prey(\"" + this.name + "\", " + this.position + ">)";
 	}

@@ -1,26 +1,28 @@
-package myPack;
+package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
 
+import actionPack.RandomAction;
+import environmentPack.Coordinate;
+
 public class Predator extends Agent {
-	
-	
+
 	protected Map<Integer, Double> reward;
-
-
 
 	public Predator(String name, Coordinate p, Policy pi) {
 		super(name, p, pi);
 		this.reward = new DefaultHashMap<Integer, Double>(0.0);
 		this.reward.put(0, 0.8 * 10);
-		for (int i = 1; i < 11*11; i++) {
+		for (int i = 1; i < 11 * 11; i++) {
 			this.reward.put(i, 0.0);
 		}
 	}
 
 	/**
-	 * Converts the state (position of 2 agents) to an integer representing the difference vector of positions. 
+	 * Converts the state (position of 2 agents) to an integer representing the
+	 * difference vector of positions.
+	 * 
 	 * @param worldState
 	 * @return
 	 */
@@ -38,7 +40,6 @@ public class Predator extends Agent {
 		return (c.getX() * 11) + c.getY();
 	}
 
-	
 	/**
 	 * Computes the estimated immediate reward of the Predator.
 	 * 
@@ -48,7 +49,7 @@ public class Predator extends Agent {
 	protected Map<Integer, Double> reward(Vector<Agent> worldState) {
 		return this.reward;
 	}
-	
+
 	/**
 	 * Computes the state transition probability of the Predator, given the
 	 * Prey's current position.
@@ -57,9 +58,7 @@ public class Predator extends Agent {
 	 * @return A table of state indices, and probabilities.
 	 */
 	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
-		
-		
-		
+
 		Map<Integer, Double> p = new DefaultHashMap<Integer, Double>(0.0);
 		Vector<Vector<Agent>> possibleWorlds = new Vector<Vector<Agent>>();
 
@@ -117,30 +116,30 @@ public class Predator extends Agent {
 
 		return p;
 	}
-	
+
 	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState){
-		
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
+
 		Vector<RandomAction> actions = new Vector<RandomAction>();
 		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 		actions.addElement(new RandomAction(0.2, this.position.getEast()));
 		actions.addElement(new RandomAction(0.2, this.position.getWest()));
 		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
 		actions.addElement(new RandomAction(0.2, this.position));
-		
-		for(int i=0;i<actions.size();i++){
-			if(!this.safePosition(actions.elementAt(i).coordinate, worldState)){
-				for(int j=0;j<actions.size();j++){
-					if(i!=j){
-						actions.elementAt(j).prob += actions.elementAt(i).prob/(actions.size()-1); 
+
+		for (int i = 0; i < actions.size(); i++) {
+			if (!this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+				for (int j = 0; j < actions.size(); j++) {
+					if (i != j) {
+						actions.elementAt(j).prob += actions.elementAt(i).prob
+								/ (actions.size() - 1);
 					}
 				}
 			}
 		}
 		return actions;
 	}
-	
-	
+
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 

@@ -1,4 +1,4 @@
-package myPack;
+package environmentPack;
 
 public class Coordinate {
 

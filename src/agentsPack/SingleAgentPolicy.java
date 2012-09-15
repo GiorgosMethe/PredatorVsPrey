@@ -1,11 +1,14 @@
-package myPack;
+package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
 
+import environmentPack.Coordinate;
+
 public abstract class SingleAgentPolicy extends Policy {
 
-	protected Map<Integer, Double> reward = new DefaultHashMap<Integer, Double>(0.0);
+	protected Map<Integer, Double> reward = new DefaultHashMap<Integer, Double>(
+			0.0);
 
 	/**
 	 * Corresponds with \pi(s, a) for multiple a.
@@ -14,7 +17,8 @@ public abstract class SingleAgentPolicy extends Policy {
 	 *         chooses those.
 	 */
 	@Override
-	public Map<Coordinate, Double> getActions(Agent me, Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+	public Map<Coordinate, Double> getActions(Agent me,
+			Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
 		double weightedValueSum = 0;
 		double[] weightedValue = new double[5];
 		for (int i = 0; i < possibleActions.size(); i++) {
@@ -27,10 +31,12 @@ public abstract class SingleAgentPolicy extends Policy {
 			weightedValueSum += weightedValue[i];
 		}
 
-		Map<Coordinate, Double> returnValue = new DefaultHashMap<Coordinate, Double>(0.0);
+		Map<Coordinate, Double> returnValue = new DefaultHashMap<Coordinate, Double>(
+				0.0);
 
 		for (int i = 0; i < possibleActions.size(); i++) {
-			returnValue.put(possibleActions.get(i), weightedValue[i] / weightedValueSum);
+			returnValue.put(possibleActions.get(i), weightedValue[i]
+					/ weightedValueSum);
 		}
 		return returnValue;
 	}

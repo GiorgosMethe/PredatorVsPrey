@@ -1,4 +1,4 @@
-package myPack;
+package agentsPack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +8,9 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 	 * This made Eclipse really happy.
 	 */
 	private static final long serialVersionUID = 1554353438471176710L;
-	
+
 	protected V defaultValue;
-	
+
 	public DefaultHashMap(V defaultValue) {
 		// TODO Auto-generated constructor stub
 		super();
@@ -35,6 +35,7 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 	@Override
 	public V get(Object key) {
 		V value = super.get(key);
-		return ((value == null) && !this.containsKey(key)) ? this.defaultValue : value;
+		return ((value == null) && !this.containsKey(key)) ? this.defaultValue
+				: value;
 	}
 }

@@ -1,7 +1,9 @@
-package myPack;
+package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
+
+import environmentPack.Coordinate;
 
 public class SingleAgentRandom extends SingleAgentPolicy {
 
@@ -17,16 +19,16 @@ public class SingleAgentRandom extends SingleAgentPolicy {
 	}
 
 	@Override
-	public Map<Coordinate, Double> getActions(Agent me, Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+	public Map<Coordinate, Double> getActions(Agent me,
+			Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
 		return null;
 	}
-	
+
 	@Override
-	public Coordinate getOptimalAction(Agent me, Vector<Agent> worldState, Vector<Coordinate> possibleActions) {
+	public Coordinate getOptimalAction(Agent me, Vector<Agent> worldState,
+			Vector<Coordinate> possibleActions) {
 		int random = (int) (Math.random() * 5);
-		
+
 		return possibleActions.get(random);
 	}
 }
-
-

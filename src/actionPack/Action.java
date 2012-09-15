@@ -1,4 +1,7 @@
-package myPack;
+package actionPack;
+
+import agentsPack.Agent;
+import environmentPack.Coordinate;
 
 public class Action {
 
@@ -9,10 +12,11 @@ public class Action {
 		this.agent = agent;
 		this.NewPosition = newPosition;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Action{" + this.agent.toString() + ", " + this.NewPosition.toString() + "}";
+		return "Action{" + this.agent.toString() + ", "
+				+ this.NewPosition.toString() + "}";
 	}
 
 }

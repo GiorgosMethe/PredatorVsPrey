@@ -1,7 +1,10 @@
-package myPack;
+package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
+
+import actionPack.RandomAction;
+import environmentPack.Coordinate;
 
 public abstract class Agent {
 
@@ -40,24 +43,32 @@ public abstract class Agent {
 
 	/**
 	 * Assign an integer 0 <= i < 11^2 to a state.
-	 * @param worldState Contains only one predator and one prey.
-	 * @return The integer is computed as dotprod(((prey.position - predator.position) + <10,10> % <11,11>), <11, 1>) 
+	 * 
+	 * @param worldState
+	 *            Contains only one predator and one prey.
+	 * @return The integer is computed as dotprod(((prey.position -
+	 *         predator.position) + <10,10> % <11,11>), <11, 1>)
 	 */
 	public abstract Integer stateIndex(Vector<Agent> worldState);
-	
+
 	/**
 	 * The reward function. Corresponds to R_{s, s'}^{a}.
 	 * 
 	 */
 	protected abstract Map<Integer, Double> reward(Vector<Agent> worldState);
-	
+
 	/**
-	 * The probabilistic transition function, given the intermediate state, right after doing the action. 
+	 * The probabilistic transition function, given the intermediate state,
+	 * right after doing the action.
 	 * 
-	 * This corresponds to P_{s, s'}^{a} with s and a fixed.   
-	 * @param worldState The intermediate state (after the "current" world state, when you have taken an action, 
-	 * 					 but before the "next" world state, when the prey has moved).
-	 * @return A mapping from an integer describing the possible next state s', and the probability that it will occur.
+	 * This corresponds to P_{s, s'}^{a} with s and a fixed.
+	 * 
+	 * @param worldState
+	 *            The intermediate state (after the "current" world state, when
+	 *            you have taken an action, but before the "next" world state,
+	 *            when the prey has moved).
+	 * @return A mapping from an integer describing the possible next state s',
+	 *         and the probability that it will occur.
 	 */
 	public abstract Map<Integer, Double> functionP(Vector<Agent> worldState);
 
@@ -93,8 +104,8 @@ public abstract class Agent {
 		}
 		return PossiblePosition;
 	}
-	
-	public abstract Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState);
 
+	public abstract Vector<RandomAction> ProbabilityActions(
+			Vector<Agent> worldState);
 
 }
