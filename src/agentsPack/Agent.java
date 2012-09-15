@@ -83,7 +83,7 @@ public abstract class Agent {
 	 * 
 	 */
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
-
+	
 	/**
 	 * Computes a list of possible next positions, given the current state.
 	 * 
@@ -104,8 +104,12 @@ public abstract class Agent {
 		}
 		return PossiblePosition;
 	}
+	
 
 	public abstract Vector<RandomAction> ProbabilityActions(
+			Vector<Agent> worldState);
+	
+	public abstract Vector<RandomAction> ProbabilityActionsSW(
 			Vector<Agent> worldState);
 
 }

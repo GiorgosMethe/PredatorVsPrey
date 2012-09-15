@@ -35,6 +35,34 @@ public class Prey extends Agent {
 		}
 		return actions;
 	}
+	
+	@Override
+	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
+
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.05, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.05, this.position.getEast()));
+		actions.addElement(new RandomAction(0.05, this.position.getWest()));
+		actions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.8, this.position));
+
+
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+		
+		double probSum = 0;
+		for (int i = 0; i < actions.size(); i++) {
+			if (Coordinate.CoordinateSW(actions.elementAt(i).coordinate)) {
+			
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+			
+			}
+		}	
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+		}
+		return safeActions;
+	}
 
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {

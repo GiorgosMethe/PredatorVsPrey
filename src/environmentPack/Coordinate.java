@@ -5,9 +5,22 @@ public class Coordinate {
 	private int x, y;
 
 	public Coordinate(int x, int y) {
+		
 		super();
 		this.x = (x + 11) % 11;
 		this.y = (y + 11) % 11;
+		
+	}	
+
+	public static boolean CoordinateSW(Coordinate a) {
+		
+		if(a.x >=0 && a.x <= 5){
+			if(a.y >=0 && a.y <= 5){
+				return true;
+			}
+		}
+		return false;
+	
 	}
 
 	public int getX() {
