@@ -118,56 +118,6 @@ public class Predator extends Agent {
 	}
 
 	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
-
-		Vector<RandomAction> actions = new Vector<RandomAction>();
-		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
-		actions.addElement(new RandomAction(0.2, this.position.getEast()));
-		actions.addElement(new RandomAction(0.2, this.position.getWest()));
-		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
-		actions.addElement(new RandomAction(0.2, this.position));
-
-		for (int i = 0; i < actions.size(); i++) {
-			if (!this.safePosition(actions.elementAt(i).coordinate, worldState)) {
-				for (int j = 0; j < actions.size(); j++) {
-					if (i != j) {
-						actions.elementAt(j).prob += actions.elementAt(i).prob
-								/ (actions.size() - 1);
-					}
-				}
-			}
-		}
-		return actions;
-	}
-	
-	@Override
-	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
-
-		Vector<RandomAction> actions = new Vector<RandomAction>();
-		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
-		actions.addElement(new RandomAction(0.2, this.position.getEast()));
-		actions.addElement(new RandomAction(0.2, this.position.getWest()));
-		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
-		actions.addElement(new RandomAction(0.2, this.position));
-		
-		Vector<RandomAction> safeActions = new Vector<RandomAction>();
-
-		double probSum = 0;
-		for (int i = 0; i < actions.size(); i++) {
-			if (Coordinate.CoordinateSW(actions.elementAt(i).coordinate)) {
-			
-				safeActions.add(actions.elementAt(i));
-				probSum += actions.elementAt(i).prob;
-			
-			}
-		}	
-		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
-		}
-		return safeActions;
-	}
-
-	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 
 		// TODO Auto-generated method stub
