@@ -72,7 +72,11 @@ public class Coordinate {
 		return new Coordinate(x, y - 1);
 
 	}
-
+	
+	public int toIndex() {
+		return 11 * x + y;
+	}
+	
 	@Override
 	public String toString() {
 		return "<" + this.x + ", " + this.y + ">";

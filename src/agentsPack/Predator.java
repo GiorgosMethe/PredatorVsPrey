@@ -39,6 +39,13 @@ public class Predator extends Agent {
 		Coordinate c = Coordinate.difference(this.position, prey.position);
 		return (c.getX() * 11) + c.getY();
 	}
+	
+	public Vector<Agent> typicalState(int stateIndex) {
+		Vector<Agent> state = new Vector<Agent>();
+		state.add(new Predator("typical predator", new Coordinate(0, 0), null));
+		state.add(new Prey("typical prey", new Coordinate(stateIndex / 11, stateIndex % 11), null));
+		return state;
+	}
 
 	/**
 	 * Computes the estimated immediate reward of the Predator.
@@ -46,8 +53,8 @@ public class Predator extends Agent {
 	 * @param worldState
 	 * @return
 	 */
-	protected Map<Integer, Double> reward(Vector<Agent> worldState) {
-		return this.reward;
+	public Double reward(Vector<Agent> currState, Vector<Agent> nextState, Coordinate action) {
+		return this.reward.get(this.stateIndex(nextState));
 	}
 
 	/**

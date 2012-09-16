@@ -3,6 +3,8 @@ package agentsPack;
 import java.util.Map;
 import java.util.Vector;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
 
@@ -98,6 +100,11 @@ public class Prey extends Agent {
 		return NewPosition;
 
 	}
+	
+	@Override
+	public Vector<Agent> typicalState(int stateIndex) {
+		throw new NotImplementedException();
+	}
 
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
@@ -136,9 +143,9 @@ public class Prey extends Agent {
 	}
 
 	@Override
-	protected Map<Integer, Double> reward(Vector<Agent> worldState) {
+	public Double reward(Vector<Agent> currState, Vector<Agent> nextState, Coordinate action) {
 		// TODO Auto-generated method stub
-		return new DefaultHashMap<Integer, Double>(0.0);
+		return 0.0;
 	}
 
 	@Override

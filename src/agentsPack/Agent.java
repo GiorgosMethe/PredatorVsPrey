@@ -52,10 +52,21 @@ public abstract class Agent {
 	public abstract Integer stateIndex(Vector<Agent> worldState);
 
 	/**
+	 * Generates a typical state from a state index.
+	 * @param stateIndex A value returned by @{stateIndex}.
+	 * @return A state, that is, a vector of agents.
+	 */
+	public abstract Vector<Agent> typicalState(int stateIndex);
+	
+	/**
 	 * The reward function. Corresponds to R_{s, s'}^{a}.
 	 * 
 	 */
-	protected abstract Map<Integer, Double> reward(Vector<Agent> worldState);
+	public abstract Double reward(Vector<Agent> currState, Vector<Agent> nextState, Coordinate action);
+	
+	public Double reward(int currState, int nextState, Coordinate action) {
+		return this.reward(this.typicalState(currState), this.typicalState(nextState), action);
+	}
 
 	/**
 	 * The probabilistic transition function, given the intermediate state,
@@ -71,6 +82,10 @@ public abstract class Agent {
 	 *         and the probability that it will occur.
 	 */
 	public abstract Map<Integer, Double> functionP(Vector<Agent> worldState);
+	
+	public Map<Integer, Double> functionP(int stateIndex) {
+		return this.functionP(this.typicalState(stateIndex));
+	}
 
 	/**
 	 * Return the next position after your chosen action.
@@ -105,6 +120,9 @@ public abstract class Agent {
 		return PossiblePosition;
 	}
 	
+	public Vector<Coordinate> possibleActions(int stateIndex) {
+		return this.possibleActions(this.typicalState(stateIndex));
+	}	
 
 	public abstract Vector<RandomAction> ProbabilityActions(
 			Vector<Agent> worldState);
