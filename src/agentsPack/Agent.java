@@ -135,6 +135,7 @@ public abstract class Agent {
 			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.8, this.position));
 		}else{
+			
 			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.2, this.position.getEast()));
 			actions.addElement(new RandomAction(0.2, this.position.getWest()));
@@ -179,10 +180,20 @@ public abstract class Agent {
 		
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
+		for (int i = 0; i < actions.size(); i++) {
+			if(actions.elementAt(i).coordinate.getX() < 0)
+				actions.elementAt(i).coordinate.setX(1);
+			if(actions.elementAt(i).coordinate.getY() < 0)
+				actions.elementAt(i).coordinate.setY(1);
+			if(actions.elementAt(i).coordinate.getY() > 5)
+				actions.elementAt(i).coordinate.setY(4);
+			if(actions.elementAt(i).coordinate.getX() > 5)
+				actions.elementAt(i).coordinate.setX(4);
+		}
+		
 		double probSum = 0;
 		for (int i = 0; i < actions.size(); i++) {
-			if (Coordinate.CoordinateSW(actions.elementAt(i).coordinate) &&
-					this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
 			
 				safeActions.add(actions.elementAt(i));
 				probSum += actions.elementAt(i).prob;

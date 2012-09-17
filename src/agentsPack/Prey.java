@@ -65,7 +65,7 @@ public class Prey extends Agent {
 			if (a instanceof Predator
 					&& Coordinate.compareCoordinates(c, a.position)) {
 				return false;
-			} else if (a instanceof Prey
+			} else if (a != this && a instanceof Prey
 					&& Coordinate.compareCoordinates(c, a.position) && a.lives) {
 				return false;
 			}
