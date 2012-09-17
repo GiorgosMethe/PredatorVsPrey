@@ -13,14 +13,20 @@ public class Coordinate {
 	public Coordinate(int x, int y) {
 		this(11, x, y);
 	}
-	
+
 	public Coordinate(Coordinate c) {
 		this(11, c.getX(), c.getY());
 	}
 
 	public static boolean CoordinateSW(Coordinate a) {
-		SWCoordinate a_ = new SWCoordinate(a);
-		return (a.getX() == a_.getX() && a.getY() == a_.getY());
+
+		if(a.x >=0 && a.x <= 5){
+			if(a.y >=0 && a.y <= 5){
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public int getX() {
@@ -72,11 +78,11 @@ public class Coordinate {
 		return new Coordinate(x, y - 1);
 
 	}
-	
+
 	public int toIndex() {
 		return this.divisor * x + y;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "<" + this.x + ", " + this.y + ">";

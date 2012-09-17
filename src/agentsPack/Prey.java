@@ -3,7 +3,7 @@ package agentsPack;
 import java.util.Map;
 import java.util.Vector;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
@@ -52,10 +52,10 @@ public class Prey extends Agent {
 
 	}
 	
-	@Override
-	public Vector<Agent> typicalState(int stateIndex) {
-		throw new NotImplementedException();
-	}
+//	@Override
+//	public Vector<Agent> typicalState(int stateIndex) {
+//		throw new NotImplementedException();
+//	}
 
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
@@ -103,6 +103,14 @@ public class Prey extends Agent {
 	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("No P function for prey");
+	}
+
+
+
+	@Override
+	public Vector<Agent> typicalState(int stateIndex) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
