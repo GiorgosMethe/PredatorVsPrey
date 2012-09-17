@@ -126,8 +126,56 @@ public abstract class Agent {
 
 	public abstract Vector<RandomAction> ProbabilityActions(
 			Vector<Agent> worldState);
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+		
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+		double probSum = 0;
+		for (int i = 0; i < actions.size(); i++) {
+			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+			
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+			
+			}
+		}	
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+		}
+		return safeActions;
+		
+	}
 	
-	public abstract Vector<RandomAction> ProbabilityActionsSW(
-			Vector<Agent> worldState);
+	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
+
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+		
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+		double probSum = 0;
+		for (int i = 0; i < actions.size(); i++) {
+			if (Coordinate.CoordinateSW(actions.elementAt(i).coordinate) &&
+					this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+			
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+			
+			}
+		}	
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+		}
+		return safeActions;
+	}
 
 }
