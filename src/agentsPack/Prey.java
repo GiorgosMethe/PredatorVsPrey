@@ -2,12 +2,6 @@ package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
-
-<<<<<<< HEAD
-//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-=======
->>>>>>> Prey
-
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
 
@@ -55,17 +49,7 @@ public class Prey extends Agent {
 
 	}
 	
-<<<<<<< HEAD
-//	@Override
-//	public Vector<Agent> typicalState(int stateIndex) {
-//		throw new NotImplementedException();
-//	}
-=======
-	@Override
-	public Vector<Agent> typicalState(int stateIndex) {
-		return null;
-		}
->>>>>>> Prey
+	
 
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
