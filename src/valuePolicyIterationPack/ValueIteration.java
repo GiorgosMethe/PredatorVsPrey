@@ -150,8 +150,7 @@ public class ValueIteration {
 										PreyActions.elementAt(jj).coordinate);
 
 								//Previous values multiplied by the discount factor
-								System.out.println(PredatorActions
-										        .elementAt(ii).coordinate.toString());
+								
 								double discount = discountFactor
 										* State[PredatorActions
 										        .elementAt(ii).coordinate
