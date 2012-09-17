@@ -108,11 +108,20 @@ public abstract class Agent {
 	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
-		actions.addElement(new RandomAction(0.2, this.position.getEast()));
-		actions.addElement(new RandomAction(0.2, this.position.getWest()));
-		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
-		actions.addElement(new RandomAction(0.2, this.position));
+		
+		if(this instanceof Prey){
+			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
+			actions.addElement(new RandomAction(0.05, this.position.getEast()));
+			actions.addElement(new RandomAction(0.05, this.position.getWest()));
+			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
+			actions.addElement(new RandomAction(0.8, this.position));
+		}else{
+			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+			actions.addElement(new RandomAction(0.2, this.position.getEast()));
+			actions.addElement(new RandomAction(0.2, this.position.getWest()));
+			actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+			actions.addElement(new RandomAction(0.2, this.position));
+		}
 		
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
@@ -135,11 +144,19 @@ public abstract class Agent {
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
-		actions.addElement(new RandomAction(0.2, this.position.getEast()));
-		actions.addElement(new RandomAction(0.2, this.position.getWest()));
-		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
-		actions.addElement(new RandomAction(0.2, this.position));
+		if(this instanceof Prey){
+			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
+			actions.addElement(new RandomAction(0.05, this.position.getEast()));
+			actions.addElement(new RandomAction(0.05, this.position.getWest()));
+			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
+			actions.addElement(new RandomAction(0.8, this.position));
+		}else{
+			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+			actions.addElement(new RandomAction(0.2, this.position.getEast()));
+			actions.addElement(new RandomAction(0.2, this.position.getWest()));
+			actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+			actions.addElement(new RandomAction(0.2, this.position));
+		}
 		
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
@@ -157,6 +174,7 @@ public abstract class Agent {
 			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
 		}
 		return safeActions;
+		
 	}
 
 }

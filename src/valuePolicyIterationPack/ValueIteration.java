@@ -13,8 +13,8 @@ public class ValueIteration {
 	public static void main(String[] args) {
 
 		
-		ValueIterationImpl(new Coordinate(10, 10), 0.7);
-		ValueIterationImplSw(new Coordinate(10,10),0.7);
+		ValueIterationImpl(new Coordinate(5, 5), 0.7);
+		ValueIterationImplSw(new Coordinate(5,5),0.7);
 
 	}
 	
@@ -141,8 +141,7 @@ public class ValueIteration {
 							for (int jj = 0; jj < PreyActions.size(); jj++) {
 
 								//Probability of each state
-								double stateProbability = PredatorActions
-										.elementAt(ii).prob
+								double stateProbability = 1
 										* PreyActions.elementAt(jj).prob;
 
 								//Reward of each state
@@ -175,7 +174,7 @@ public class ValueIteration {
 
 			}
 
-		} while (delta > Math.pow(10, -5));
+		} while (delta > Math.pow(10, -3));
 		
 		
 		long end = System.currentTimeMillis();
@@ -245,8 +244,7 @@ public class ValueIteration {
 							for (int jj = 0; jj < PreyActions.size(); jj++) {
 
 								//Probability of each state
-								double stateProbability = PredatorActions
-										.elementAt(ii).prob
+								double stateProbability = 1
 										* PreyActions.elementAt(jj).prob;
 
 								//Reward of each state
@@ -279,7 +277,7 @@ public class ValueIteration {
 
 			}
 
-		} while (delta > Math.pow(10, -5));
+		} while (delta > Math.pow(10, -3));
 
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
