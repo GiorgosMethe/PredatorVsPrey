@@ -124,8 +124,8 @@ public abstract class Agent {
 		return this.possibleActions(this.typicalState(stateIndex));
 	}	
 
-	public abstract Vector<RandomAction> ProbabilityActions(
-			Vector<Agent> worldState);
+	public Vector<RandomAction> ProbabilityActions(
+			Vector<Agent> worldState) {
 		Vector<RandomAction> actions = new Vector<RandomAction>();
 		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 		actions.addElement(new RandomAction(0.2, this.position.getEast()));

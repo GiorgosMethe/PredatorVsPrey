@@ -2,25 +2,25 @@ package environmentPack;
 
 public class Coordinate {
 
-	private int x, y;
+	protected int divisor, x, y;
 
-	public Coordinate(int x, int y) {
-		
+	protected Coordinate(int divisor, int x, int y) {
 		super();
-		this.x = (x + 11) % 11;
-		this.y = (y + 11) % 11;
-		
-	}	
+		this.divisor = 11;
+		this.setX(x);
+		this.setY(y);
+	}
+	public Coordinate(int x, int y) {
+		this(11, x, y);
+	}
+	
+	public Coordinate(Coordinate c) {
+		this(11, c.getX(), c.getY());
+	}
 
 	public static boolean CoordinateSW(Coordinate a) {
-		
-		if(a.x >=0 && a.x <= 5){
-			if(a.y >=0 && a.y <= 5){
-				return true;
-			}
-		}
-		return false;
-	
+		SWCoordinate a_ = new SWCoordinate(a);
+		return (a.getX() == a_.getX() && a.getY() == a_.getY());
 	}
 
 	public int getX() {
@@ -28,7 +28,7 @@ public class Coordinate {
 	}
 
 	public void setX(int x) {
-		this.x = (x + 11) % 11;
+		this.x = (x + this.divisor) % this.divisor;
 	}
 
 	public int getY() {
@@ -36,7 +36,7 @@ public class Coordinate {
 	}
 
 	public void setY(int y) {
-		this.y = (y + 11) % 11;
+		this.y = (y + this.divisor) % this.divisor;
 	}
 
 	public static boolean compareCoordinates(Coordinate c1, Coordinate c2) {
@@ -74,7 +74,7 @@ public class Coordinate {
 	}
 	
 	public int toIndex() {
-		return 11 * x + y;
+		return this.divisor * x + y;
 	}
 	
 	@Override
