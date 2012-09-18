@@ -157,7 +157,7 @@ public abstract class Agent {
 		for (int j = 0; j < safeActions.size(); j++) {
 			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
 		}
-		return safeActions;
+		return actions;
 		
 	}
 	

@@ -231,8 +231,9 @@ public class PolicyEvaluation {
 					//default reward value is given to this state
 					if (rewardFunction(P.position, p.position) > 0) {
 
-						State[i][j] = rewardFunction(P.position, p.position);
+						//State[i][j] = rewardFunction(P.position, p.position);
 
+						State[i][j] = 0;
 					} else {
 
 						double totalValue = 0;
@@ -254,6 +255,13 @@ public class PolicyEvaluation {
 								double reward = rewardFunction(
 										PredatorActions.elementAt(ii).coordinate,
 										PreyActions.elementAt(jj).coordinate);
+								
+								if (Coordinate
+										.compareCoordinates(
+												PredatorActions.elementAt(ii).coordinate,
+												p.position)) {
+									reward = 10;
+								}
 
 								//Previous values multiplied by the discount factor
 								double discount = discountFactor
