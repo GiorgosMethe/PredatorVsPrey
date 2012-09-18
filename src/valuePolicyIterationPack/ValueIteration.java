@@ -69,9 +69,8 @@ public class ValueIteration {
 
 									reward = 10;
 
-									double prob = 1;
 
-									currentValue = prob * reward; 
+									currentValue = PredAct.get(ii).prob * reward; 
 
 									break;
 
@@ -166,10 +165,8 @@ public class ValueIteration {
 												p.position)) {
 
 											reward = 10;
+											currentValue = PredAct.get(ii).prob * reward; 
 
-											double prob = 1;
-
-											currentValue = prob * reward; 
 
 											break;
 
@@ -231,7 +228,7 @@ public class ValueIteration {
 			
 			for (int j = 0; j < StateValues.length; j++) {
 
-				System.out.printf(" %.2f |", StateValues[i][j] );
+				System.out.printf(" %.6f |", StateValues[i][j] );
 
 			}
 			System.out.println("\n-----------------------------------------------------------------------------");
