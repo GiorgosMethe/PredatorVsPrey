@@ -186,9 +186,9 @@ public abstract class Agent {
 			if(actions.elementAt(i).coordinate.getY() < 0)
 				actions.elementAt(i).coordinate.setY(1);
 			if(actions.elementAt(i).coordinate.getY() > 5)
-				actions.elementAt(i).coordinate.setY(4);
+				actions.elementAt(i).coordinate.setY(5);
 			if(actions.elementAt(i).coordinate.getX() > 5)
-				actions.elementAt(i).coordinate.setX(4);
+				actions.elementAt(i).coordinate.setX(5);
 		}
 		
 		double probSum = 0;
