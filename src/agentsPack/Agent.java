@@ -247,36 +247,54 @@ public abstract class Agent {
 		}
 
 	}
-
+	
+	
 	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
+
 		if (this instanceof Prey) {
+
 			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.05, this.position.getEast()));
 			actions.addElement(new RandomAction(0.05, this.position.getWest()));
 			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.8, this.position));
 
+			Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+			double probSum = 0;
 			for (int i = 0; i < actions.size(); i++) {
-				Coordinate c = actions.get(i).coordinate;
-				Coordinate cnew = new Coordinate(c.getX(), c.getY());
-				if (c.getY() > 5)
-					c.setY(5);
-				if (c.getY() < 0)
-					c.setY(0);
-				if (c.getX() > 5)
-					c.setX(5);
-				if (c.getX() < 0)
-					c.setX(0);
-				if (6 - c.getY() > c.getX()) { // the coordinate is outside the
-												// triangle
-					cnew.setX(c.getY());
-					cnew.setY(c.getX());
+				int realCoordx = actions.elementAt(i).coordinate.getX();
+				int realCoordy = actions.elementAt(i).coordinate.getY();
+
+				if (realCoordx == 6)
+					realCoordx = 5;
+				if (realCoordx == -1)
+					realCoordx = 1;
+				if (realCoordy == 6)
+					realCoordy = 5;
+				if (realCoordy == -1)
+					realCoordy = 1;
+
+				Coordinate RealCoordinate = new Coordinate(realCoordx,
+						realCoordy);
+
+				if (this.safePosition(RealCoordinate, worldState)) {
+
+					safeActions.add(actions.elementAt(i));
+					probSum += actions.elementAt(i).prob;
+
 				}
-				actions.get(i).coordinate = cnew;
 			}
+			for (int j = 0; j < safeActions.size(); j++) {
+				safeActions.elementAt(j).prob += (1 - probSum)
+						/ safeActions.size();
+			}
+			return safeActions;
+
 		} else {
+
 			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.2, this.position.getEast()));
 			actions.addElement(new RandomAction(0.2, this.position.getWest()));
@@ -284,41 +302,50 @@ public abstract class Agent {
 			actions.addElement(new RandomAction(0.2, this.position));
 
 			for (int i = 0; i < actions.size(); i++) {
-				Coordinate c = actions.get(i).coordinate;
-				Coordinate cnew = new Coordinate(c.getX(), c.getY());
-				if (c.getY() > 5)
-					c.setY(5);
-				if (c.getY() < 0)
-					c.setY(1);
-				if (c.getX() > 5)
-					c.setX(5);
-				if (c.getX() < 0)
-					c.setX(1);
-				if (6 - c.getY() > c.getX()) { // the coordinate is outside the
-												// triangle
-					cnew.setX(c.getY());
-					cnew.setY(c.getX());
+				if (actions.elementAt(i).coordinate.getX() == 10)
+					actions.elementAt(i).coordinate.setX(1);
+				if (actions.elementAt(i).coordinate.getY() == 10)
+					actions.elementAt(i).coordinate.setY(1);
+				if (actions.elementAt(i).coordinate.getY() == 6)
+					actions.elementAt(i).coordinate.setY(5);
+				if (actions.elementAt(i).coordinate.getX() == 6)
+					actions.elementAt(i).coordinate.setX(5);
+				
+				
+				if(actions.elementAt(i).coordinate.getY() < actions.elementAt(i).coordinate.getX()){
+					int x = actions.elementAt(i).coordinate.getX();
+					int y = actions.elementAt(i).coordinate.getY();
+					actions.elementAt(i).coordinate.setX(y);
+					actions.elementAt(i).coordinate.setY(x);
 				}
-				actions.get(i).coordinate = cnew;
+				
+				
 			}
-		}
+			
+			
+			
 
-		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+			Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
-		double probSum = 0;
-		for (int i = 0; i < actions.size(); i++) {
-			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+			double probSum = 0;
+			for (int i = 0; i < actions.size(); i++) {
+				if (this.safePosition(actions.elementAt(i).coordinate,
+						worldState)) {
 
-				safeActions.add(actions.elementAt(i));
-				probSum += actions.elementAt(i).prob;
+					safeActions.add(actions.elementAt(i));
+					probSum += actions.elementAt(i).prob;
 
+				}
 			}
+			for (int j = 0; j < safeActions.size(); j++) {
+				safeActions.elementAt(j).prob += (1 - probSum)
+						/ safeActions.size();
+			}
+			return safeActions;
 		}
-		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
-		}
-		return safeActions;
 
 	}
+
+	
 
 }
