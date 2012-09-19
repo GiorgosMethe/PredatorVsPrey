@@ -10,6 +10,7 @@ public class Coordinate {
 		this.setX(x);
 		this.setY(y);
 	}
+
 	public Coordinate(int x, int y) {
 		this(11, x, y);
 	}
@@ -20,8 +21,8 @@ public class Coordinate {
 
 	public static boolean CoordinateSW(Coordinate a) {
 
-		if(a.x >=0 && a.x <= 5){
-			if(a.y >=0 && a.y <= 5){
+		if (a.x >= 0 && a.x <= 5) {
+			if (a.y >= 0 && a.y <= 5) {
 				return true;
 			}
 		}

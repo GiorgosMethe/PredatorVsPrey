@@ -6,7 +6,7 @@ public class SWCoordinate extends Coordinate {
 		super(6, x, y);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public SWCoordinate(Coordinate c) {
 		super(6, c.getX(), c.getY());
 	}

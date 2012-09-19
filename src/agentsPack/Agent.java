@@ -53,19 +53,23 @@ public abstract class Agent {
 
 	/**
 	 * Generates a typical state from a state index.
-	 * @param stateIndex A value returned by @{stateIndex}.
+	 * 
+	 * @param stateIndex
+	 *            A value returned by @{stateIndex}.
 	 * @return A state, that is, a vector of agents.
 	 */
 	public abstract Vector<Agent> typicalState(int stateIndex);
-	
+
 	/**
 	 * The reward function. Corresponds to R_{s, s'}^{a}.
 	 * 
 	 */
-	public abstract Double reward(Vector<Agent> currState, Vector<Agent> nextState, Coordinate action);
-	
+	public abstract Double reward(Vector<Agent> currState,
+			Vector<Agent> nextState, Coordinate action);
+
 	public Double reward(int currState, int nextState, Coordinate action) {
-		return this.reward(this.typicalState(currState), this.typicalState(nextState), action);
+		return this.reward(this.typicalState(currState),
+				this.typicalState(nextState), action);
 	}
 
 	/**
@@ -82,7 +86,7 @@ public abstract class Agent {
 	 *         and the probability that it will occur.
 	 */
 	public abstract Map<Integer, Double> functionP(Vector<Agent> worldState);
-	
+
 	public Map<Integer, Double> functionP(int stateIndex) {
 		return this.functionP(this.typicalState(stateIndex));
 	}
@@ -98,7 +102,7 @@ public abstract class Agent {
 	 * 
 	 */
 	public abstract boolean safePosition(Coordinate c, Vector<Agent> worldState);
-	
+
 	/**
 	 * Computes a list of possible next positions, given the current state.
 	 * 
@@ -119,156 +123,202 @@ public abstract class Agent {
 		}
 		return PossiblePosition;
 	}
-	
+
 	public Vector<Coordinate> possibleActions(int stateIndex) {
 		return this.possibleActions(this.typicalState(stateIndex));
-	}	
+	}
 
-	public Vector<RandomAction> ProbabilityActions(
-			Vector<Agent> worldState) {
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		
-		if(this instanceof Prey){
+
+		if (this instanceof Prey) {
 			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.05, this.position.getEast()));
 			actions.addElement(new RandomAction(0.05, this.position.getWest()));
 			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.8, this.position));
-		}else{
-			
+		} else {
+
 			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.2, this.position.getEast()));
 			actions.addElement(new RandomAction(0.2, this.position.getWest()));
 			actions.addElement(new RandomAction(0.2, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.2, this.position));
 		}
-		
+
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
 		double probSum = 0;
 		for (int i = 0; i < actions.size(); i++) {
 			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
-			
+
 				safeActions.add(actions.elementAt(i));
 				probSum += actions.elementAt(i).prob;
-			
+
 			}
-		}	
+		}
 		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
 		}
 		return actions;
-		
+
 	}
-	
+
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		if(this instanceof Prey){
+
+		if (this instanceof Prey) {
+
 			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.05, this.position.getEast()));
 			actions.addElement(new RandomAction(0.05, this.position.getWest()));
 			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.8, this.position));
-		}else{
+
+			Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+			double probSum = 0;
+			for (int i = 0; i < actions.size(); i++) {
+				int realCoordx = actions.elementAt(i).coordinate.getX();
+				int realCoordy = actions.elementAt(i).coordinate.getY();
+
+				if (realCoordx == 6)
+					realCoordx = 5;
+				if (realCoordx == -1)
+					realCoordx = 1;
+				if (realCoordy == 6)
+					realCoordy = 5;
+				if (realCoordy == -1)
+					realCoordy = 1;
+
+				Coordinate RealCoordinate = new Coordinate(realCoordx,
+						realCoordy);
+
+				if (this.safePosition(RealCoordinate, worldState)) {
+
+					safeActions.add(actions.elementAt(i));
+					probSum += actions.elementAt(i).prob;
+
+				}
+			}
+			for (int j = 0; j < safeActions.size(); j++) {
+				safeActions.elementAt(j).prob += (1 - probSum)
+						/ safeActions.size();
+			}
+			return safeActions;
+
+		} else {
+
 			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.2, this.position.getEast()));
 			actions.addElement(new RandomAction(0.2, this.position.getWest()));
 			actions.addElement(new RandomAction(0.2, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.2, this.position));
-			
+
 			for (int i = 0; i < actions.size(); i++) {
-				if(actions.elementAt(i).coordinate.getX() < 0)
+				if (actions.elementAt(i).coordinate.getX() == 10)
 					actions.elementAt(i).coordinate.setX(1);
-				if(actions.elementAt(i).coordinate.getY() < 0)
+				if (actions.elementAt(i).coordinate.getY() == 10)
 					actions.elementAt(i).coordinate.setY(1);
-				if(actions.elementAt(i).coordinate.getY() > 5)
+				if (actions.elementAt(i).coordinate.getY() == 6)
 					actions.elementAt(i).coordinate.setY(5);
-				if(actions.elementAt(i).coordinate.getX() > 5)
+				if (actions.elementAt(i).coordinate.getX() == 6)
 					actions.elementAt(i).coordinate.setX(5);
 			}
-		}
-		
-		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
-		double probSum = 0;
-		for (int i = 0; i < actions.size(); i++) {
-			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
-			
-				safeActions.add(actions.elementAt(i));
-				probSum += actions.elementAt(i).prob;
-			
+			Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+			double probSum = 0;
+			for (int i = 0; i < actions.size(); i++) {
+				if (this.safePosition(actions.elementAt(i).coordinate,
+						worldState)) {
+
+					safeActions.add(actions.elementAt(i));
+					probSum += actions.elementAt(i).prob;
+
+				}
 			}
-		}	
-		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+			for (int j = 0; j < safeActions.size(); j++) {
+				safeActions.elementAt(j).prob += (1 - probSum)
+						/ safeActions.size();
+			}
+			return safeActions;
 		}
-		return safeActions;
-		
+
 	}
 
 	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		if(this instanceof Prey){
+		if (this instanceof Prey) {
 			actions.addElement(new RandomAction(0.05, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.05, this.position.getEast()));
 			actions.addElement(new RandomAction(0.05, this.position.getWest()));
 			actions.addElement(new RandomAction(0.05, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.8, this.position));
-			
+
 			for (int i = 0; i < actions.size(); i++) {
 				Coordinate c = actions.get(i).coordinate;
 				Coordinate cnew = new Coordinate(c.getX(), c.getY());
-				if (c.getY() > 5) c.setY(5);
-				if (c.getY() < 0) c.setY(0);
-				if (c.getX() > 5) c.setX(5);
-				if (c.getX() < 0) c.setX(0);
-				if (6 - c.getY() > c.getX()) { // the coordinate is outside the triangle
+				if (c.getY() > 5)
+					c.setY(5);
+				if (c.getY() < 0)
+					c.setY(0);
+				if (c.getX() > 5)
+					c.setX(5);
+				if (c.getX() < 0)
+					c.setX(0);
+				if (6 - c.getY() > c.getX()) { // the coordinate is outside the
+												// triangle
 					cnew.setX(c.getY());
 					cnew.setY(c.getX());
 				}
 				actions.get(i).coordinate = cnew;
 			}
-		}else{
+		} else {
 			actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 			actions.addElement(new RandomAction(0.2, this.position.getEast()));
 			actions.addElement(new RandomAction(0.2, this.position.getWest()));
 			actions.addElement(new RandomAction(0.2, this.position.getSouth()));
 			actions.addElement(new RandomAction(0.2, this.position));
-			
+
 			for (int i = 0; i < actions.size(); i++) {
 				Coordinate c = actions.get(i).coordinate;
 				Coordinate cnew = new Coordinate(c.getX(), c.getY());
-				if (c.getY() > 5) c.setY(5);
-				if (c.getY() < 0) c.setY(1);
-				if (c.getX() > 5) c.setX(5);
-				if (c.getX() < 0) c.setX(1);
-				if (6 - c.getY() > c.getX()) { // the coordinate is outside the triangle
+				if (c.getY() > 5)
+					c.setY(5);
+				if (c.getY() < 0)
+					c.setY(1);
+				if (c.getX() > 5)
+					c.setX(5);
+				if (c.getX() < 0)
+					c.setX(1);
+				if (6 - c.getY() > c.getX()) { // the coordinate is outside the
+												// triangle
 					cnew.setX(c.getY());
 					cnew.setY(c.getX());
 				}
 				actions.get(i).coordinate = cnew;
 			}
 		}
-		
+
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
 		double probSum = 0;
 		for (int i = 0; i < actions.size(); i++) {
 			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
-			
+
 				safeActions.add(actions.elementAt(i));
 				probSum += actions.elementAt(i).prob;
-			
+
 			}
-		}	
+		}
 		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1-probSum)/safeActions.size(); 
+			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
 		}
 		return safeActions;
-		
+
 	}
 
-	
 }

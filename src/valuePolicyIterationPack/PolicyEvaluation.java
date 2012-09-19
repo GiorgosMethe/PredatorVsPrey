@@ -17,7 +17,8 @@ public class PolicyEvaluation {
 
 	}
 
-	public static void PolicyEvaluationImplSW(double discountFactor, Coordinate Prey) {
+	public static void PolicyEvaluationImplSW(double discountFactor,
+			Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -33,12 +34,11 @@ public class PolicyEvaluation {
 			delta = 0;
 
 			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j <6; j++) {
+				for (int j = 0; j < 6; j++) {
 
 					preValue = State[i][j];
 					Environment env = new Environment();
-					Predator P = new Predator("", new Coordinate(i, j),
-							null);
+					Predator P = new Predator("", new Coordinate(i, j), null);
 					Prey p = new Prey("", new Coordinate(0, 0), null);
 					env.worldState.add(P);
 					env.worldState.add(p);
@@ -48,15 +48,14 @@ public class PolicyEvaluation {
 					Vector<RandomAction> PreyAct = p
 							.ProbabilityActionsSW(env.worldState);
 
-					if (Coordinate.compareCoordinates(P.position,
-							p.position)) {
+					if (Coordinate.compareCoordinates(P.position, p.position)) {
 						State[i][j] = 0;
 
 					} else {
 
 						double sum = 0;
 
-						for (int ii = 0; ii < PredAct.size(); ii++){
+						for (int ii = 0; ii < PredAct.size(); ii++) {
 
 							double currentValue = 0;
 
@@ -69,32 +68,28 @@ public class PolicyEvaluation {
 
 									reward = 10;
 
-
-									currentValue = reward; 
+									currentValue = reward;
 
 									break;
 
 								}
 
-
 								double prob = PreyAct.elementAt(jj).prob;
 
-								double discount  = discountFactor *  State[PredAct.get(ii).coordinate
-								                                           .getX()][PredAct
-								                                                    .get(ii).coordinate
-								                                                    .getY()];
-								currentValue +=prob *(reward+discount); 
+								double discount = discountFactor
+										* State[PredAct.get(ii).coordinate
+												.getX()][PredAct.get(ii).coordinate
+												.getY()];
+								currentValue += prob * (reward + discount);
 
 							}
-
 
 							sum += PredAct.elementAt(ii).prob * currentValue;
 						}
 
 						State[i][j] = sum;
 
-						delta = Math.max(delta,
-								Math.abs(preValue - sum));
+						delta = Math.max(delta, Math.abs(preValue - sum));
 
 					}
 				}
@@ -110,7 +105,8 @@ public class PolicyEvaluation {
 
 	}
 
-	public static void PolicyEvaluationImpl(double discountFactor, Coordinate Prey) {
+	public static void PolicyEvaluationImpl(double discountFactor,
+			Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -126,7 +122,7 @@ public class PolicyEvaluation {
 			delta = 0;
 
 			for (int i = 0; i < 11; i++) {
-				for (int j = 0; j <11; j++) {
+				for (int j = 0; j < 11; j++) {
 					for (int x = 0; x < 11; x++) {
 						for (int y = 0; y < 11; y++) {
 
@@ -151,39 +147,42 @@ public class PolicyEvaluation {
 
 								double sum = 0;
 
-								for (int ii = 0; ii < PredAct.size(); ii++){
+								for (int ii = 0; ii < PredAct.size(); ii++) {
 
 									double currentValue = 0;
 
 									for (int jj = 0; jj < PreyAct.size(); jj++) {
 
 										double reward = 0;
-										if (Coordinate.compareCoordinates(
-												PredAct.elementAt(ii).coordinate,
-												p.position)) {
+										if (Coordinate
+												.compareCoordinates(
+														PredAct.elementAt(ii).coordinate,
+														p.position)) {
 
 											reward = 10;
 
-
-											currentValue = reward; 
+											currentValue = reward;
 
 											break;
 
 										}
 
-
 										double prob = PreyAct.elementAt(jj).prob;
 
-										double discount  = discountFactor *  State[PredAct.get(ii).coordinate
-										                                           .getX()][PredAct
-										                                                    .get(ii).coordinate
-										                                                    .getY()][p.position.getX()][p.position.getY()];
-										currentValue +=prob *(reward+discount); 
+										double discount = discountFactor
+												* State[PredAct.get(ii).coordinate
+														.getX()][PredAct
+														.get(ii).coordinate
+														.getY()][p.position
+														.getX()][p.position
+														.getY()];
+										currentValue += prob
+												* (reward + discount);
 
 									}
 
-
-									sum += PredAct.elementAt(ii).prob * currentValue;
+									sum += PredAct.elementAt(ii).prob
+											* currentValue;
 								}
 
 								State[i][j][x][y] = sum;
@@ -210,15 +209,17 @@ public class PolicyEvaluation {
 
 	public static void PrintValueIteration(double[][] StateValues) {
 		System.out.println("\n\n\n");
-		System.out.println("\n-----------------------------------------------------------------------------");
+		System.out
+				.println("\n-----------------------------------------------------------------------------");
 		for (int i = 0; i < StateValues.length; i++) {
-			
+
 			for (int j = 0; j < StateValues.length; j++) {
 
-				System.out.printf(" %.6f |", StateValues[i][j] );
+				System.out.printf(" %.6f |", StateValues[i][j]);
 
 			}
-			System.out.println("\n-----------------------------------------------------------------------------");
+			System.out
+					.println("\n-----------------------------------------------------------------------------");
 		}
 	}
 
@@ -229,13 +230,13 @@ public class PolicyEvaluation {
 
 		int currentPosX = Prey.getX();
 		int currentPosY = Prey.getY();
-		int xCur=-1;
-		int yCur=-1;
-		for(int x=Prey.getX();x < (Prey.getX()+6);x++){
+		int xCur = -1;
+		int yCur = -1;
+		for (int x = Prey.getX(); x < (Prey.getX() + 6); x++) {
 			currentPosX = (x + 11) % 11;
 			xCur++;
 			yCur = -1;
-			for(int y=Prey.getY();y < (Prey.getY()+6);y++){
+			for (int y = Prey.getY(); y < (Prey.getY() + 6); y++) {
 				yCur++;
 				currentPosY = (y + 11) % 11;
 				State[currentPosX][currentPosY] = SmallWorld[xCur][yCur];
@@ -243,12 +244,12 @@ public class PolicyEvaluation {
 
 		}
 
-		xCur=-1;
-		for(int x=Prey.getX();x > (Prey.getX()-6);x--){
+		xCur = -1;
+		for (int x = Prey.getX(); x > (Prey.getX() - 6); x--) {
 			currentPosX = (x + 11) % 11;
 			xCur++;
 			yCur = -1;
-			for(int y=Prey.getY();y < (Prey.getY()+6);y++){
+			for (int y = Prey.getY(); y < (Prey.getY() + 6); y++) {
 				yCur++;
 				currentPosY = (y + 11) % 11;
 				State[currentPosX][currentPosY] = SmallWorld[xCur][yCur];
@@ -256,12 +257,12 @@ public class PolicyEvaluation {
 
 		}
 
-		xCur=-1;
-		for(int x=Prey.getX();x > (Prey.getX()-6);x--){
+		xCur = -1;
+		for (int x = Prey.getX(); x > (Prey.getX() - 6); x--) {
 			currentPosX = (x + 11) % 11;
 			xCur++;
 			yCur = -1;
-			for(int y=Prey.getY();y > (Prey.getY()-6);y--){
+			for (int y = Prey.getY(); y > (Prey.getY() - 6); y--) {
 				yCur++;
 				currentPosY = (y + 11) % 11;
 				State[currentPosX][currentPosY] = SmallWorld[xCur][yCur];
@@ -269,12 +270,12 @@ public class PolicyEvaluation {
 
 		}
 
-		xCur=-1;
-		for(int x=Prey.getX();x < (Prey.getX()+6);x++){
+		xCur = -1;
+		for (int x = Prey.getX(); x < (Prey.getX() + 6); x++) {
 			xCur++;
 			yCur = -1;
 			currentPosX = (x + 11) % 11;
-			for(int y=Prey.getY();y > (Prey.getY()-6);y--){
+			for (int y = Prey.getY(); y > (Prey.getY() - 6); y--) {
 				yCur++;
 				currentPosY = (y + 11) % 11;
 				State[currentPosX][currentPosY] = SmallWorld[xCur][yCur];
@@ -283,7 +284,6 @@ public class PolicyEvaluation {
 		}
 
 		PrintValueIteration(State);
-
 
 	}
 

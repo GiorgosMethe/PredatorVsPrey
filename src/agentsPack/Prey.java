@@ -2,6 +2,7 @@ package agentsPack;
 
 import java.util.Map;
 import java.util.Vector;
+
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
 
@@ -11,8 +12,6 @@ public class Prey extends Agent {
 		super(name, p, pi);
 		// TODO Auto-generated constructor stub
 	}
-
-
 
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
@@ -48,8 +47,6 @@ public class Prey extends Agent {
 		return NewPosition;
 
 	}
-	
-	
 
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
@@ -88,7 +85,8 @@ public class Prey extends Agent {
 	}
 
 	@Override
-	public Double reward(Vector<Agent> currState, Vector<Agent> nextState, Coordinate action) {
+	public Double reward(Vector<Agent> currState, Vector<Agent> nextState,
+			Coordinate action) {
 		// TODO Auto-generated method stub
 		return 0.0;
 	}
@@ -98,8 +96,6 @@ public class Prey extends Agent {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("No P function for prey");
 	}
-
-
 
 	@Override
 	public Vector<Agent> typicalState(int stateIndex) {
