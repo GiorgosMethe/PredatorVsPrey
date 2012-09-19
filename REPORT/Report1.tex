@@ -1,0 +1,109 @@
+    \documentclass[letterpaper,11pt]{article}
+
+    \usepackage{fullpage}
+    \usepackage[usenames,dvipsnames]{color}
+    \usepackage[pdftex]{hyperref}
+    \usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{layouts}
+\usepackage{array}
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows,automata}
+ \usepackage{graphicx}
+
+    \hypersetup{
+	colorlinks,%
+	citecolor=black,%
+	filecolor=black,%
+	linkcolor=black,%
+	urlcolor=mygreylink     % can put red here to visualize the links
+    }
+   
+    \definecolor{mygrey}{gray}{.85}
+    \definecolor{mygreylink}{gray}{.30}
+    \textheight=8.6in
+    \raggedbottom
+    \raggedright
+    \setlength{\tabcolsep}{0in}
+    \addtolength{\oddsidemargin}{-0.375in}
+    \addtolength{\evensidemargin}{0.375in}
+    \addtolength{\textwidth}{0.5in}
+    \addtolength{\topmargin}{-.375in}
+    \addtolength{\textheight}{0.75in}
+
+    \newcommand{\resitem}[1]{\item #1 \vspace{-2pt}}
+    \newcommand{\resheading}[1]{{\large \colorbox{mygrey}{\begin{minipage}{\textwidth}{\textbf{#1 \vphantom{p\^{E}}}}\end{minipage}}}}
+    \newcommand{\ressubheading}[4]{
+    \begin{tabular*}{6.5in}{l@{\extracolsep{\fill}}r}
+		    \textbf{#1} & #2 \\
+		    \textit{#3} & \textit{#4} \\
+    \end{tabular*}\vspace{-6pt}}
+  
+    \begin{document}
+
+\begin{center}
+{\LARGE \textbf{Autonomous Agents}}\\ [1em]
+\end{center}
+\newcommand{\mywebheader}{
+    \begin{tabular}{@{}p{5in}p{4in}}
+		{\resheading{Assignment 1: Single Agent Planning}} & {\Large 21 September, 2012}\\\vspace{0.2cm}
+	    \end{tabular}}
+    \mywebheader
+    
+    	\begin{center}
+    	{\Large By:} \\ \vspace{0.1cm}
+	    {\Large Paris Mavromoustakos} \\  \vspace{0.1cm}
+	    {\Large Georgios Methenitis} \\ \vspace{0.1cm}
+	    {\Large Patrick de Kok} \\ \vspace{0.1cm}
+	    {\Large Marios Tzakris}
+	    \end{center}
+
+  
+  \section*{Introduction}
+  The purpose of this first assignment was to implement a reinforcement learning task that satisfies the Markov property, known as Markov Decision Process (MDP). To achieve this we used one pray who is part of the environment and behaves in a known way, and one agent (predator) whose goal is to catch the prey. When that happens the episode ends. The environment we used is a 11 by 11 toroidal grid. Also we assumed that the entire MDP is known to our agent. The agent could thus determine the optimal policy even before interacting with the environment. To program the assignment we used the programming language Java.
+ 
+ \section*{1}
+In the first part, we simulated the environment keeping the policies of the predator and the prey separate. The predator starts from position (0,0) and the prey from (5,5) moving randomly and depending on the given probabilities. The time it takes on average for the predator to catch the prey with random policy is , and the standard deviation is .
+ 
+ 
+
+ \section*{2}
+In order to evaluate the random policy we computed the state-value function $V^\pi$ and determined the following values for the given states:\\
+
+$V^\pi(Predator(0,0),Prey(5,5))=$\\
+$V^\pi(Predator(2,3),Prey(5,4))=$\\
+$V^\pi(Predator(2,10),Prey(10,0))=$\\
+$V^\pi(Predator(10,10),Prey(0,0))=$\\
+
+It takes N times to converge.
+
+
+
+ \section*{3}
+mpla mpla mpla mpla god bless you diedrik
+
+ \section*{4}
+  To find an optimal policy we computed the optimal value function $V$ for all states which the prey is located at (5,5).\\
+  The converge speed (in number of iterations) for different discount factors ($\gamma$) are:\\
+  For $\gamma=0.1$, converge speed= \\
+  For $\gamma=0.5$, converge speed= \\
+  For $\gamma=0.7$, converge speed= \\
+  For $\gamma=0.9$, converge speed= \\
+  
+  \section*{5}
+  To iteratively improve the policy we implemented policy iteration $V^\pi\prime$ for all states which the prey is located at (5,5).\\
+The converge speed (in number of iterations) for different discount factors ($\gamma$) are:\\
+  For $\gamma=0.1$, converge speed= \\
+  For $\gamma=0.5$, converge speed= \\
+  For $\gamma=0.7$, converge speed= \\
+  For $\gamma=0.9$, converge speed= \\
+  
+  COMPARE THE RESULTS
+ 
+
+    \end{document}
+
