@@ -14,7 +14,7 @@ public class ValueIteration {
 	public static void main(String[] args) {
 
 		ValueIterationImpl(0.7, new Coordinate(5, 5));
-		ValueIterationImplSW(0.7, new Coordinate(5, 5));
+		//ValueIterationImplSW(0.7, new Coordinate(5, 5));
 		ValueIterationImplRSW(0.7, new Coordinate(5, 5));
 
 	}
@@ -99,14 +99,10 @@ public class ValueIteration {
 								int NewPredPosX = PNew.position.getX() - x;
 								int NewPredPosY = PNew.position.getY() - y;
 
-								if (NewPredPosX == 6)
-									NewPredPosX = 5;
-								if (NewPredPosX == -1)
-									NewPredPosX = 1;
-								if (NewPredPosY == 6)
-									NewPredPosY = 5;
-								if (NewPredPosY == -1)
-									NewPredPosY = 1;
+								if (NewPredPosX >= 6 || NewPredPosX <= -1) 
+									NewPredPosX = (NewPredPosX + 5) % 6;
+								if (NewPredPosY >= 6 || NewPredPosY <= -1)
+									NewPredPosY = (NewPredPosY + 5) % 6;
 								
 								
 								int NewPredPosXNor = NewPredPosX;
