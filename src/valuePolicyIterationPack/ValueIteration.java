@@ -13,107 +13,105 @@ public class ValueIteration {
 	public static void main(String[] args) {
 
 		ValueIterationImpl(0.7, new Coordinate(5, 5));
-		ValueIterationImplSW(0.7, new Coordinate(5, 5));
 
 	}
 
-	public static void ValueIterationImplSW(double discountFactor, Coordinate Prey) {
-
-		long start = System.currentTimeMillis();
-
-		double[][] State = new double[6][6];
-		double delta;
-		double preValue;
-		int algorithmSweeps = 0;
-
-		do {
-
-			algorithmSweeps++;
-
-			delta = 0;
-
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j <6; j++) {
-
-					preValue = State[i][j];
-					Environment env = new Environment();
-					Predator P = new Predator("", new Coordinate(i, j),
-							null);
-					env.worldState.add(P);
-
-					Vector<RandomAction> PredAct = P
-							.ProbabilityActionsSW(env.worldState);
-					
-
-					if (Coordinate.compareCoordinates(P.position,
-							new Coordinate(0, 0))) {
-						State[i][j] = 0;
-
-					} else {
-
-						double max = Double.NEGATIVE_INFINITY;
-
-						for (int ii = 0; ii < PredAct.size(); ii++){
-
-							double currentValue = 0;
-							
-							env.worldState.removeAllElements();
-							Predator PNew = new Predator("", PredAct.elementAt(ii).coordinate,
-									null);
-							Prey pNew = new Prey("", new Coordinate(0, 0), null);
-							env.worldState.add(PNew);
-							env.worldState.add(pNew);
-							
-							Vector<RandomAction> PreyAct = pNew
-									.ProbabilityActionsSW(env.worldState);
-
-							for (int jj = 0; jj < PreyAct.size(); jj++) {
-
-								double reward = 0;
-								if (Coordinate.compareCoordinates(
-										PNew.position,
-										pNew.position)) {
-
-									reward = 10;
-									currentValue = reward; 
-
-
-									break;
-
-								}
-
-
-								double prob = PreyAct.elementAt(jj).prob;
-
-								double discount  = discountFactor *  State[PNew.position.getX()][PNew.position.getY()];
-
-
-								currentValue +=prob *(reward+discount); 
-
-							}
-
-
-							max = Math.max(max, currentValue);
-						}
-
-						State[i][j] = max;
-
-						delta = Math.max(delta,
-								Math.abs(preValue - max));
-
-					}
-				}
-			}
-
-		} while (delta > 0);
-
-		long end = System.currentTimeMillis();
-		System.out.println("\n\nNormal 6x6 World Implementation");
-		System.out.println("\nSweeps = " + algorithmSweeps);
-		System.out.println("Execution time was " + (end - start) + "ms");
-		ValuesMirroring(State, Prey);
-
-	}
+//	public static void ValueIterationImplSW(double discountFactor, Coordinate Prey) {
+//
+//		long start = System.currentTimeMillis();
+//
+//		double[][] State = new double[6][6];
+//		double delta;
+//		double preValue;
+//		int algorithmSweeps = 0;
+//
+//		do {
+//
+//			algorithmSweeps++;
+//
+//			delta = 0;
+//
+//			for (int i = 0; i < 6; i++) {
+//				for (int j = 0; j <6; j++) {
+//
+//					preValue = State[i][j];
+//					Environment env = new Environment();
+//					Predator P = new Predator("", new Coordinate(i, j),
+//							null);
+//					env.worldState.add(P);
+//
+//					Vector<RandomAction> PredAct = P
+//							.ProbabilityActionsSW(env.worldState);
+//					
+//
+//					if (Coordinate.compareCoordinates(P.position,
+//							new Coordinate(0, 0))) {
+//						State[i][j] = 0;
+//
+//					} else {
+//
+//						double max = Double.NEGATIVE_INFINITY;
+//
+//						for (int ii = 0; ii < PredAct.size(); ii++){
+//
+//							double currentValue = 0;
+//							
+//							env.worldState.removeAllElements();
+//							Predator PNew = new Predator("", PredAct.elementAt(ii).coordinate,
+//									null);
+//							Prey pNew = new Prey("", new Coordinate(0, 0), null);
+//							env.worldState.add(PNew);
+//							env.worldState.add(pNew);
+//							
+//							Vector<RandomAction> PreyAct = pNew
+//									.ProbabilityActionsSW(env.worldState);
+//
+//							for (int jj = 0; jj < PreyAct.size(); jj++) {
+//
+//								double reward = 0;
+//								if (Coordinate.compareCoordinates(
+//										PNew.position,
+//										pNew.position)) {
+//
+//									reward = 10;
+//									currentValue = reward; 
+//
+//
+//									break;
+//
+//								}
+//
+//
+//								double prob = PreyAct.elementAt(jj).prob;
+//
+//								double discount  = discountFactor *  State[PNew.position.getX()][PNew.position.getY()];
+//
+//								currentValue +=prob *(reward+discount); 
+//
+//							}
+//
+//
+//							max = Math.max(max, PredAct.elementAt(ii).prob * currentValue);
+//						}
+//
+//						State[i][j] = max;
+//
+//						delta = Math.max(delta,
+//								Math.abs(preValue - max));
+//
+//					}
+//				}
+//			}
+//
+//		} while (delta > 0);
+//
+//		long end = System.currentTimeMillis();
+//		System.out.println("\n\nNormal 6x6 World Implementation");
+//		System.out.println("\nSweeps = " + algorithmSweeps);
+//		System.out.println("Execution time was " + (end - start) + "ms");
+//		ValuesMirroring(State, Prey);
+//
+//	}
 
 	public static void ValueIterationImpl(double discountFactor, Coordinate Prey) {
 
@@ -171,13 +169,11 @@ public class ValueIteration {
 
 										double reward = 0;
 										if (Coordinate.compareCoordinates(
-												PNew.position,
+												PredAct.elementAt(ii).coordinate,
 												pNew.position)) {
 
 											reward = 10;
 											currentValue = reward; 
-
-
 											break;
 
 										}
@@ -186,7 +182,7 @@ public class ValueIteration {
 										double prob = PreyAct.elementAt(jj).prob;
 
 										double discount  = discountFactor *  State[PNew.position.getX()][PNew.position.getY()]
-												[pNew.position.getX()][pNew.position.getY()];
+												[PreyAct.elementAt(jj).coordinate.getX()][PreyAct.elementAt(jj).coordinate.getY()];
 
 
 										currentValue +=prob *(reward+discount); 
