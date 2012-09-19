@@ -13,7 +13,7 @@ public class ValueIteration {
 
 	public static void main(String[] args) {
 
-		//ValueIterationImpl(0.7, new Coordinate(5, 5));
+		ValueIterationImpl(0.7, new Coordinate(5, 5));
 		ValueIterationImplSW(0.7, new Coordinate(5, 5));
 		ValueIterationImplRSW(0.7, new Coordinate(5, 5));
 
@@ -139,11 +139,11 @@ public class ValueIteration {
 
 		} while (delta > 0);
 
-//		long end = System.currentTimeMillis();
-//		System.out.println("\n\nNormal 6x6 World Implementation");
-//		System.out.println("\nSweeps = " + algorithmSweeps);
-//		System.out.println("Execution time was " + (end - start) + "ms");
-		ValuesMirroring(State, Prey);
+		long end = System.currentTimeMillis();
+		System.out.println("\n\nLittle Sexy World Implementation");
+		System.out.println("\nSweeps = " + algorithmSweeps);
+		System.out.println("Execution time was " + (end - start) + "ms");
+		HalfQuarterMirroring(State, Prey);
 
 	}
 	
@@ -377,10 +377,10 @@ public class ValueIteration {
 		} while (delta > 0);
 
 		long end = System.currentTimeMillis();
-		System.out.println("\n\nNormal 6x6 World Implementation");
+		System.out.println("\n\nSmall 6x6 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
-		ValuesMirroring(State, Prey);
+		QuarterMirroring(State, Prey);
 
 	}
 
@@ -402,16 +402,36 @@ public class ValueIteration {
 
 			for (int j = 0; j < StateValues.length; j++) {
 
-				System.out.printf(" %.6f |", StateValues[i][j]);
+				System.out.printf(" %.4f |", StateValues[i][j]);
 
 			}
 			System.out
 					.println("\n-----------------------------------------------------------------------------");
 		}
 	}
+	
+	public static void HalfQuarterMirroring(double[][] SmallWorld, Coordinate c) {
+		
+		PrintValueIteration(SmallWorld);
+		
+		for(int i=0;i<SmallWorld.length;i++){
+			for(int j=0;j<SmallWorld.length;j++){			
+				if(j < i){
+					SmallWorld[i][j] = SmallWorld[j][i]; 
+				}else{
+					SmallWorld[i][j] = SmallWorld[i][j]; 
+				}
+			}
+		}
+		
+		QuarterMirroring(SmallWorld,c);
+		
+		
+	}
 
-	public static void ValuesMirroring(double[][] SmallWorld, Coordinate Prey) {
+	public static void QuarterMirroring(double[][] SmallWorld, Coordinate Prey) {
 
+		
 		PrintValueIteration(SmallWorld);
 		double[][] State = new double[11][11];
 
@@ -470,7 +490,7 @@ public class ValueIteration {
 
 		}
 
-		//PrintValueIteration(State);
+		PrintValueIteration(State);
 
 	}
 
