@@ -328,6 +328,7 @@ public abstract class Agent {
 			Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
 			double probSum = 0;
+			
 			for (int i = 0; i < actions.size(); i++) {
 				if (this.safePosition(actions.elementAt(i).coordinate,
 						worldState)) {
@@ -337,6 +338,7 @@ public abstract class Agent {
 
 				}
 			}
+			
 			for (int j = 0; j < safeActions.size(); j++) {
 				safeActions.elementAt(j).prob += (1 - probSum)
 						/ safeActions.size();
