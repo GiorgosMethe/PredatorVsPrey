@@ -39,17 +39,13 @@ public class PolicyEvaluation {
 					Environment env = new Environment();
 					Predator P = new Predator("", new Coordinate(i, j),
 							null);
-					Prey p = new Prey("", new Coordinate(0, 0), null);
-					env.worldState.add(P);
-					env.worldState.add(p);
+					
 
 					Vector<RandomAction> PredAct = P
 							.ProbabilityActionsSW(env.worldState);
-					Vector<RandomAction> PreyAct = p
-							.ProbabilityActionsSW(env.worldState);
 
 					if (Coordinate.compareCoordinates(P.position,
-							p.position)) {
+							new Coordinate(0, 0))) {
 						State[i][j] = 0;
 
 					} else {
@@ -57,6 +53,19 @@ public class PolicyEvaluation {
 						double totalValue=0;
 						
 						for (int ii = 0; ii < PredAct.size(); ii++){
+							
+							Prey p = new Prey("", new Coordinate(0, 0), null);
+							Predator P1 = new Predator("", new Coordinate(
+									PredAct.elementAt(ii).coordinate.getX(),
+									PredAct.elementAt(ii).coordinate.getY()),
+									null);
+							
+							env.worldState.removeAllElements();
+							env.worldState.add(P1);
+							env.worldState.add(p);
+							
+							Vector<RandomAction> PreyAct = p
+									.ProbabilityActionsSW(env.worldState);
 
 							double currentValue = 0;
 
@@ -135,17 +144,14 @@ public class PolicyEvaluation {
 							Environment env = new Environment();
 							Predator P = new Predator("", new Coordinate(i, j),
 									null);
-							Prey p = new Prey("", new Coordinate(x, y), null);
+							
 							env.worldState.add(P);
-							env.worldState.add(p);
 
 							Vector<RandomAction> PredAct = P
 									.ProbabilityActions(env.worldState);
-							Vector<RandomAction> PreyAct = p
-									.ProbabilityActions(env.worldState);
 
 							if (Coordinate.compareCoordinates(P.position,
-									p.position)) {
+								new Coordinate(x, y))) {
 								State[i][j][x][y] = 0;
 
 							} else {
@@ -155,8 +161,19 @@ public class PolicyEvaluation {
 								for (int ii = 0; ii < PredAct.size(); ii++){
 
 									double currentValue = 0;
-
-
+									
+									env.worldState.removeAllElements();
+									
+									Predator P1 = new Predator("", new Coordinate(P.position.getX(), P.position.getY()), null);
+									Prey p = new Prey("", new Coordinate(x, y), null);
+									
+									env.worldState.add(P1);
+									env.worldState.add(p);
+									
+									Vector<RandomAction> PreyAct = p
+											.ProbabilityActions(env.worldState);
+									
+									
 
 									for (int jj = 0; jj < PreyAct.size(); jj++) {
 

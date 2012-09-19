@@ -70,7 +70,7 @@ public class ValueIteration {
 									reward = 10;
 
 
-									currentValue = PredAct.get(ii).prob * reward; 
+									currentValue = reward; 
 
 									break;
 
@@ -100,7 +100,7 @@ public class ValueIteration {
 				}
 			}
 
-		} while (delta > 0);
+		} while (delta > Math.pow(10, -5));
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nNormal 6x6 World Implementation");
@@ -165,7 +165,7 @@ public class ValueIteration {
 												p.position)) {
 
 											reward = 10;
-											currentValue = PredAct.get(ii).prob * reward; 
+											currentValue = reward; 
 
 
 											break;
@@ -201,7 +201,7 @@ public class ValueIteration {
 				}
 			}
 
-		} while (delta > 0);
+		} while (delta > Math.pow(10, -5));
 
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
