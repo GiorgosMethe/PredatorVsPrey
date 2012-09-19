@@ -12,8 +12,8 @@ public class PolicyEvaluation {
 
 	public static void main(String[] args) {
 
-		PolicyEvaluationImpl(0.7, new Coordinate(5, 5));
-		PolicyEvaluationImplSW(0.7, new Coordinate(5, 5));
+		PolicyEvaluationImpl(0.8, new Coordinate(5, 5));
+		PolicyEvaluationImplSW(0.8, new Coordinate(5, 5));
 
 	}
 
@@ -39,33 +39,24 @@ public class PolicyEvaluation {
 					Environment env = new Environment();
 					Predator P = new Predator("", new Coordinate(i, j),
 							null);
-					
+					Prey p = new Prey("", new Coordinate(0, 0), null);
+					env.worldState.add(P);
+					env.worldState.add(p);
 
 					Vector<RandomAction> PredAct = P
 							.ProbabilityActionsSW(env.worldState);
+					Vector<RandomAction> PreyAct = p
+							.ProbabilityActionsSW(env.worldState);
 
 					if (Coordinate.compareCoordinates(P.position,
-							new Coordinate(0, 0))) {
+							p.position)) {
 						State[i][j] = 0;
 
 					} else {
 
-						double totalValue=0;
-						
+						double sum = 0;
+
 						for (int ii = 0; ii < PredAct.size(); ii++){
-							
-							Prey p = new Prey("", new Coordinate(0, 0), null);
-							Predator P1 = new Predator("", new Coordinate(
-									PredAct.elementAt(ii).coordinate.getX(),
-									PredAct.elementAt(ii).coordinate.getY()),
-									null);
-							
-							env.worldState.removeAllElements();
-							env.worldState.add(P1);
-							env.worldState.add(p);
-							
-							Vector<RandomAction> PreyAct = p
-									.ProbabilityActionsSW(env.worldState);
 
 							double currentValue = 0;
 
@@ -78,9 +69,8 @@ public class PolicyEvaluation {
 
 									reward = 10;
 
-									double prob = 1;
 
-									currentValue = prob * reward; 
+									currentValue = reward; 
 
 									break;
 
@@ -98,19 +88,19 @@ public class PolicyEvaluation {
 							}
 
 
-							totalValue+=currentValue*PredAct.get(ii).prob;
+							sum += PredAct.elementAt(ii).prob * currentValue;
 						}
 
-						State[i][j] = totalValue;
+						State[i][j] = sum;
 
 						delta = Math.max(delta,
-								Math.abs(preValue - totalValue));
+								Math.abs(preValue - sum));
 
 					}
 				}
 			}
 
-		} while (delta > 0);
+		} while (delta > Math.pow(10, -7));
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nNormal 6x6 World Implementation");
@@ -144,36 +134,26 @@ public class PolicyEvaluation {
 							Environment env = new Environment();
 							Predator P = new Predator("", new Coordinate(i, j),
 									null);
-							
+							Prey p = new Prey("", new Coordinate(x, y), null);
 							env.worldState.add(P);
+							env.worldState.add(p);
 
 							Vector<RandomAction> PredAct = P
 									.ProbabilityActions(env.worldState);
+							Vector<RandomAction> PreyAct = p
+									.ProbabilityActions(env.worldState);
 
 							if (Coordinate.compareCoordinates(P.position,
-								new Coordinate(x, y))) {
+									p.position)) {
 								State[i][j][x][y] = 0;
 
 							} else {
 
-								double totalValue=0;
-								
+								double sum = 0;
+
 								for (int ii = 0; ii < PredAct.size(); ii++){
 
 									double currentValue = 0;
-									
-									env.worldState.removeAllElements();
-									
-									Predator P1 = new Predator("", new Coordinate(P.position.getX(), P.position.getY()), null);
-									Prey p = new Prey("", new Coordinate(x, y), null);
-									
-									env.worldState.add(P1);
-									env.worldState.add(p);
-									
-									Vector<RandomAction> PreyAct = p
-											.ProbabilityActions(env.worldState);
-									
-									
 
 									for (int jj = 0; jj < PreyAct.size(); jj++) {
 
@@ -184,9 +164,8 @@ public class PolicyEvaluation {
 
 											reward = 10;
 
-											double prob = 1;
 
-											currentValue = prob * reward; 
+											currentValue = reward; 
 
 											break;
 
@@ -199,20 +178,18 @@ public class PolicyEvaluation {
 										                                           .getX()][PredAct
 										                                                    .get(ii).coordinate
 										                                                    .getY()][p.position.getX()][p.position.getY()];
-
-
 										currentValue +=prob *(reward+discount); 
 
 									}
 
 
-									totalValue+=currentValue*PredAct.get(ii).prob;
+									sum += PredAct.elementAt(ii).prob * currentValue;
 								}
 
-								State[i][j][x][y] = totalValue;
+								State[i][j][x][y] = sum;
 
 								delta = Math.max(delta,
-										Math.abs(preValue - totalValue));
+										Math.abs(preValue - sum));
 
 							}
 						}
@@ -221,34 +198,24 @@ public class PolicyEvaluation {
 				}
 			}
 
-		} while (delta > 0);
+		} while (delta > Math.pow(10, -7));
 
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
-		PrintPolicyEvaluation(State[Prey.getX()][Prey.getY()]);
+		PrintValueIteration(State[Prey.getX()][Prey.getY()]);
 
 	}
 
-	public static double rewardFunction(Coordinate a1, Coordinate a2) {
-
-		if ((Coordinate.compareCoordinates(a1, a2))) {
-			return 10;
-		}
-
-		return 0;
-
-	}
-
-	public static void PrintPolicyEvaluation(double[][] StateValues) {
+	public static void PrintValueIteration(double[][] StateValues) {
 		System.out.println("\n\n\n");
 		System.out.println("\n-----------------------------------------------------------------------------");
 		for (int i = 0; i < StateValues.length; i++) {
 			
 			for (int j = 0; j < StateValues.length; j++) {
 
-				System.out.printf(" %.7f |", StateValues[i][j] );
+				System.out.printf(" %.6f |", StateValues[i][j] );
 
 			}
 			System.out.println("\n-----------------------------------------------------------------------------");
@@ -257,7 +224,7 @@ public class PolicyEvaluation {
 
 	public static void ValuesMirroring(double[][] SmallWorld, Coordinate Prey) {
 
-		PrintPolicyEvaluation(SmallWorld);
+		PrintValueIteration(SmallWorld);
 		double[][] State = new double[11][11];
 
 		int currentPosX = Prey.getX();
@@ -315,7 +282,7 @@ public class PolicyEvaluation {
 
 		}
 
-		PrintPolicyEvaluation(State);
+		PrintValueIteration(State);
 
 
 	}
