@@ -3,18 +3,11 @@
 \usepackage{fullpage}
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{hyperref}
-%\usepackage{tabularx}
-%\usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{amssymb}
-%\usepackage{multirow}
-%\usepackage{layouts}
-%\usepackage{array}
-%\usepackage{pgf}
-%\usepackage{tikz}
-%\usetikzlibrary{positioning}
-%\usetikzlibrary{arrows,automata}
-\usepackage{graphicx}
+\usepackage{tikz}
+
+\usetikzlibrary{positioning}
 
 \hypersetup{
   colorlinks,%
@@ -26,6 +19,11 @@
 
 \newcommand{\Pred}[2]{\ensuremath{\mathtt{Predator}\left<#1, #2\right>}}
 \newcommand{\Prey}[2]{\ensuremath{\mathtt{Prey}\left<#1, #2\right>}}
+
+\newcommand{\DrawSmallPred}[2]{\node at (A.center #1 #2) {$\pi$};}
+\newcommand{\DrawSmallPrey}[2]{\node at (A.center #1 #2) {P};}
+\newcommand{\DrawBigPred}[2]  {\node at (A.center #1 #2) {\Huge $\pi$};}
+\newcommand{\DrawBigPrey}[2]  {\node at (A.center #1 #2) {\Huge P};}
 
 \definecolor{mygrey}{gray}{.85}
 \definecolor{mygreylink}{gray}{.30}
@@ -39,6 +37,132 @@
 \addtolength{\topmargin}{-.375in}
 \addtolength{\textheight}{0.75in}
 
+% For drawing grids
+\makeatletter
+\pgfkeys{/pgf/grid lines/.initial=2}
+
+\pgfdeclareshape{grid}{
+    % inherit most things from the rectangle shape
+    \inheritsavedanchors[from=rectangle]
+    \inheritanchorborder[from=rectangle]
+    \inheritanchor[from=rectangle]{center}
+    \inheritanchor[from=rectangle]{north}
+    \inheritanchor[from=rectangle]{south}
+    \inheritanchor[from=rectangle]{west}
+    \inheritanchor[from=rectangle]{east}
+    \inheritanchor[from=rectangle]{south east}
+    \inheritanchor[from=rectangle]{south west}
+    \inheritanchor[from=rectangle]{north east}
+    \inheritanchor[from=rectangle]{north west}
+    \inheritbackgroundpath[from=rectangle]
+
+    \savedmacro\lines{%
+        \pgfmathtruncatemacro\lines{\pgfkeysvalueof{/pgf/grid lines}}%
+    }
+
+    % draw the grid
+    \beforebackgroundpath{
+        % store lower right in xa/ya and upper right in xb/yb
+        \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+        \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+
+        % compute distance between the lines
+        \pgfmathparse{(\the\pgf@xb-\the\pgf@xa)/(\lines + 1)}
+        \pgf@xc=\pgfmathresult pt
+        \pgfmathparse{(\the\pgf@yb-\the\pgf@ya)/(\lines + 1)}
+        \pgf@yc=\pgfmathresult pt
+
+        % draw grid
+        \c@pgf@counta=0
+        \c@pgf@countb\lines\relax
+        \pgf@xb=\pgf@xa
+        \advance\pgf@xb\pgf@xc\relax
+        \pgfmathloop
+            \ifnum\c@pgf@counta<\c@pgf@countb
+                \pgfpathmoveto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+                \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
+                \advance\c@pgf@counta 1\relax
+                \advance\pgf@xb\pgf@xc\relax
+        \repeatpgfmathloop
+        % set \pgf@xb to the right side
+        \c@pgf@counta=0
+        \pgf@yb=\pgf@ya
+        \advance\pgf@yb\pgf@yc\relax
+        \pgfmathloop
+            \ifnum\c@pgf@counta<\c@pgf@countb
+                \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+                \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
+                \advance\c@pgf@counta 1\relax
+                \advance\pgf@yb\pgf@yc\relax
+        \repeatpgfmathloop
+        \pgfusepath{stroke}
+    }
+
+    % add anchors for vertices (intersections of grid lines)
+    % and center points (centers of the small rectangles).
+    %
+    % vertex anchors are simply called 'x y' with '0 0' being the lower left
+    % vertex.
+    % center anchors are called 'center x y' with 'center 1 1' being the center
+    % of the lower left rectangle
+    \pgfutil@g@addto@macro\pgf@sh@s@grid{%
+        \c@pgf@counta\lines
+        \advance\c@pgf@counta 1\relax
+        \pgfmathloop\ifnum\c@pgf@counta>-1
+            {% group to allow nesting of loops
+                \c@pgf@countb\lines
+                \advance\c@pgf@countb 1\relax
+                \pgfmathloop\ifnum\c@pgf@countb>-1
+                    \pgfutil@ifundefined{pgf@anchor@grid@\the\c@pgf@counta\space\the\c@pgf@countb}{%
+                        % need to use xdef, so that \c@pgf@counta/b are expanded
+                        % vertices
+                        \expandafter\xdef\csname pgf@anchor@grid@\the\c@pgf@counta\space\the\c@pgf@countb\endcsname{%
+                            \noexpand\southwest \noexpand\pgf@xa=\noexpand\pgf@x \noexpand\pgf@ya=\noexpand\pgf@y
+                            \noexpand\northeast \noexpand\pgf@xb=\noexpand\pgf@x \noexpand\pgf@yb=\noexpand\pgf@y
+                            \noexpand\pgfmathparse{(\noexpand\the\noexpand\pgf@xb-\noexpand\the\noexpand\pgf@xa)/(\noexpand\lines + 1)*\the\c@pgf@counta}
+                            \noexpand\pgf@x=\noexpand\pgf@xa\noexpand\relax
+                            \noexpand\advance\noexpand\pgf@x\noexpand\pgfmathresult pt\noexpand\relax
+                            \noexpand\pgfmathparse{(\noexpand\the\noexpand\pgf@yb-\noexpand\the\noexpand\pgf@ya)/(\noexpand\lines + 1)*\the\c@pgf@countb}
+                            \noexpand\pgf@y=\noexpand\pgf@ya\noexpand\relax
+                            \noexpand\advance\noexpand\pgf@y\noexpand\pgfmathresult pt\noexpand\relax
+                        }
+                        % centers
+                        \expandafter\xdef\csname pgf@anchor@grid@center\space\the\c@pgf@counta\space\the\c@pgf@countb\endcsname{%
+                            \noexpand\southwest \noexpand\pgf@xa=\noexpand\pgf@x \noexpand\pgf@ya=\noexpand\pgf@y
+                            \noexpand\northeast \noexpand\pgf@xb=\noexpand\pgf@x \noexpand\pgf@yb=\noexpand\pgf@y
+                            \noexpand\pgfmathparse{(\noexpand\the\noexpand\pgf@xb-\noexpand\the\noexpand\pgf@xa)/(2*(\noexpand\lines + 1))*(2*\the\c@pgf@counta-1)}
+                            \noexpand\pgf@x=\noexpand\pgf@xa\noexpand\relax
+                            \noexpand\advance\noexpand\pgf@x\noexpand\pgfmathresult pt\noexpand\relax
+                            \noexpand\pgfmathparse{(\noexpand\the\noexpand\pgf@yb-\noexpand\the\noexpand\pgf@ya)/(2*(\noexpand\lines + 1))*(2*\the\c@pgf@countb-1)}
+                            \noexpand\pgf@y=\noexpand\pgf@ya\noexpand\relax
+                            \noexpand\advance\noexpand\pgf@y\noexpand\pgfmathresult pt\noexpand\relax
+                        }
+                    }{\c@pgf@countb0\relax}
+                    \advance\c@pgf@countb-1\relax
+                \repeatpgfmathloop
+            }
+            \advance\c@pgf@counta-1\relax
+        \repeatpgfmathloop
+    }
+}
+\makeatother
+
+\tikzset{smallgrid/.style={
+            draw,
+            grid,
+            grid lines=10,
+            minimum width=5cm,
+            minimum height=5cm}
+        }
+\tikzset{biggrid/.style={
+            draw,
+            grid,
+            grid lines=10,
+            minimum width=15cm,
+            minimum height=15cm}
+        }
+% End of code for grids
+
 \newcommand{\resheading}[1]{{\large \colorbox{mygrey}{\begin{minipage}{\textwidth}{\textbf{#1 \vphantom{p\^{E}}}}\end{minipage}}}}
 
 \newcommand{\mywebheader}{
@@ -47,6 +171,7 @@
   \end{tabular}}
 
 \begin{document}
+
 
 \begin{center}
 {\LARGE \textbf{Autonomous Agents}}\\ [1em]
@@ -97,6 +222,15 @@ sweeps to converge.
 
 \section*{Exercise 3}
 mpla mpla mpla mpla god bless you Diederik
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\node [smallgrid] (A) at (0,0) {};
+\DrawSmallPrey{1}{2} 
+\DrawSmallPred{2}{1}
+\end{tikzpicture}
+\end{center}
+\end{figure}
 
 \section*{Exercise 4}
 To find an optimal policy we computed the optimal value function $V^\ast$ for all states in which the prey is located at $\left<5,5\right>$.
@@ -143,5 +277,134 @@ Discount factor $\gamma$ & Number of iterations \\
 % TODO: COMPARE THE RESULTS
 
 
+\newpage
+\begin{figure}
+\begin{center}
+\begin{tikzpicture}
+\node[biggrid] (A) at (0,0) {};
+\node at (A.center 1  1) {0};
+\node at (A.center 2  1) {1};
+\node at (A.center 3  1) {2};
+\node at (A.center 4  1) {3};
+\node at (A.center 5  1) {4};
+\node at (A.center 6  1) {5};
+\node at (A.center 7  1) {5};
+\node at (A.center 8  1) {4};
+\node at (A.center 9  1) {3};
+\node at (A.center 10 1) {2};
+\node at (A.center 11 1) {1};
+\node at (A.center 1  2) {1};
+\node at (A.center 2  2) {6};
+\node at (A.center 3  2) {7};
+\node at (A.center 4  2) {8};
+\node at (A.center 5  2) {9};
+\node at (A.center 6  2) {10};
+\node at (A.center 7  2) {10};
+\node at (A.center 8  2) {9};
+\node at (A.center 9  2) {8};
+\node at (A.center 10 2) {7};
+\node at (A.center 11 2) {6};
+\node at (A.center 1  3) {2};
+\node at (A.center 2  3) {7};
+\node at (A.center 3  3) {11};
+\node at (A.center 4  3) {12};
+\node at (A.center 5  3) {13};
+\node at (A.center 6  3) {14};
+\node at (A.center 7  3) {14};
+\node at (A.center 8  3) {13};
+\node at (A.center 9  3) {12};
+\node at (A.center 10 3) {11};
+\node at (A.center 11 3) {7};
+\node at (A.center 1  4) {3};
+\node at (A.center 2  4) {8};
+\node at (A.center 3  4) {12};
+\node at (A.center 4  4) {15};
+\node at (A.center 5  4) {16};
+\node at (A.center 6  4) {17};
+\node at (A.center 7  4) {17};
+\node at (A.center 8  4) {16};
+\node at (A.center 9  4) {15};
+\node at (A.center 10 4) {12};
+\node at (A.center 11 4) {8};
+\node at (A.center 1  5) {4};
+\node at (A.center 2  5) {9};
+\node at (A.center 3  5) {13};
+\node at (A.center 4  5) {16};
+\node at (A.center 5  5) {18};
+\node at (A.center 6  5) {19};
+\node at (A.center 7  5) {19};
+\node at (A.center 8  5) {18};
+\node at (A.center 9  5) {16};
+\node at (A.center 10 5) {13};
+\node at (A.center 11 5) {9};
+\node at (A.center 1  6) {5};
+\node at (A.center 2  6) {10};
+\node at (A.center 3  6) {14};
+\node at (A.center 4  6) {17};
+\node at (A.center 5  6) {19};
+\node at (A.center 6  6) {20};
+\node at (A.center 7  6) {20};
+\node at (A.center 8  6) {19};
+\node at (A.center 9  6) {17};
+\node at (A.center 10 6) {14};
+\node at (A.center 11 6) {10};
+\node at (A.center 1  11) {1};
+\node at (A.center 2  11) {6};
+\node at (A.center 3  11) {7};
+\node at (A.center 4  11) {8};
+\node at (A.center 5  11) {9};
+\node at (A.center 6  11) {10};
+\node at (A.center 7  11) {10};
+\node at (A.center 8  11) {9};
+\node at (A.center 9  11) {8};
+\node at (A.center 10 11) {7};
+\node at (A.center 11 11) {6};
+\node at (A.center 1  10) {2};
+\node at (A.center 2  10) {7};
+\node at (A.center 3  10) {11};
+\node at (A.center 4  10) {12};
+\node at (A.center 5  10) {13};
+\node at (A.center 6  10) {14};
+\node at (A.center 7  10) {14};
+\node at (A.center 8  10) {13};
+\node at (A.center 9  10) {12};
+\node at (A.center 10 10) {11};
+\node at (A.center 11 10) {7};
+\node at (A.center 1  9) {3};
+\node at (A.center 2  9) {8};
+\node at (A.center 3  9) {12};
+\node at (A.center 4  9) {15};
+\node at (A.center 5  9) {16};
+\node at (A.center 6  9) {17};
+\node at (A.center 7  9) {17};
+\node at (A.center 8  9) {16};
+\node at (A.center 9  9) {15};
+\node at (A.center 10 9) {12};
+\node at (A.center 11 9) {8};
+\node at (A.center 1  8) {4};
+\node at (A.center 2  8) {9};
+\node at (A.center 3  8) {13};
+\node at (A.center 4  8) {16};
+\node at (A.center 5  8) {18};
+\node at (A.center 6  8) {19};
+\node at (A.center 7  8) {19};
+\node at (A.center 8  8) {18};
+\node at (A.center 9  8) {16};
+\node at (A.center 10 8) {13};
+\node at (A.center 11 8) {9};
+\node at (A.center 1  7) {5};
+\node at (A.center 2  7) {10};
+\node at (A.center 3  7) {14};
+\node at (A.center 4  7) {17};
+\node at (A.center 5  7) {19};
+\node at (A.center 6  7) {20};
+\node at (A.center 7  7) {20};
+\node at (A.center 8  7) {19};
+\node at (A.center 9  7) {17};
+\node at (A.center 10 7) {14};
+\node at (A.center 11 7) {10};
+\end{tikzpicture}
+\end{center}
+\end{figure}
 \end{document}
 
