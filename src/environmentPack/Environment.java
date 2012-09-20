@@ -9,18 +9,23 @@ import agentsPack.Prey;
 
 public class Environment {
 
+	// Class environment holds a vector with the agents.
+	// this is our worldstate!
 	public Vector<Agent> worldState = new Vector<Agent>();
 
 	public Environment() {
 
 	}
 
+	// an agent is going to be added into the environment
 	public void addAgent(Agent x) {
 
 		worldState.add(x);
 
 	}
 
+	// this function inform us about the state of the worldstate
+	// if predator(s) catch the prey(s)
 	public boolean isDone() {
 
 		for (int i = 0; i < worldState.size(); i++) {
@@ -33,6 +38,8 @@ public class Environment {
 		return true;
 	}
 
+	// main function of the environment
+	// this function calls all the agents to think about their next actions
 	public void run() {
 
 		Action[] AgentActions = new Action[worldState.size()];
@@ -44,6 +51,8 @@ public class Environment {
 
 	}
 
+	// After the thinking process of the agents we have to updatethe worldstate
+	// in respect to their desired actions
 	public void updateWorldState(Action[] SelectedActions) {
 
 		for (int i = 0; i < SelectedActions.length; i++) {
