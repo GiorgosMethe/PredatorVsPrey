@@ -18,14 +18,14 @@ public class PolicyIteration {
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
 		// at 0,0 position.
-		PolicyIterationImplSW(0.7, new Coordinate(0, 0));
+		//PolicyIterationImplSW(0.7, new Coordinate(0, 0));
 
 		// Second way to reduce the state space
 		// only the half of the matrix e.g Upper Triangular Matrix
 		// Due to symmetric values we can implement this state space
 		// as it was the 11x11 state space. There is also a static position
 		// for the prey at 0,0 position.
-		PolicyIterationImplRSW(0.7, new Coordinate(0, 0));
+		//PolicyIterationImplRSW(0.7, new Coordinate(0, 0));
 
 	}
 
@@ -220,7 +220,7 @@ public class PolicyIteration {
 
 										// check for terminal state
 										// if terminal state, currentValue = Double.POSITIVE_INFINITY
-										if (Coordinate.compareCoordinates(PreyAct.get(jj).coordinate, P.position)) {
+										if (Coordinate.compareCoordinates(PredAct.get(ii).coordinate, pNew.position)) {
 											currentValue = Double.POSITIVE_INFINITY;
 											break;
 										}
