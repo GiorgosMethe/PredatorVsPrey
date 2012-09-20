@@ -15,7 +15,7 @@ public class PolicyIteration {
 		double theta = 0.01;
 		Coordinate startPos = new Coordinate(0, 0);
 		// Normal state space implementation
-		//PolicyIterationImpl(gamma, startPos, theta);
+		PolicyIterationImpl(gamma, startPos, theta);
 
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
@@ -257,7 +257,7 @@ public class PolicyIteration {
 					}
 				}
 			}
-			System.out.println("*" + algorithmSweeps + ": " + instableActions);
+			//System.out.println("*" + algorithmSweeps + ": " + instableActions);
 		} while (!policyStable);
 
 		long end = System.currentTimeMillis();
@@ -265,7 +265,7 @@ public class PolicyIteration {
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
 		System.out.println("PE sweeps: " + peSweeps.toString());
-
+		PrintPolicyIteration(State[Prey.getX()][Prey.getY()]);
 	}
 
 
@@ -512,7 +512,7 @@ public class PolicyIteration {
     System.out.println("\n\nSmall 6x6 World Implementation");
     System.out.println("\nSweeps = " + algorithmSweeps);
     System.out.println("Execution time was " + (end - start) + "ms");
-    //QuarterMirroring(State, Prey);
+    QuarterMirroring(State, Prey);
 
   }
 
