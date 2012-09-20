@@ -20,22 +20,31 @@ public class Coordinate {
 	}
 
 	public static boolean CoordinateSW(Coordinate a) {
-
-		if (a.x >= 0 && a.x <= 5) {
-			if (a.y >= 0 && a.y <= 5) {
-				return true;
-			}
-		}
-
-		return false;
+    return (a.getX() >= 0) && (a.getX() <= 5) 
+      && (a.getY() >= 0) && (a.getY() <= 5);
 	}
+
+  public static boolean CoordinateRSW(Coordinate a) {
+    return Coordinate.CoordinateSW(a) && (a.getX() <= a.getY());
+  }
 	
 	public Coordinate toSWCoordinate() {
 		if (Coordinate.CoordinateSW(this)) {
 			return this;
 		}
-		return new Coordinate((this.x + 6) % 6, (this.y + 6) % 6);
+		return new Coordinate((this.getX() + 6) % 6, (this.getY() + 6) % 6);
 	}
+
+  public Coordinate toRSWCoordinate() {
+    if (Coordinate.CoordinateRSW(this)) {
+      return this;
+    }
+    Coordinate rswCoordinate = this.toSWCoordinate();
+    if (rswCoordinate.getX() > rswCoordinate.getY()) {
+      rswCoordinate = new Coordinate(rswCoordinate.getY(), rswCoordinate.getX());
+    }
+    return rswCoordinate;
+  }
 
 	public int getX() {
 		return x;
