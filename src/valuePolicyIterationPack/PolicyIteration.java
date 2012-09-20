@@ -61,15 +61,14 @@ public class PolicyIteration {
 								Environment env = new Environment();
 
 								// a predator is generated into a specific position
-								Predator P = new Predator("", new Coordinate(i, j),
-										null);
+								Predator P = new Predator("", new Coordinate(i, j), null);
 
 								// ... and it is added to the worldState
 								env.worldState.add(P);
 
 								if (policy[i][j][x][y] == null) {
 									// possible actions for the predator are computed
-									// with respecto to the current worldstate
+									// with respect to the current world state.
 									Vector<RandomAction> PredAct = P
 											.ProbabilityActions(env.worldState);
 									double rand = Math.random();
@@ -101,9 +100,7 @@ public class PolicyIteration {
 
 									// a new predator is created for every
 									// action of the predator
-									Predator PNew = new Predator("",
-											policy[i][j][x][y],
-											null);
+									Predator PNew = new Predator("", policy[i][j][x][y], null);
 
 									// a prey is a created
 									Prey pNew = new Prey("", new Coordinate(x, y), null);
@@ -125,11 +122,7 @@ public class PolicyIteration {
 										// to the
 										// predator
 										double reward = 0;
-										if (Coordinate
-												.compareCoordinates(
-														policy[i][j][x][y],
-														pNew.position)) {
-
+										if (Coordinate.compareCoordinates(policy[i][j][x][y], pNew.position)) {
 											reward = 10;
 											newValue = reward;
 											break;
@@ -161,7 +154,7 @@ public class PolicyIteration {
 					}
 				}
 
-			} while (delta > 0);
+			} while (delta > 0.001);
 			peSweeps.add(peSweep);
 			// Policy Improvement
 			policyStable = true;
@@ -287,47 +280,63 @@ public class PolicyIteration {
 		long start = System.currentTimeMillis();
 
 		double[][] State = new double[6][6];
+		Coordinate[][] policy = new Coordinate[6][6];
 		double delta;
 		double preValue;
+		boolean policyStable = true;
 		int algorithmSweeps = 0;
+		int peSweep = 0;
+		int instableActions = 0;
+		Vector<Integer> peSweeps = new Vector<Integer>();
 
 		do {
 
 			algorithmSweeps++;
+			// Policy Evaluation
+			do {
+				peSweep++;
+				delta = 0;
 
-			delta = 0;
+				// for every possible state of the small world
+				for (int i = 0; i < 6; i++) {
+					for (int j = 0; j < 6; j++) {
 
-			for (int i = 0; i < 6; i++) {
-				for (int j = 0; j < 6; j++) {
+						// previous value of this state
+						preValue = State[i][j];
+						Environment env = new Environment();
+						Predator P = new Predator("", new Coordinate(i, j), null);
+						env.worldState.add(P);
+						
+						if (policy[i][j] == null) {
+							// possible actions for the predator are computed 
+							// with respect to the current world state.
+							Vector<RandomAction> PredAct = P.ProbabilityActionsSW(env.worldState);
+							double rand = Math.random();
+							double begin = 0;
+							for (RandomAction ra : PredAct) {
+								begin += ra.prob;
+								if (rand <= begin) {
+									policy[i][j] = Coordinate.difference(ra.coordinate, P.position).toSWCoordinate();
+									break;
+								}
+							}
+						}
 
-					// previous value of this state
-					preValue = State[i][j];
-					Environment env = new Environment();
-					Predator P = new Predator("", new Coordinate(i, j), null);
-					env.worldState.add(P);
+						Vector<RandomAction> PredAct = P
+								.ProbabilityActionsSW(env.worldState);
 
-					Vector<RandomAction> PredAct = P
-							.ProbabilityActionsSW(env.worldState);
+						// check if predator is in the same position as prey's
+						// original position; if so, we have reached the absorbing state.
+						if (Coordinate.compareCoordinates(P.position, new Coordinate(0, 0))) {
+							State[i][j] = 0;
 
-					// check if predator is in the same position as prey's
-					// original position
-					if (Coordinate.compareCoordinates(P.position,
-							new Coordinate(0, 0))) {
-						State[i][j] = 0;
-
-					} else {
-
-						double max = Double.NEGATIVE_INFINITY;
-
-						for (int ii = 0; ii < PredAct.size(); ii++) {
-
-							double currentValue = 0;
+						} else {
+							double newValue = 0;
 
 							// new world generation in respect
 							// of the predator's action
 							env.worldState.removeAllElements();
-							Predator PNew = new Predator("",
-									PredAct.elementAt(ii).coordinate, null);
+							Predator PNew = new Predator("", policy[i][j], null);
 							Prey pNew = new Prey("", new Coordinate(0, 0), null);
 							env.worldState.add(PNew);
 							env.worldState.add(pNew);
@@ -340,16 +349,12 @@ public class PolicyIteration {
 							for (int jj = 0; jj < PreyAct.size(); jj++) {
 
 								double reward = 0;
-								if (Coordinate.compareCoordinates(
-										PredAct.elementAt(ii).coordinate,
-										new Coordinate(0, 0))) {
-
+								if (Coordinate.compareCoordinates(policy[i][j], new Coordinate(0, 0))) {
 									reward = 10;
-									currentValue = reward;
+									newValue = reward;
 									break;
-
 								}
-
+// I'm here!!
 								// prey's actions are always given from the
 								// function
 								// probability actions with respect to the
@@ -386,23 +391,22 @@ public class PolicyIteration {
 								double discount = discountFactor
 										* State[NewPredPosX][NewPredPosY];
 
-								currentValue += prob * (reward + discount);
+								newValue += prob * (reward + discount);
 
 							}
-							max = Math.max(max, currentValue);
+
+							State[i][j] = newValue;
+
+							delta = Math.max(delta, Math.abs(preValue - max));
+
 						}
-
-						State[i][j] = max;
-
-						delta = Math.max(delta, Math.abs(preValue - max));
 
 					}
 
 				}
+			} while (delta > 0);
 
-			}
-
-		} while (delta > 0);
+		} while (!policyStable);
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nSmall 6x6 World Implementation");
