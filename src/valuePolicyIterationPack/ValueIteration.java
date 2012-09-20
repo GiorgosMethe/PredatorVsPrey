@@ -504,7 +504,7 @@ public class ValueIteration {
 
 	// a 6x6 matrix is a quarter of the normal 11x11 grid world
 	// this function convert 6x6 matrices to the normal state space
-	// represantation
+	// representation
 	public static void QuarterMirroring(double[][] SmallWorld, Coordinate Prey) {
 
 		PrintValueIteration(SmallWorld);
