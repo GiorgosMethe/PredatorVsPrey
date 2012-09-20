@@ -27,7 +27,7 @@ public class PolicyIteration {
 		// Due to symmetric values we can implement this state space
 		// as it was the 11x11 state space. There is also a static position
 		// for the prey at 0,0 position.
-		//PolicyIterationImplRSW(gamma, startPos, theta);
+		PolicyIterationImplRSW(gamma, startPos, theta);
 
 	}
 
@@ -435,8 +435,7 @@ public class PolicyIteration {
 
 							// computation of every possible action for the prey
 							// on the updated worldstate
-							Vector<RandomAction> PreyAct = pNew
-									.ProbabilityActionsSW(env.worldState);
+							Vector<RandomAction> PreyAct = pNew.ProbabilityActionsSW(env.worldState);
 
 							for (int jj = 0; jj < PreyAct.size(); jj++) {
 
@@ -516,27 +515,168 @@ public class PolicyIteration {
 
   }
 
-	public static void PolicyIterationImplRSW(double discountFactor,
-			Coordinate Prey) {
+	public static void PolicyIterationImplRSW(double discountFactor, Coordinate Prey, double theta) {
 
 		long start = System.currentTimeMillis();
 
 		double[][] State = new double[6][6];
+    Coordinate[][] policy = new Coordinate[6][6];
 		double delta;
 		double preValue;
+    boolean policyStable = true;
 		int algorithmSweeps = 0;
+    int peSweep = 0;
+    int instableActions = 0;
+    Vector<Integer> peSweeps = new Vector<Integer>();
 
-		do {
+    do {
+      algorithmSweeps++;
 
-			algorithmSweeps++;
+      // Policy Evaluation
+      do {
+        peSweep++;
+        delta = 0;
 
-			delta = 0;
+        for (int i = 0; i < 6; i++) {
+          for (int j = i; j < 6; j++) {
 
+            // previous value of the state
+            preValue = State[i][j];
+            // environment generation
+            Environment env = new Environment();
+            // predator generation
+            Predator P = new Predator("", new Coordinate(i, j), null);
+            env.worldState.add(P);
+
+            if (policy[i][j] == null) {
+              // possible action for the predator are computed
+              // with respect to the current world state
+              Vector<RandomAction> PredAct = P.ProbabilityActionsRSW(env.worldState);
+              double rand = Math.random();
+              double begin = 0;
+              for (RandomAction ra : PredAct) {
+                begin += ra.prob;
+                if (rand <= begin) {
+                  policy[i][j] = Coordinate.difference(ra.coordinate, P.position).toRSWCoordinate();
+                  break;
+                }
+              }
+            }
+
+            // predator and prey are standing on the same position
+            // absorbing state with value 0
+            if (Coordinate.compareCoordinates(P.position, new Coordinate(0, 0))) {
+              State[i][j] = 0;
+
+            } else {
+              double newValue = 0;
+
+              // initialization of the worldstate removing all
+              // agent from it
+              env.worldState.removeAllElements();
+
+              // a new predator is generated with a new position
+              // depending on each action
+              Predator PNew = new Predator("", policy[i][j], null);
+
+              // prey is generated always in position 0,0
+              Prey pNew = new Prey("", new Coordinate(0, 0), null);
+              env.worldState.add(PNew);
+              env.worldState.add(pNew);
+
+              // action for the prey given the worldstate are
+              // generated
+              Vector<RandomAction> PreyAct = pNew.ProbabilityActionsRSW(env.worldState);
+
+              for (int jj = 0; jj < PreyAct.size(); jj++) {
+
+                // if the predator moves into the prey there is
+                // no way out
+                // for it. An immediate reward is given to the
+                // predator
+                double reward = 0;
+                if (Coordinate.compareCoordinates(policy[i][j], new Coordinate(0, 0))) {
+                  reward = 10;
+                  newValue = reward;
+                  break;
+                }
+
+                // prey's actions are always given from the
+                // function
+                // probability actions with respect to the
+                // normal world.
+                // here we translate them is this state space
+                int x = PreyAct.elementAt(jj).coordinate.getX();
+                if (x == 10)
+                  x = -1;
+                int y = PreyAct.elementAt(jj).coordinate.getY();
+                if (y == 10)
+                  y = -1;
+
+                // in order to translate this action of the prey
+                // into
+                // a predator's next state we have to move the
+                // predator
+                // in relation to the movement of the prey
+                int NewPredPosX = PNew.position.getX() - x;
+                int NewPredPosY = PNew.position.getY() - y;
+
+                // some checks not to excede the limits of the
+                // space
+                if (NewPredPosX == 6)
+                  NewPredPosX = 5;
+                if (NewPredPosX == -1)
+                  NewPredPosX = 1;
+                if (NewPredPosY == 6)
+                  NewPredPosY = 5;
+                if (NewPredPosY == -1)
+                  NewPredPosY = 1;
+
+                // for positions under the diagonal of the
+                // matrix we
+                // convert them into the symmetrical position.
+                // (i,j) --> (j,i)
+                int NewPredPosXNor = NewPredPosX;
+                int NewPredPosYNor = NewPredPosY;
+                if (NewPredPosY < NewPredPosX) {
+
+                  NewPredPosXNor = NewPredPosY;
+                  NewPredPosYNor = NewPredPosX;
+
+                }
+
+                // probability of each action of the prey
+                double prob = PreyAct.elementAt(jj).prob;
+
+                // the next state of the predator will be
+                // computed
+                // by the above checks
+                double discount = discountFactor * State[NewPredPosXNor][NewPredPosYNor];
+
+                newValue += prob * (reward + discount);
+
+              }
+              State[i][j] = newValue;
+
+              delta = Math.max(delta, Math.abs(preValue - newValue));
+
+            }
+
+          }
+
+        }
+
+      } while (delta > theta);
+      peSweeps.add(peSweep);
+
+      // Policy Improvement
+      policyStable = true;
+      instableActions = 0;
+
+      // for every possible state of the world
 			for (int i = 0; i < 6; i++) {
 				for (int j = i; j < 6; j++) {
-
-					// previous value of the state
-					preValue = State[i][j];
+          Coordinate oldAction = policy[i][j];
 					// environment generation
 					Environment env = new Environment();
 					// predator generation
@@ -544,22 +684,19 @@ public class PolicyIteration {
 					env.worldState.add(P);
 
 					// possible action for the predator given the worldstate
-					Vector<RandomAction> PredAct = P
-							.ProbabilityActionsRSW(env.worldState);
+					Vector<RandomAction> PredAct = P.ProbabilityActionsRSW(env.worldState);
 
 					// predator and prey are standing on the same position
 					// absorbing state with value 0
-					if (Coordinate.compareCoordinates(P.position,
-							new Coordinate(0, 0))) {
-						State[i][j] = 0;
-
+					if (Coordinate.compareCoordinates(P.position, new Coordinate(0, 0))) {
+            policy[i][j] = new Coordinate(0, 0);
 					} else {
-
-						double max = Double.NEGATIVE_INFINITY;
+						double maxValue = Double.NEGATIVE_INFINITY;
+            policy[i][j] = P.position;
 
 						for (int ii = 0; ii < PredAct.size(); ii++) {
-
 							double currentValue = 0;
+              Coordinate currentAction = PredAct.get(ii).coordinate;
 
 							// initialization of the worldstate removing all
 							// agent from it
@@ -567,8 +704,7 @@ public class PolicyIteration {
 
 							// a new predator is generated with a new position
 							// depending on each action
-							Predator PNew = new Predator("",
-									PredAct.elementAt(ii).coordinate, null);
+							Predator PNew = new Predator("", PredAct.elementAt(ii).coordinate, null);
 
 							// prey is generated always in position 0,0
 							Prey pNew = new Prey("", new Coordinate(0, 0), null);
@@ -577,28 +713,26 @@ public class PolicyIteration {
 
 							// action for the prey given the worldstate are
 							// generated
-							Vector<RandomAction> PreyAct = pNew
-									.ProbabilityActionsRSW(env.worldState);
+							Vector<RandomAction> PreyAct = pNew.ProbabilityActionsRSW(env.worldState);
 
 							for (int jj = 0; jj < PreyAct.size(); jj++) {
+
+                if (Coordinate.compareCoordinates(PNew.position, pNew.position)) {
+                  currentValue = Double.POSITIVE_INFINITY;
+                  break;
+                }
 
 								// if the predator moves into the prey there is
 								// no way out
 								// for it. An immediate reward is given to the
 								// predator
 								double reward = 0;
-								if (Coordinate.compareCoordinates(
-										PredAct.elementAt(ii).coordinate,
-										new Coordinate(0, 0))) {
+								if (Coordinate.compareCoordinates(PredAct.elementAt(ii).coordinate, new Coordinate(0, 0))) {
 
 									reward = 10;
 									currentValue = reward;
 									break;
-
 								}
-
-								// probability of each action of the prey
-								double prob = PreyAct.elementAt(jj).prob;
 
 								// prey's actions are always given from the
 								// function
@@ -644,6 +778,9 @@ public class PolicyIteration {
 
 								}
 
+								// probability of each action of the prey
+								double prob = PreyAct.elementAt(jj).prob;
+
 								// the next state of the predator will be
 								// computed
 								// by the above checks
@@ -653,20 +790,20 @@ public class PolicyIteration {
 								currentValue += prob * (reward + discount);
 
 							}
-							max = Math.max(max, currentValue);
+              if (maxValue < currentValue) {
+                maxValue = currentValue;
+                policy[i][j] = currentAction;
+              }
 						}
-
-						State[i][j] = max;
-
-						delta = Math.max(delta, Math.abs(preValue - max));
-
 					}
-
+          if (!Coordinate.compareCoordinates(oldAction, policy[i][j])) {
+            policyStable = false;
+            instableActions++;
+          }
 				}
-
 			}
-
-		} while (delta > 0);
+      System.out.println("" + algorithmSweeps + ": " + instableActions);
+    } while (!policyStable);
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nLittle 21-states World");
