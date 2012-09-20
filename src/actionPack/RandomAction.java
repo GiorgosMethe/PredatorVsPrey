@@ -11,4 +11,8 @@ public class RandomAction {
 		this.prob = p;
 		this.coordinate = c;
 	}
+	
+	public String toString() {
+		return "p(" + this.coordinate + ") = " + this.prob;
+	}
 }
