@@ -162,6 +162,8 @@ public class Predator extends Agent {
 		return NewPosition;
 	}
 
+	// this function is used to inform us if a possible coordinate is safe for
+	// the predator
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
 

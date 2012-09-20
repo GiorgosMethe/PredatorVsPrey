@@ -211,11 +211,7 @@ public class PolicyEvaluation {
 
 					} else {
 
-<<<<<<< HEAD
-						double finalValue = 0;
-=======
 						double finalValue =0;
->>>>>>> 4a429e2107338170153fc01de89a33b5eb95c43d
 
 						for (int ii = 0; ii < PredAct.size(); ii++) {
 
@@ -287,17 +283,12 @@ public class PolicyEvaluation {
 								currentValue += prob * (reward + discount);
 
 							}
-<<<<<<< HEAD
-							finalValue += PredAct.get(ii).prob * currentValue;
-=======
 							finalValue += currentValue *  PredAct.get(ii).prob;
->>>>>>> 4a429e2107338170153fc01de89a33b5eb95c43d
 						}
 
 						State[i][j] = finalValue;
 
-						delta = Math
-								.max(delta, Math.abs(preValue - finalValue));
+						delta = Math.max(delta, Math.abs(preValue - finalValue));
 
 					}
 
@@ -311,120 +302,7 @@ public class PolicyEvaluation {
 		System.out.println("\n\nSmall 6x6 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
-<<<<<<< HEAD
-		ValuesMirroring(State, Prey);
-
-	}
-
-	public static void PolicyEvaluationImpl(double discountFactor,
-			Coordinate Prey) {
-
-		long start = System.currentTimeMillis();
-
-		double[][][][] State = new double[11][11][11][11];
-		double delta;
-		double preValue;
-		int algorithmSweeps = 0;
-
-		do {
-
-			algorithmSweeps++;
-
-			delta = 0;
-
-			for (int i = 0; i < 11; i++) {
-				for (int j = 0; j < 11; j++) {
-					for (int x = 0; x < 11; x++) {
-						for (int y = 0; y < 11; y++) {
-
-							preValue = State[i][j][x][y];
-							Environment env = new Environment();
-							Predator P = new Predator("", new Coordinate(i, j),
-									null);
-							env.worldState.add(P);
-
-							Vector<RandomAction> PredAct = P
-									.ProbabilityActions(env.worldState);
-
-							if (Coordinate.compareCoordinates(P.position,
-									new Coordinate(x, y))) {
-								State[i][j][x][y] = 0;
-
-							} else {
-
-								double finalValue = 0;
-
-								for (int ii = 0; ii < PredAct.size(); ii++) {
-
-									double currentValue = 0;
-
-									env.worldState.removeAllElements();
-									Predator PNew = new Predator("",
-											PredAct.elementAt(ii).coordinate,
-											null);
-									Prey pNew = new Prey("", new Coordinate(x,
-											y), null);
-									env.worldState.add(PNew);
-									env.worldState.add(pNew);
-
-									Vector<RandomAction> PreyAct = pNew
-											.ProbabilityActions(env.worldState);
-
-									for (int jj = 0; jj < PreyAct.size(); jj++) {
-
-										double reward = 0;
-										if (Coordinate
-												.compareCoordinates(
-														PredAct.elementAt(ii).coordinate,
-														pNew.position)) {
-
-											reward = 10;
-											currentValue = reward;
-											break;
-
-										}
-
-										double prob = PreyAct.elementAt(jj).prob;
-
-										double discount = discountFactor
-												* State[PNew.position.getX()][PNew.position
-														.getY()][PreyAct
-														.elementAt(jj).coordinate
-														.getX()][PreyAct
-														.elementAt(jj).coordinate
-														.getY()];
-
-										currentValue += prob
-												* (reward + discount);
-
-									}
-
-									finalValue += PredAct.get(ii).prob
-											* currentValue;
-								}
-
-								State[i][j][x][y] = finalValue;
-
-								delta = Math.max(delta,
-										Math.abs(preValue - finalValue));
-
-							}
-						}
-					}
-
-				}
-			}
-
-		} while (delta > 0);
-
-		long end = System.currentTimeMillis();
-		System.out.println("Normal 11x11 World Implementation");
-		System.out.println("\nSweeps = " + algorithmSweeps);
-		System.out.println("Execution time was " + (end - start) + "ms");
-		PrintPolicyEvaluation(State[Prey.getX()][Prey.getY()]);
-=======
 		QuarterMirroring(State, Prey);
->>>>>>> 4a429e2107338170153fc01de89a33b5eb95c43d
 
 	}
 
