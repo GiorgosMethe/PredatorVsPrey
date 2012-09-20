@@ -218,6 +218,12 @@ public class PolicyIteration {
 
 									for (int jj = 0; jj < PreyAct.size(); jj++) {
 
+										// check for terminal state
+										// if terminal state, currentValue = Double.POSITIVE_INFINITY
+										if (Coordinate.compareCoordinates(PreyAct.get(jj).coordinate, P.position)) {
+											currentValue = Double.POSITIVE_INFINITY;
+											break;
+										}
 										// if the predator moves into the prey
 										// there is
 										// no way out
@@ -397,7 +403,7 @@ public class PolicyIteration {
 
 							State[i][j] = newValue;
 
-							delta = Math.max(delta, Math.abs(preValue - max));
+							//delta = Math.max(delta, Math.abs(preValue - max));
 
 						}
 
