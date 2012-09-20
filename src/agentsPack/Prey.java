@@ -48,6 +48,8 @@ public class Prey extends Agent {
 
 	}
 
+	// this function is used to inform us if a possible coordinate is safe for
+	// the prey
 	@Override
 	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
 

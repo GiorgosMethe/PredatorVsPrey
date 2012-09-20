@@ -3,7 +3,6 @@ package valuePolicyIterationPack;
 import java.util.Vector;
 
 import actionPack.RandomAction;
-
 import agentsPack.Predator;
 import agentsPack.Prey;
 import environmentPack.Coordinate;

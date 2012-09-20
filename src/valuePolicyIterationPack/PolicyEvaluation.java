@@ -51,7 +51,7 @@ public class PolicyEvaluation {
 
 					} else {
 
-					double finalValue = 0;
+						double finalValue = 0;
 
 						for (int ii = 0; ii < PredAct.size(); ii++) {
 
@@ -107,12 +107,13 @@ public class PolicyEvaluation {
 								currentValue += prob * (reward + discount);
 
 							}
-							finalValue += PredAct.get(ii).prob*currentValue;
+							finalValue += PredAct.get(ii).prob * currentValue;
 						}
 
 						State[i][j] = finalValue;
 
-						delta = Math.max(delta, Math.abs(preValue - finalValue));
+						delta = Math
+								.max(delta, Math.abs(preValue - finalValue));
 
 					}
 
@@ -130,7 +131,8 @@ public class PolicyEvaluation {
 
 	}
 
-	public static void PolicyEvaluationImpl(double discountFactor, Coordinate Prey) {
+	public static void PolicyEvaluationImpl(double discountFactor,
+			Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -212,7 +214,8 @@ public class PolicyEvaluation {
 
 									}
 
-									finalValue += PredAct.get(ii).prob*currentValue;
+									finalValue += PredAct.get(ii).prob
+											* currentValue;
 								}
 
 								State[i][j][x][y] = finalValue;
