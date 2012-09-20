@@ -55,6 +55,10 @@ public class Coordinate {
 	public static Coordinate difference(Coordinate c1, Coordinate c2) {
 		return new Coordinate(c1.x - c2.x, c1.y - c2.y);
 	}
+	
+	public static Coordinate sum(Coordinate c1, Coordinate c2) {
+		return new Coordinate(c1.x + c2.x, c1.y + c2.y);
+	}
 
 	public Coordinate getNorth() {
 
