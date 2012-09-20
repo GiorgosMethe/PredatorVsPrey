@@ -39,13 +39,15 @@ public class PolicyIteration {
 		double preValue;
 		boolean policyStable = true;
 		int algorithmSweeps = 0;
+		int peSweep = 0;
+		int instableActions = 0;
+		Vector<Integer> peSweeps = new Vector<Integer>();
 
 		do {
+			algorithmSweeps++;
 			// Policy Evaluation
 			do {
-
-				algorithmSweeps++;
-
+				peSweep++;
 				delta = 0;
 
 				// for every possible state of the normal world
@@ -160,9 +162,11 @@ public class PolicyIteration {
 				}
 
 			} while (delta > 0);
-			
+			peSweeps.add(peSweep);
 			// Policy Improvement
 			policyStable = true;
+			instableActions = 0;
+			
 			// for every possible state of the normal world
 			for (int i = 0; i < 11; i++) {
 				for (int j = 0; j < 11; j++) {
@@ -257,20 +261,22 @@ public class PolicyIteration {
 									}
 								}
 							}
-							if (oldAction != policy[i][j][x][y]) {
+							if (!Coordinate.compareCoordinates(oldAction, policy[i][j][x][y])) {
 								policyStable = false;
+								instableActions++;
 							}
 						}
 					}
 				}
 			}
-			System.out.println(start - System.currentTimeMillis());
+			System.out.println("" + algorithmSweeps + ": " + instableActions);
 		} while (!policyStable);
 
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
+		System.out.println("PE sweeps: " + peSweeps.toString());
 		PrintPolicyIteration(State[Prey.getX()][Prey.getY()]);
 
 	}
