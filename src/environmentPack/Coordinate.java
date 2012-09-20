@@ -29,6 +29,13 @@ public class Coordinate {
 
 		return false;
 	}
+	
+	public Coordinate toSWCoordinate() {
+		if (Coordinate.CoordinateSW(this)) {
+			return this;
+		}
+		return new Coordinate((this.x + 6) % 6, (this.y + 6) % 6);
+	}
 
 	public int getX() {
 		return x;
