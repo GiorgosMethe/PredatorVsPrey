@@ -247,7 +247,9 @@
 
 
 \section*{Introduction}
-The purpose of this first assignment was to implement a reinforcement learning task, of which the problem satisfies the Markov property.  Such a task is known as a Markov Decision Process (MDP).  To achieve this we used one prey, which is part of the environment and behaves in a known probabilistic way, and one agent, the predator, whose goal is to catch the prey.  When that happens the episode ends.  The environment we used is an 11 by 11 toroidal grid.  The task assumed that the entire MDP is known to our agent.  The agent could thus determine the optimal policy even before interacting with the environment.  To implement the assignment we used the programming language Java.
+The purpose of this first assignment was to implement a reinforcement learning task, of which the problem satisfies the Markov property.  Such a task is known as a Markov Decision Process (MDP).  To achieve this we used one prey, which is part of the environment and behaves in a known probabilistic way, and one agent, the predator, whose goal is to catch the prey.  When that happens the episode ends.  The environment we used is an 11 by 11 toroidal grid.  The task assumed that the entire MDP is known to our agent.  The agent could thus determine the optimal policy even before interacting with the environment.  
+
+To implement the assignment we used the programming language Java.  The results are gathered from a laptop with a Intel Core 2 CPU with both cores running at 1.83 GHz.  The laptop has 2 GB of RAM memory.
 
 \section*{Exercise 1}
 In the first part, we simulated the environment while keeping the policies of the predator and the prey separate.  The environment has the ability to hold one or more predators and one or more prey.  The predator starts from position $\left<0,0\right>$ and the prey from $\left<5,5\right>$.  Both have an action set consisting of moving north, south, west, east, or staying stationary, respectively represented by the symbols $\uparrow$, $\downarrow$, $\leftarrow$, $\rightarrow$ and $\circ$. 
@@ -257,18 +259,16 @@ The predator choses one of these actions randomly, where each has an equal chanc
 Each episode of the simulation ends when the predator catches the prey.  In the case that there are multiple prey and predators the episode ends when there is no living prey in the simulation environment.  In this first assignment we held all of our experiments with one predator and one prey.  In \autoref{tab:SimStat} we present the overall statistics for this part of the assignment.
 
 \begin{table}[h!]
-\caption{Statistics of the simulation over 100 runs.}
+\caption{Statistics of the simulation where both the predator and prey move randomly.  The statistics are gathered over 100 runs.}
 \label{tab:SimStat}
 \begin{center}
 \begin{small}
-\begin{tabular}{|@{ }l@{ }|@{ }c@{ }|}
-    \hline
-      Average steps & 279.7 \\ \hline
-      Max no. of steps & 1350   \\ \hline
-      Min no. of steps & 22 \\ \hline
-      Mean over 100 runs & 279.7  \\ \hline
-      Stdev over 100 runs & 255.1 \\
-    \hline
+\begin{tabular}{|@{ }l@{ }@{ }l@{ }}
+      Average steps: & 279.7 \\ 
+      Max no. of steps: & 1350   \\ 
+      Min no. of steps: & 22 \\ 
+      Mean over 100 runs: & 279.7  \\ 
+      Stdev over 100 runs: & 255.1 \\
     \end{tabular}      
 \end{small}
 \end{center}  
@@ -289,24 +289,24 @@ First, in the naive approach we computed the state-value function for every stat
     V^\pi(S)(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= 0.8817
 \end{align*}
 
-We have also implemented Policy Evaluation for the reduced state spaces $\SSW$ and $\SRSW$.  The values for above states are for all state spaces the same.  However, we noticed that the algorithm runs significantly faster.  \Autoref{peap} presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set the maximum error bound ($\theta$ in the pseudocode) to zero in order to let our implementation produce more accurate results. This may cause an increase in our implementation's execution time.
+We have also implemented Policy Evaluation for the reduced state spaces $\SSW$ and $\SRSW$.  The values for above states are for all state spaces the same.  However, we noticed that the algorithm runs significantly faster.  \Autoref{peap} presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set the maximum error boundary ($\theta$ in the pseudocode) to zero in order to let our implementation produce more accurate results. This may cause an increase in our implementation's execution time.
 
 \begin{table}[h!]
 \caption{Policy Evaluation algorithm performance.}
 \label{peap}
 \begin{center}
-\begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
+\begin{tabular}{cccc}
 \textbf{State Space} & \textbf{D. Factor} & \textbf{Iterations} & \textbf{Time of Execution (ms.)} \\
 \midrule
-$11^{4}$    & 0.9         & 202         & 245608 \\
+$\SN$    & 0.9         & 202         & 245608 \\
         & 0.7         & 73        & 94660    \\
         & 0.5         & 46        & 57754    \\
         & 0.1         & 23        & 29467  \\
-$6^{2}$     & 0.9         & 215         & 821    \\
+$\SSW$     & 0.9         & 215         & 821    \\
         & 0.7         & 72        & 369  \\
         & 0.5         & 44        & 283    \\
         & 0.1         & 16        & 114    \\
-$21$      & 0.9         & 215         & 475  \\
+$\SRSW$      & 0.9         & 215         & 475  \\
         & 0.7         & 72        & 280  \\
         & 0.5         & 41        & 195  \\
         & 0.1         & 16        & 50  \\
@@ -316,7 +316,7 @@ $21$      & 0.9         & 215         & 475  \\
 
 
 \section*{Exercise 3}
-When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the equivalence class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
+When naively exploring the state space $S$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the equivalence class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
 
 For the means of computing $V(\cdot)$, we can shrink the state space even more.  Because of the symmetric nature of the world, the predator can catch the prey (and thus collect its reward) just as easily from any side.  This means that the following values correspond:
 \begin{align*}
@@ -598,13 +598,13 @@ We have implemented Policy Evaluation, Value Iteration and Policy Iteration for 
 
 
 \section*{Exercise 4}
-To find an optimal policy we computed the optimal value function $V^\ast$ for all states. First of all, we had to find the value function for the naive $11^4$ state space. For all $s \in S$,
-\[
-V^{\pi_{(S)}} = \max_{a} \sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
-\]
-Table~\ref{viat} presents the value table that was computed with the value iteration algorithm for a discount factor $\gamma = 0.7$ and $\theta = 0$. 
+To find an optimal policy we computed the optimal value function $V^\ast$ for all states. First of all, we had to find the value function for the naive state space $\SN$. For all $s \in S$,
+\begin{align*}
+V^\pi(S) = \max_{a} \sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
+\end{align*}
+\Autoref{viat} presents the value table that was computed with the value iteration algorithm for a discount factor $\gamma = 0.7$ and $\theta = 0$. 
 \begin{table}[h!]
-\caption{Value Iteration algorithm performance, $\pi = \langle 5,5 \rangle$, $\gamma = 0.7$, $\theta = 0$.}
+\caption{The value function $V^\ast$ generated by Value Iteration, with the predator fixed at $\langle 5,5 \rangle$, discount factor $\gamma = 0.7$, and maximum error boundary $\theta = 0$.}
 \label{viat}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
@@ -623,25 +623,24 @@ Table~\ref{viat} presents the value table that was computed with the value itera
 \end{tabular}
 \end{center}
 \end{table}
-We also implemented the Value Iteration algorithm on the reduced state space, acquiring the same values as above, however, we noticed that the algorithm runs significantly faster. Table presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set $\theta$ variable to zero in order our algorithm to produce more accurate results. This may cause an increase in the execution time of the Value Iteration algorithm.
-
+We also implemented the Value Iteration algorithm on the reduced state spaces $\SSW$ and $\SRSW$, acquiring the same values as above.  However, we noticed that the algorithm runs significantly faster.  \Autoref{viap} presents the performance results we had performing this algorithm to smaller state spaces than the original one.  We set $\theta$ variable to zero in order our algorithm to produce more accurate results.  This may cause an increase in the execution time of the Value Iteration algorithm.
 
 \begin{table}[h!]
 \caption{Value Iteration algorithm results. }
 \label{viap}
 \begin{center}
-\begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
+\begin{tabular}{cccc}
 \textbf{State Space} & \textbf{D. Factor} & \textbf{Iterations} & \textbf{Time of Execution (ms.)} \\
 \midrule
-$11^{4}$ 		& 0.9 				& 29 				& 37774 \\
+$\SN$ 		& 0.9 				& 29 				& 37774 \\
 				& 0.7 				& 26 				& 34423 	 \\
  				& 0.5 				& 24 				& 31848 	 \\
  				& 0.1 				& 19 				& 24883  \vspace{0.1cm}  \\ 
-$6^{2}$			& 0.9 				& 22 				& 229 	 \\
+$\SSW$			& 0.9 				& 22 				& 229 	 \\
 				& 0.7 				& 19 				& 162  \\
 				& 0.5 				& 16 				& 126 	 \\
 				& 0.1 				& 11 				& 88 	 \vspace{0.1cm}  \\ 
-$21$ 			& 0.9 				& 22 				& 93  \\
+$\SRSW$ 			& 0.9 				& 22 				& 93  \\
 	 			& 0.7 				& 19 				& 70  \\
 	 			& 0.5 				& 17 				& 67  \\
 	 			& 0.1 				& 11 				& 60  \\
@@ -650,24 +649,35 @@ $21$ 			& 0.9 				& 22 				& 93  \\
 \end{table}
 
 \section*{Exercise 5}
-To iteratively improve the policy we implemented policy iteration $V^{\pi^\prime}$ for all states which the prey is located at $\left<5,5\right>$.
+To iteratively improve the policy we implemented Policy Iteration $V^{\pi^\prime}$ for all states in all three state representations, $\SN$, $\SSW$ and $\SRSW$.  First, for all $s \in S$, we are doing a slightly modified version of Policy Evaluation.  After that, Policy Improvement is executed.  The procedure iterates with the same order until a stable policy for each state will be derived.  A policy is stable when, after a number of iterations of this algorithm, the policy converges into one that is optimal and cannot be changed to the better.  This is implemented as presented in Figure 4.3 of Sutton and Barto.  \Autoref{tab:piap} presents the result we had with our implementation of Policy Iteration, for different values for discount factor $\gamma$.  The maximum error boundary $\theta$ was set at $0$.
 
-The convergence speed (in number of iterations) for different discount factors $\gamma$ is presented in \autoref{tab:convPI}.
 \begin{table}
-\caption{Trololol.}
-\label{tab:convPI}
+\caption{Policy Iteration algorithm performance.}
+\label{tab:piap}
 \begin{center}
-\begin{tabular}{|@{ }r@{ }|@{ }r@{ }|}
-\hline
-Discount factor $\gamma$ & Number of iterations \\
-\hline
-0.1 & \\
-0.5 & \\
-0.7 & \\
-0.9 & \\
-\hline
+\begin{tabular}{@{ }c@{ }@{ }c@{ }@{ }c@{ }@{ }c@{ }}
+\textbf{State Space} & \textbf{D. Factor $\gamma$} & \textbf{Iterations}& \textbf{Execution Time (ms.)} \\
+\midrule
+$\SN$ & 0.9 & 9 & 356222 \\
+     & 0.7 & 8 & 152240 \\
+     & 0.5 & 7 & 103164 \\
+     & 0.1 & 8 & 61771 \vspace{0.1cm}  \\
+$\SSW$  & 0.9 & 7 & 6221 \\
+     & 0.7 & 6 & 2010 \\
+     & 0.5 & 6 & 1005 \\
+     & 0.1 & 5 & 353 \vspace{0.1cm}  \\ 
+$\SRSW$   & 0.9 & 5 & 3594 \\
+     & 0.7 & 5 & 1134 \\
+     & 0.5 & 5 & 581 \\
+     & 0.1 & 5 & 202 \\      
 \end{tabular}
 \end{center}
 \end{table}
+
+
+\section*{Conclusion}
+We have managed to reduce the state space from $11^4$ states which should be processed separately to $11^2$, $6^2$ and $\sum_{i=1}^6 i$ equivalence classes of states.  We have implemented Policy Evaluation, Value Iteration and Policy Iteration for three of the four state space representations $\SN$, $\SSW$ and $\SRSW$.  The runtime of all algorithms is heavily reduced by running on the smallest state space.
+
+The algorithms provide all equivalent values for the value function, which is expected.  This produces the same optimal policy, when maximizing over the value function.
 \end{document}
 
