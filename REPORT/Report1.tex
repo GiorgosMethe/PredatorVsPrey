@@ -6,6 +6,23 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{layouts}
+\usepackage{array}
+\usepackage{pgf}
+\usepackage{tikz}
+
+\usepackage{amssymb}
+\usepackage{graphics}
+\usepackage{fancyhdr}
+\usepackage{eucal}
+\usepackage{ifthen}
+\usepackage{ifpdf}
+\usepackage{lmodern}
+\usepackage{amsthm}
 
 \usetikzlibrary{positioning}
 
@@ -188,42 +205,85 @@
 \end{center}
 
 
+
+
 \section*{Introduction}
 The purpose of this first assignment was to implement a reinforcement learning task that satisfies the Markov property, known as Markov Decision Process (MDP). To achieve this we used one prey, which is part of the environment and behaves in a known probabilistic way, and one agent, the predator, whose goal is to catch the prey. When that happens the episode ends. The environment we used is a 11 by 11 toroidal grid. Also we assumed that the entire MDP is known to our agent. The agent could thus determine the optimal policy even before interacting with the environment. To program the assignment we used the programming language Java.
 
-\section*{Exercise 1}
-In the first part, we simulated the environment keeping the policies of the predator and the prey separate. The predator starts from position $\left<0,0\right>$ and the prey from $\left<5,5\right>$ moving randomly and depending on the given probabilities. The time it takes on average for the predator to catch the prey with random policy is % TODO: Include average step count over 100 runs
-, and the standard deviation is % TODO: Include stdev over 100 runs
-.
 
-% TODO: Make a simple command line user interface to the code, and tell about it.
-% >> What do you want to do?
-% >>     1) Run the random simulation for n times
-% >>     2) Run ValueIteration
-% >>     ...
+
+
+
+
+\section*{Exercise 1}
+In the first part, we simulated the environment keeping the policies of the predator and the prey separate. The environment has the ability to hold one or more predators and one or more preys. The predator starts from position $\left<0,0\right>$ and the prey from $\left<5,5\right>$ moving randomly and depending on the given probabilities. Each episode of the simulation ends when the predator catches the prey. Or in case that there are multiple preys and predators the episode ends when there is no alive prey into the simulation environment. In this first assignment we held all of our experiments with one predator and one prey. In Table~\ref{tab:SimStat} we present the overall statistics for this part of the assignment.
+
+\begin{table}[h!]
+\caption{Statistics of the simulation over 100 runs.}
+\label{tab:SimStat}
+\begin{center}
+\begin{small}
+\begin{tabular}{|@{ }l@{ }|@{ }c@{ }|}
+    \hline
+     	Average steps & 279.7 \\ \hline
+  		Max no. of steps & 1350   \\ \hline
+  		Min no. of steps & 22	\\ \hline
+  		Mean over 100 runs & 279.7	\\ \hline
+  		Stdev over 100 runs & 255.1	\\
+    \hline
+    \end{tabular}      
+\end{small}
+\end{center}	
+\end{table}
+
+
 
 
 
 \section*{Exercise 2}
-In order to evaluate the random policy we computed the state-value function $V^{\pi_{random}}$ and determined the following values for the given states:\\
+In order to evaluate the random policy we implemented Policy Evaluation, computing the state-value function $V^{\pi_{(S)}}$ and determined the value for each state. For all $s \in S$,
+\[
+V^{\pi_{(S)}} = \sum_{a}\pi(s,a)\sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
+\]
+First, in the naive approach we computed the state value function for every state in the $11^{4}$ space. The produced values for the given states are presented:
 
 \begin{align*}
-V^{\pi_{random}}(\left\{\Pred{0}{0},\Prey{5}{5}\right\}) & = \ldots \\
-&= bla \\
-&= blabla\\
-    V^{\pi_{random}}(\left\{\Pred{2}{3},\Prey{5}{4}\right\}) &= \ldots \\
-    V^{\pi_{random}}(\left\{\Pred{2}{10},\Prey{10}{0}\right\}) &= \ldots \\
-    V^{\pi_{random}}(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= \ldots
+	V^{\pi_{(S)}}(\left\{\Pred{0}{0},\Prey{5}{5}\right\})   & = 0.0008 \\
+    V^{\pi_{(S)}}(\left\{\Pred{2}{3},\Prey{5}{4}\right\})   &= 0.8900 \\
+    V^{\pi_{(S)}}(\left\{\Pred{2}{10},\Prey{10}{0}\right\}) &= 0.8900 \\
+    V^{\pi_{(S)}}(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= 0.8817
 \end{align*}
 
-It takes % TODO: Compute sweeps to converge
-sweeps to converge.
+Except from the naive state space we accomplished to reduce the state space in $6^2$, and finally in 21. Trying to implement the Policy Evaluation algorithm on the reduced state space, we acquire the same values as above, however, we noticed that the algorithm runs significantly faster. Table presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set $\theta$ variable to zero in order our algorithm to produce more accurate results. This may cause an increase in our algorithm's execution time.
+
+\begin{table}[h!]
+\caption{Policy Evaluation algorithm performance.}
+\label{peap}
+\begin{center}
+\begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
+\textbf{State Space} & \textbf{D. Factor} & \textbf{Iterations} & \textbf{Time of Execution (ms.)} \\
+\midrule
+$11^{4}$ 		& 0.9 				& 202 				& 245608 \\
+				& 0.7 				& 73 				& 94660 	 \\
+ 				& 0.5 				& 46 				& 57754 	 \\
+ 				& 0.1 				& 23 				& 29467  \\
+$6^{2}$			& 0.9 				& 215 				& 821 	 \\
+				& 0.7 				& 72 				& 369  \\
+				& 0.5 				& 44 				& 283 	 \\
+				& 0.1 				& 16 				& 114 	 \\
+$21$ 			& 0.9 				& 215 				& 475  \\
+	 			& 0.7 				& 72 				& 280  \\
+	 			& 0.5 				& 41 				& 195  \\
+	 			& 0.1 				& 16 				& 50  \\
+\end{tabular}
+\end{center}
+\end{table}
 
 
 
+\newpage
 \section*{Exercise 3}
 When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
-
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}
@@ -238,19 +298,25 @@ When naively exploring the state space $\mathcal{S}$, you will have to compute t
 To find an optimal policy we computed the optimal value function $V^\ast$ for all states in which the prey is located at $\left<5,5\right>$.
 
 The convergence speed (in number of iterations) for different discount factors $\gamma$ is presented in \autoref{tab:convVI}.
-\begin{table}
-\caption{Trololol.}
-\label{tab:convVI}
+\begin{table}[h!]
+\caption{Value Iteration algorithm performance.}
+\label{viap}
 \begin{center}
-\begin{tabular}{|@{ }r@{ }|@{ }r@{ }|}
-\hline
-Discount factor $\gamma$ & Number of iterations \\
-           \hline
-0.1 & \\
-0.5 & \\
-0.7 & \\
-0.9 & \\
-\hline
+\begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
+\textbf{State Space} & \textbf{D. Factor} & \textbf{Iterations} & \textbf{Time of Execution (ms.)} \\
+\midrule
+$11^{4}$ 		& 0.9 				& 29 				& 37774 \\
+				& 0.7 				& 26 				& 34423 	 \\
+ 				& 0.5 				& 24 				& 31848 	 \\
+ 				& 0.1 				& 19 				& 24883  \\
+$6^{2}$			& 0.9 				& 22 				& 229 	 \\
+				& 0.7 				& 19 				& 162  \\
+				& 0.5 				& 16 				& 126 	 \\
+				& 0.1 				& 11 				& 88 	 \\
+$21$ 			& 0.9 				& 22 				& 93  \\
+	 			& 0.7 				& 19 				& 70  \\
+	 			& 0.5 				& 17 				& 67  \\
+	 			& 0.1 				& 11 				& 60  \\
 \end{tabular}
 \end{center}
 \end{table}
@@ -275,138 +341,5 @@ Discount factor $\gamma$ & Number of iterations \\
 \end{tabular}
 \end{center}
 \end{table}
-
-% TODO: COMPARE THE RESULTS
-
-
-\newpage
-\begin{figure}
-\begin{center}
-\begin{tikzpicture}
-\node[biggrid] (A) at (0,0) {};
-\node at (A.center 1  1) {0};
-\node at (A.center 2  1) {1};
-\node at (A.center 3  1) {2};
-\node at (A.center 4  1) {3};
-\node at (A.center 5  1) {4};
-\node at (A.center 6  1) {5};
-\node at (A.center 7  1) {5};
-\node at (A.center 8  1) {4};
-\node at (A.center 9  1) {3};
-\node at (A.center 10 1) {2};
-\node at (A.center 11 1) {1};
-\node at (A.center 1  2) {1};
-\node at (A.center 2  2) {6};
-\node at (A.center 3  2) {7};
-\node at (A.center 4  2) {8};
-\node at (A.center 5  2) {9};
-\node at (A.center 6  2) {10};
-\node at (A.center 7  2) {10};
-\node at (A.center 8  2) {9};
-\node at (A.center 9  2) {8};
-\node at (A.center 10 2) {7};
-\node at (A.center 11 2) {6};
-\node at (A.center 1  3) {2};
-\node at (A.center 2  3) {7};
-\node at (A.center 3  3) {11};
-\node at (A.center 4  3) {12};
-\node at (A.center 5  3) {13};
-\node at (A.center 6  3) {14};
-\node at (A.center 7  3) {14};
-\node at (A.center 8  3) {13};
-\node at (A.center 9  3) {12};
-\node at (A.center 10 3) {11};
-\node at (A.center 11 3) {7};
-\node at (A.center 1  4) {3};
-\node at (A.center 2  4) {8};
-\node at (A.center 3  4) {12};
-\node at (A.center 4  4) {15};
-\node at (A.center 5  4) {16};
-\node at (A.center 6  4) {17};
-\node at (A.center 7  4) {17};
-\node at (A.center 8  4) {16};
-\node at (A.center 9  4) {15};
-\node at (A.center 10 4) {12};
-\node at (A.center 11 4) {8};
-\node at (A.center 1  5) {4};
-\node at (A.center 2  5) {9};
-\node at (A.center 3  5) {13};
-\node at (A.center 4  5) {16};
-\node at (A.center 5  5) {18};
-\node at (A.center 6  5) {19};
-\node at (A.center 7  5) {19};
-\node at (A.center 8  5) {18};
-\node at (A.center 9  5) {16};
-\node at (A.center 10 5) {13};
-\node at (A.center 11 5) {9};
-\node at (A.center 1  6) {5};
-\node at (A.center 2  6) {10};
-\node at (A.center 3  6) {14};
-\node at (A.center 4  6) {17};
-\node at (A.center 5  6) {19};
-\node at (A.center 6  6) {20};
-\node at (A.center 7  6) {20};
-\node at (A.center 8  6) {19};
-\node at (A.center 9  6) {17};
-\node at (A.center 10 6) {14};
-\node at (A.center 11 6) {10};
-\node at (A.center 1  11) {1};
-\node at (A.center 2  11) {6};
-\node at (A.center 3  11) {7};
-\node at (A.center 4  11) {8};
-\node at (A.center 5  11) {9};
-\node at (A.center 6  11) {10};
-\node at (A.center 7  11) {10};
-\node at (A.center 8  11) {9};
-\node at (A.center 9  11) {8};
-\node at (A.center 10 11) {7};
-\node at (A.center 11 11) {6};
-\node at (A.center 1  10) {2};
-\node at (A.center 2  10) {7};
-\node at (A.center 3  10) {11};
-\node at (A.center 4  10) {12};
-\node at (A.center 5  10) {13};
-\node at (A.center 6  10) {14};
-\node at (A.center 7  10) {14};
-\node at (A.center 8  10) {13};
-\node at (A.center 9  10) {12};
-\node at (A.center 10 10) {11};
-\node at (A.center 11 10) {7};
-\node at (A.center 1  9) {3};
-\node at (A.center 2  9) {8};
-\node at (A.center 3  9) {12};
-\node at (A.center 4  9) {15};
-\node at (A.center 5  9) {16};
-\node at (A.center 6  9) {17};
-\node at (A.center 7  9) {17};
-\node at (A.center 8  9) {16};
-\node at (A.center 9  9) {15};
-\node at (A.center 10 9) {12};
-\node at (A.center 11 9) {8};
-\node at (A.center 1  8) {4};
-\node at (A.center 2  8) {9};
-\node at (A.center 3  8) {13};
-\node at (A.center 4  8) {16};
-\node at (A.center 5  8) {18};
-\node at (A.center 6  8) {19};
-\node at (A.center 7  8) {19};
-\node at (A.center 8  8) {18};
-\node at (A.center 9  8) {16};
-\node at (A.center 10 8) {13};
-\node at (A.center 11 8) {9};
-\node at (A.center 1  7) {5};
-\node at (A.center 2  7) {10};
-\node at (A.center 3  7) {14};
-\node at (A.center 4  7) {17};
-\node at (A.center 5  7) {19};
-\node at (A.center 6  7) {20};
-\node at (A.center 7  7) {20};
-\node at (A.center 8  7) {19};
-\node at (A.center 9  7) {17};
-\node at (A.center 10 7) {14};
-\node at (A.center 11 7) {10};
-\end{tikzpicture}
-\end{center}
-\end{figure}
 \end{document}
 
