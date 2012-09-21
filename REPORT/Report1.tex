@@ -19,6 +19,7 @@
 
 \newcommand{\Pred}[2]{\ensuremath{\mathtt{Predator}\left<#1, #2\right>}}
 \newcommand{\Prey}[2]{\ensuremath{\mathtt{Prey}\left<#1, #2\right>}}
+\newcommand{\p}[2]{\ensuremath{\mathtt{P}\left<#1, #2\right>}}
 
 \newcommand{\DrawSmallPred}[2]{\node at (A.center #1 #2) {$\pi$};}
 \newcommand{\DrawSmallPrey}[2]{\node at (A.center #1 #2) {P};}
@@ -221,7 +222,8 @@ sweeps to converge.
 
 
 \section*{Exercise 3}
-mpla mpla mpla mpla god bless you Diederik
+When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
+
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}
