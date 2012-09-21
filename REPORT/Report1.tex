@@ -47,6 +47,7 @@
 \newcommand{\DrawBigPred}[2]  {\node at (A.center #1 #2) {\Huge $\pi$};}
 \newcommand{\DrawBigPrey}[2]  {\node at (A.center #1 #2) {\Huge P};}
 
+\definecolor{hlcolor}{rgb}{1, 0, 0}
 \definecolor{mygrey}{gray}{.85}
 \definecolor{mygreylink}{gray}{.30}
 \textheight=8.6in
@@ -206,8 +207,8 @@
             draw,
             grid,
             grid lines=10,
-            minimum width=5cm,
-            minimum height=5cm}
+            minimum width=6cm,
+            minimum height=6cm}
         }
 \tikzset{biggrid/.style={
             draw,
@@ -247,11 +248,6 @@
 \section*{Introduction}
 The purpose of this first assignment was to implement a reinforcement learning task that satisfies the Markov property, known as Markov Decision Process (MDP). To achieve this we used one prey, which is part of the environment and behaves in a known probabilistic way, and one agent, the predator, whose goal is to catch the prey. When that happens the episode ends. The environment we used is a 11 by 11 toroidal grid. Also we assumed that the entire MDP is known to our agent. The agent could thus determine the optimal policy even before interacting with the environment. To program the assignment we used the programming language Java.
 
-
-
-
-
-
 \section*{Exercise 1}
 In the first part, we simulated the environment keeping the policies of the predator and the prey separate. The environment has the ability to hold one or more predators and one or more preys. The predator starts from position $\left<0,0\right>$ and the prey from $\left<5,5\right>$ moving randomly and depending on the given probabilities. Each episode of the simulation ends when the predator catches the prey. Or in case that there are multiple preys and predators the episode ends when there is no alive prey into the simulation environment. In this first assignment we held all of our experiments with one predator and one prey. In Table~\ref{tab:SimStat} we present the overall statistics for this part of the assignment.
 
@@ -262,20 +258,16 @@ In the first part, we simulated the environment keeping the policies of the pred
 \begin{small}
 \begin{tabular}{|@{ }l@{ }|@{ }c@{ }|}
     \hline
-     	Average steps & 279.7 \\ \hline
-  		Max no. of steps & 1350   \\ \hline
-  		Min no. of steps & 22	\\ \hline
-  		Mean over 100 runs & 279.7	\\ \hline
-  		Stdev over 100 runs & 255.1	\\
+      Average steps & 279.7 \\ \hline
+      Max no. of steps & 1350   \\ \hline
+      Min no. of steps & 22 \\ \hline
+      Mean over 100 runs & 279.7  \\ \hline
+      Stdev over 100 runs & 255.1 \\
     \hline
     \end{tabular}      
 \end{small}
-\end{center}	
+\end{center}  
 \end{table}
-
-
-
-
 
 \section*{Exercise 2}
 In order to evaluate the random policy we implemented Policy Evaluation, computing the state-value function $V^{\pi_{(S)}}$ and determined the value for each state. For all $s \in S$,
@@ -285,7 +277,7 @@ V^{\pi_{(S)}} = \sum_{a}\pi(s,a)\sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s'
 First, in the naive approach we computed the state value function for every state in the $11^{4}$ space. The produced values for the given states are presented:
 
 \begin{align*}
-	V^{\pi_{(S)}}(\left\{\Pred{0}{0},\Prey{5}{5}\right\})   & = 0.0008 \\
+  V^{\pi_{(S)}}(\left\{\Pred{0}{0},\Prey{5}{5}\right\})   & = 0.0008 \\
     V^{\pi_{(S)}}(\left\{\Pred{2}{3},\Prey{5}{4}\right\})   &= 0.8900 \\
     V^{\pi_{(S)}}(\left\{\Pred{2}{10},\Prey{10}{0}\right\}) &= 0.8900 \\
     V^{\pi_{(S)}}(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= 0.8817
@@ -300,25 +292,23 @@ Except from the naive state space we accomplished to reduce the state space in $
 \begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
 \textbf{State Space} & \textbf{D. Factor} & \textbf{Iterations} & \textbf{Time of Execution (ms.)} \\
 \midrule
-$11^{4}$ 		& 0.9 				& 202 				& 245608 \\
-				& 0.7 				& 73 				& 94660 	 \\
- 				& 0.5 				& 46 				& 57754 	 \\
- 				& 0.1 				& 23 				& 29467  \\
-$6^{2}$			& 0.9 				& 215 				& 821 	 \\
-				& 0.7 				& 72 				& 369  \\
-				& 0.5 				& 44 				& 283 	 \\
-				& 0.1 				& 16 				& 114 	 \\
-$21$ 			& 0.9 				& 215 				& 475  \\
-	 			& 0.7 				& 72 				& 280  \\
-	 			& 0.5 				& 41 				& 195  \\
-	 			& 0.1 				& 16 				& 50  \\
+$11^{4}$    & 0.9         & 202         & 245608 \\
+        & 0.7         & 73        & 94660    \\
+        & 0.5         & 46        & 57754    \\
+        & 0.1         & 23        & 29467  \\
+$6^{2}$     & 0.9         & 215         & 821    \\
+        & 0.7         & 72        & 369  \\
+        & 0.5         & 44        & 283    \\
+        & 0.1         & 16        & 114    \\
+$21$      & 0.9         & 215         & 475  \\
+        & 0.7         & 72        & 280  \\
+        & 0.5         & 41        & 195  \\
+        & 0.1         & 16        & 50  \\
 \end{tabular}
 \end{center}
 \end{table}
 
 
-
-\newpage
 \section*{Exercise 3}
 When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the equivalence class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
 
@@ -332,22 +322,273 @@ V(\pSW{x}{y})
   &= V(\p{x + 6 \lambda_1}{y + 6 \lambda_2}
 \end{align*}
 
-Through this, we only have to compute $V(\cdot)$ for $6^2 = 36$ different states.  But even this representation contains symmetry.  
+Through this, we only have to compute $V(\cdot)$ for $6^2 = 36$ different states.  The equivalent states under $\mathtt{P}_{6^2}$ are represented on an 11 by 11 grid in \autoref{fig:statespace6}.  The grid represents the space of $\mathtt{P}_{11^2}$.  A minimal, continuous area of this world is highlighted in red.
 
-This symmetry has its roots in the fact the predator likes to know best; how far away am I from the prey, when I move to this new spot?  Given $\p{x}{y}$, it can compute its Euclidean distance towards the prey $d(\p{x}{y}) = d(\pSW{x}{y}) = \sqrt{x^2+y^2}$.  For each move, it can recompute this distance, and based on this, it will assign a value.  There are only $\sum_{i=1}^{6} i = 21$ different distances, as the Euclidean distance is symmetrical in $x$ and $y$.
+But even this representation contains symmetry.  This symmetry has its roots in the fact the predator likes to know best; how far away am I from the prey, when I move to this new spot?  Given $\p{x}{y}$, it can compute its Euclidean distance towards the prey $d(\p{x}{y}) = d(\pSW{x}{y}) = \sqrt{x^2+y^2}$.  For each move, it can recompute this distance, and based on this, it will assign a value.  There are only $\sum_{i=1}^{6} i = 21$ different distances, as the Euclidean distance is symmetrical in $x$ and $y$.  The equivalent states under $\mathtt{P}_{21}$ are represented on an 11 by 11 grid in \autoref{fig:statespace21}.  The grid represents the space of $\mathtt{P}_{11^2}$.  A minimal, continuous area of this world is highlighted in red.
 
 We have implemented Policy Evaluation, Value Iteration and Policy Iteration for the naive, $11^4$-sized state space, for the square $6^2$-sized state space, and the triangular state space of $21$ states.
 
 \begin{figure}
+  \caption{Equivalent states under $\mathtt{P}_{6^2}$ are labeled with the same number.  The predator is assumed to be at $\left<0, 0\right>$.  The states indicate the position of the prey.  A single repetition of this set is highlighted in red.}
+  \label{fig:statespace6}
 \begin{center}
 \begin{tikzpicture}
 \node [smallgrid] (A) at (0,0) {};
-\DrawSmallPrey{1}{2} 
-\DrawSmallPred{2}{1}
+\node[hlcolor] at (A.center 1  11) {0};
+\node[hlcolor] at (A.center 2  11) {1};
+\node[hlcolor] at (A.center 3  11) {2};
+\node[hlcolor] at (A.center 4  11) {3};
+\node[hlcolor] at (A.center 5  11) {4};
+\node[hlcolor] at (A.center 6  11) {5};
+\node at (A.center 7  11) {5};
+\node at (A.center 8  11) {4};
+\node at (A.center 9  11) {3};
+\node at (A.center 10 11) {2};
+\node at (A.center 11 11) {1};
+\node[hlcolor] at (A.center 1  10) {6};
+\node[hlcolor] at (A.center 2  10) {7};
+\node[hlcolor] at (A.center 3  10) {8};
+\node[hlcolor] at (A.center 4  10) {9};
+\node[hlcolor] at (A.center 5  10) {10};
+\node[hlcolor] at (A.center 6  10) {11};
+\node at (A.center 7  10) {11};
+\node at (A.center 8  10) {10};
+\node at (A.center 9  10) {9};
+\node at (A.center 10 10) {8};
+\node at (A.center 11 10) {7};
+\node[hlcolor] at (A.center 1  9) {12};
+\node[hlcolor] at (A.center 2  9) {13};
+\node[hlcolor] at (A.center 3  9) {14};
+\node[hlcolor] at (A.center 4  9) {15};
+\node[hlcolor] at (A.center 5  9) {16};
+\node[hlcolor] at (A.center 6  9) {17};
+\node at (A.center 7  9) {17};
+\node at (A.center 8  9) {16};
+\node at (A.center 9  9) {15};
+\node at (A.center 10 9) {14};
+\node at (A.center 11 9) {13};
+\node[hlcolor] at (A.center 1  8) {18};
+\node[hlcolor] at (A.center 2  8) {19};
+\node[hlcolor] at (A.center 3  8) {20};
+\node[hlcolor] at (A.center 4  8) {21};
+\node[hlcolor] at (A.center 5  8) {22};
+\node[hlcolor] at (A.center 6  8) {23};
+\node at (A.center 7  8) {23};
+\node at (A.center 8  8) {22};
+\node at (A.center 9  8) {21};
+\node at (A.center 10 8) {20};
+\node at (A.center 11 8) {19};
+\node[hlcolor] at (A.center 1  7) {24};
+\node[hlcolor] at (A.center 2  7) {25};
+\node[hlcolor] at (A.center 3  7) {26};
+\node[hlcolor] at (A.center 4  7) {27};
+\node[hlcolor] at (A.center 5  7) {28};
+\node[hlcolor] at (A.center 6  7) {29};
+\node at (A.center 7  7) {29};
+\node at (A.center 8  7) {28};
+\node at (A.center 9  7) {27};
+\node at (A.center 10 7) {26};
+\node at (A.center 11 7) {25};
+\node[hlcolor] at (A.center 1  6) {30};
+\node[hlcolor] at (A.center 2  6) {31};
+\node[hlcolor] at (A.center 3  6) {32};
+\node[hlcolor] at (A.center 4  6) {33};
+\node[hlcolor] at (A.center 5  6) {34};
+\node[hlcolor] at (A.center 6  6) {35};
+\node at (A.center 7  6) {35};
+\node at (A.center 8  6) {34};
+\node at (A.center 9  6) {33};
+\node at (A.center 10 6) {32};
+\node at (A.center 11 6) {31};
+\node at (A.center 1  5) {30};
+\node at (A.center 2  5) {31};
+\node at (A.center 3  5) {32};
+\node at (A.center 4  5) {33};
+\node at (A.center 5  5) {34};
+\node at (A.center 6  5) {35};
+\node at (A.center 7  5) {35};
+\node at (A.center 8  5) {34};
+\node at (A.center 9  5) {33};
+\node at (A.center 10 5) {32};
+\node at (A.center 11 5) {31};
+\node at (A.center 1  4) {24};
+\node at (A.center 2  4) {25};
+\node at (A.center 3  4) {26};
+\node at (A.center 4  4) {27};
+\node at (A.center 5  4) {28};
+\node at (A.center 6  4) {29};
+\node at (A.center 7  4) {29};
+\node at (A.center 8  4) {28};
+\node at (A.center 9  4) {27};
+\node at (A.center 10 4) {26};
+\node at (A.center 11 4) {25};
+\node at (A.center 1  3) {18};
+\node at (A.center 2  3) {19};
+\node at (A.center 3  3) {20};
+\node at (A.center 4  3) {21};
+\node at (A.center 5  3) {22};
+\node at (A.center 6  3) {23};
+\node at (A.center 7  3) {23};
+\node at (A.center 8  3) {22};
+\node at (A.center 9  3) {21};
+\node at (A.center 10 3) {20};
+\node at (A.center 11 3) {19};
+\node at (A.center 1  2) {12};
+\node at (A.center 2  2) {13};
+\node at (A.center 3  2) {14};
+\node at (A.center 4  2) {15};
+\node at (A.center 5  2) {16};
+\node at (A.center 6  2) {17};
+\node at (A.center 7  2) {17};
+\node at (A.center 8  2) {16};
+\node at (A.center 9  2) {15};
+\node at (A.center 10 2) {14};
+\node at (A.center 11 2) {13};
+\node at (A.center 1  1) {6};
+\node at (A.center 2  1) {7};
+\node at (A.center 3  1) {8};
+\node at (A.center 4  1) {9};
+\node at (A.center 5  1) {10};
+\node at (A.center 6  1) {11};
+\node at (A.center 7  1) {11};
+\node at (A.center 8  1) {10};
+\node at (A.center 9  1) {9};
+\node at (A.center 10 1) {8};
+\node at (A.center 11 1) {7};
 \end{tikzpicture}
 \end{center}
 \end{figure}
 
+\begin{figure}
+  \caption{Equivalent states under $\mathtt{P}_{21}$ are labeled with the same number.  The predator is assumed to be at $\left<0, 0\right>$.  The states indicate the position of the prey.  A single repetition of this set is highlighted in red.}
+  \label{fig:statespace21}
+\begin{center}
+\begin{tikzpicture}
+\node [smallgrid] (A) at (0,0) {};
+\node[hlcolor] at (A.center 1  11) {0};
+\node[hlcolor] at (A.center 2  11) {1};
+\node[hlcolor] at (A.center 3  11) {2};
+\node[hlcolor] at (A.center 4  11) {3};
+\node[hlcolor] at (A.center 5  11) {4};
+\node[hlcolor] at (A.center 6  11) {5};
+\node at (A.center 7  11) {5};
+\node at (A.center 8  11) {4};
+\node at (A.center 9  11) {3};
+\node at (A.center 10 11) {2};
+\node at (A.center 11 11) {1};
+\node at (A.center 1  10) {1};
+\node[hlcolor] at (A.center 2  10) {6};
+\node[hlcolor] at (A.center 3  10) {7};
+\node[hlcolor] at (A.center 4  10) {8};
+\node[hlcolor] at (A.center 5  10) {9};
+\node[hlcolor] at (A.center 6  10) {10};
+\node at (A.center 7  10) {10};
+\node at (A.center 8  10) {9};
+\node at (A.center 9  10) {8};
+\node at (A.center 10 10) {7};
+\node at (A.center 11 10) {6};
+\node at (A.center 1  9) {2};
+\node at (A.center 2  9) {7};
+\node[hlcolor] at (A.center 3  9) {11};
+\node[hlcolor] at (A.center 4  9) {12};
+\node[hlcolor] at (A.center 5  9) {13};
+\node[hlcolor] at (A.center 6  9) {14};
+\node at (A.center 7  9) {14};
+\node at (A.center 8  9) {13};
+\node at (A.center 9  9) {12};
+\node at (A.center 10 9) {11};
+\node at (A.center 11 9) {7};
+\node at (A.center 1  8) {3};
+\node at (A.center 2  8) {8};
+\node at (A.center 3  8) {12};
+\node[hlcolor] at (A.center 4  8) {15};
+\node[hlcolor] at (A.center 5  8) {16};
+\node[hlcolor] at (A.center 6  8) {17};
+\node at (A.center 7  8) {17};
+\node at (A.center 8  8) {16};
+\node at (A.center 9  8) {15};
+\node at (A.center 10 8) {12};
+\node at (A.center 11 8) {8};
+\node at (A.center 1  7) {4};
+\node at (A.center 2  7) {9};
+\node at (A.center 3  7) {13};
+\node at (A.center 4  7) {16};
+\node[hlcolor] at (A.center 5  7) {18};
+\node[hlcolor] at (A.center 6  7) {19};
+\node at (A.center 7  7) {19};
+\node at (A.center 8  7) {18};
+\node at (A.center 9  7) {16};
+\node at (A.center 10 7) {13};
+\node at (A.center 11 7) {9};
+\node at (A.center 1  6) {5};
+\node at (A.center 2  6) {10};
+\node at (A.center 3  6) {14};
+\node at (A.center 4  6) {17};
+\node at (A.center 5  6) {19};
+\node[hlcolor] at (A.center 6  6) {20};
+\node at (A.center 7  6) {20};
+\node at (A.center 8  6) {19};
+\node at (A.center 9  6) {17};
+\node at (A.center 10 6) {14};
+\node at (A.center 11 6) {10};
+\node at (A.center 1  5) {5};
+\node at (A.center 2  5) {10};
+\node at (A.center 3  5) {14};
+\node at (A.center 4  5) {17};
+\node at (A.center 5  5) {19};
+\node at (A.center 6  5) {20};
+\node at (A.center 7  5) {20};
+\node at (A.center 8  5) {19};
+\node at (A.center 9  5) {17};
+\node at (A.center 10 5) {14};
+\node at (A.center 11 5) {10};
+\node at (A.center 1  4) {4};
+\node at (A.center 2  4) {9};
+\node at (A.center 3  4) {13};
+\node at (A.center 4  4) {16};
+\node at (A.center 5  4) {18};
+\node at (A.center 6  4) {19};
+\node at (A.center 7  4) {19};
+\node at (A.center 8  4) {18};
+\node at (A.center 9  4) {16};
+\node at (A.center 10 4) {13};
+\node at (A.center 11 4) {9};
+\node at (A.center 1  3) {3};
+\node at (A.center 2  3) {8};
+\node at (A.center 3  3) {12};
+\node at (A.center 4  3) {15};
+\node at (A.center 5  3) {16};
+\node at (A.center 6  3) {17};
+\node at (A.center 7  3) {17};
+\node at (A.center 8  3) {16};
+\node at (A.center 9  3) {15};
+\node at (A.center 10 3) {12};
+\node at (A.center 11 3) {8};
+\node at (A.center 1  2) {2};
+\node at (A.center 2  2) {7};
+\node at (A.center 3  2) {11};
+\node at (A.center 4  2) {12};
+\node at (A.center 5  2) {13};
+\node at (A.center 6  2) {14};
+\node at (A.center 7  2) {14};
+\node at (A.center 8  2) {13};
+\node at (A.center 9  2) {12};
+\node at (A.center 10 2) {11};
+\node at (A.center 11 2) {7};
+\node at (A.center 1  1) {1};
+\node at (A.center 2  1) {6};
+\node at (A.center 3  1) {7};
+\node at (A.center 4  1) {8};
+\node at (A.center 5  1) {9};
+\node at (A.center 6  1) {10};
+\node at (A.center 7  1) {10};
+\node at (A.center 8  1) {9};
+\node at (A.center 9  1) {8};
+\node at (A.center 10 1) {7};
+\node at (A.center 11 1) {6};
+\end{tikzpicture}
+\end{center}
+\end{figure}
 \section*{Exercise 4}
 To find an optimal policy we computed the optimal value function $V^\ast$ for all states in which the prey is located at $\left<5,5\right>$.
 
