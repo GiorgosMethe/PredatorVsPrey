@@ -23,6 +23,8 @@
 \usepackage{ifpdf}
 \usepackage{lmodern}
 \usepackage{amsthm}
+\usepackage{catoptions} % For \Autoref
+
 
 \usetikzlibrary{positioning}
 
@@ -55,8 +57,41 @@
 \addtolength{\topmargin}{-.375in}
 \addtolength{\textheight}{0.75in}
 
-% For drawing grids
 \makeatletter
+%% Provide \Autoref; the \autoref with a printed capital
+\def\figureautorefname{figure}
+\def\tableautorefname{table}
+\def\partautorefname{part}
+\def\appendixautorefname{appendix}
+\def\equationautorefname{equation}
+\def\AMSautorefname{equation}
+\def\theoremautorefname{theorem}
+\def\enumerationautorefname{case}
+\def\Autoref#1{%
+  \begingroup
+  \edef\reserved@a{\cpttrimspaces{#1}}%
+  \ifcsndefTF{r@#1}{%
+    \xaftercsname{\expandafter\testreftype\@fourthoffive}
+      {r@\reserved@a}.\\{#1}%
+  }{%
+    \ref{#1}%
+  }%
+  \endgroup
+}
+\def\testreftype#1.#2\\#3{%
+  \ifcsndefTF{#1autorefname}{%
+    \def\reserved@a##1##2\@nil{%
+      \uppercase{\def\ref@name{##1}}%
+      \csn@edef{#1autorefname}{\ref@name##2}%
+      \autoref{#3}%
+    }%
+    \reserved@a#1\@nil
+  }{%
+    \autoref{#3}%
+  }%
+}
+
+% For drawing grids
 \pgfkeys{/pgf/grid lines/.initial=2}
 
 \pgfdeclareshape{grid}{
@@ -284,6 +319,9 @@ $21$ 			& 0.9 				& 215 				& 475  \\
 \newpage
 \section*{Exercise 3}
 When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
+
+Besides the world's lack of an origin, it is also symmetrical in both directions.d
+
 \begin{figure}
 \begin{center}
 \begin{tikzpicture}
