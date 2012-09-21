@@ -11,26 +11,26 @@ import environmentPack.Environment;
 
 public class PolicyEvaluation {
 
-	public static void main(String[] args) {
+	public static void Run(double gamma, double theta, Coordinate Prey) {
 
 		// Normal state space implementation
-		PolicyEvaluationImpl(0.7, new Coordinate(0, 0));
+		PolicyEvaluationImpl(gamma, theta, Prey);
 
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
 		// at 0,0 position.
-		PolicyEvaluationImplSW(0.7, new Coordinate(0, 0));
+		PolicyEvaluationImplSW(gamma, theta, Prey);
 
 		// Second way to reduce the state space
 		// only the half of the matrix e.g Upper Triangular Matrix
 		// Due to symmetric values we can implement this state space
 		// as it was the 11x11 state space. There is also a static position
 		// for the prey at 0,0 position.
-		PolicyEvaluationImplRSW(0.7, new Coordinate(0, 0));
+		PolicyEvaluationImplRSW(gamma, theta, Prey);
 
 	}
 
-	public static void PolicyEvaluationImpl(double discountFactor, Coordinate Prey) {
+	public static void PolicyEvaluationImpl(double discountFactor, double theta, Coordinate Prey) {
 		
 		//this variable represents the time when the algorithm starts running.
 		long start = System.currentTimeMillis();
@@ -164,7 +164,7 @@ public class PolicyEvaluation {
 			}
 
 				//The algorithm runs until Δ<θ (here, θ = 0).
-		} while (delta > 0);
+		} while (delta > theta);
 		//this is the time representation when this function ends.
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
@@ -176,7 +176,7 @@ public class PolicyEvaluation {
 	}
 
 	public static void PolicyEvaluationImplSW(double discountFactor,
-			Coordinate Prey) {
+			double theta, Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -296,7 +296,7 @@ public class PolicyEvaluation {
 
 			}
 
-		} while (delta > 0);
+		} while (delta > theta);
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nSmall 6x6 World Implementation");
@@ -307,7 +307,7 @@ public class PolicyEvaluation {
 	}
 
 	public static void PolicyEvaluationImplRSW(double discountFactor,
-			Coordinate Prey) {
+			double theta, Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -456,7 +456,7 @@ public class PolicyEvaluation {
 
 			}
 
-		} while (delta > 0);
+		} while (delta > theta);
 
 		long end = System.currentTimeMillis();
 		System.out.println("\n\nLittle 21-states World");
