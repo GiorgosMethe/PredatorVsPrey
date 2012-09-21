@@ -52,8 +52,6 @@
 \definecolor{mygreylink}{gray}{.30}
 \textheight=8.6in
 \raggedbottom
-\raggedright
-\setlength{\tabcolsep}{0in}
 \addtolength{\oddsidemargin}{-0.375in}
 \addtolength{\evensidemargin}{0.375in}
 \addtolength{\textwidth}{0.5in}
@@ -589,12 +587,39 @@ We have implemented Policy Evaluation, Value Iteration and Policy Iteration for 
 \end{tikzpicture}
 \end{center}
 \end{figure}
-\section*{Exercise 4}
-To find an optimal policy we computed the optimal value function $V^\ast$ for all states in which the prey is located at $\left<5,5\right>$.
 
-The convergence speed (in number of iterations) for different discount factors $\gamma$ is presented in \autoref{tab:convVI}.
+
+\section*{Exercise 4}
+To find an optimal policy we computed the optimal value function $V^\ast$ for all states. First of all, we had to find the value function for the naive $11^4$ state space. For all $s \in S$,
+\[
+V^{\pi_{(S)}} = \max_{a} \sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
+\]
+Table~\ref{viat} presents the value table that was computed with the value iteration algorithm for a discount factor $\gamma = 0.7$ and $\theta = 0$. 
 \begin{table}[h!]
-\caption{Value Iteration algorithm performance.}
+\caption{Value Iteration algorithm performance, $\pi = \langle 5,5 \rangle$, $\gamma = 0.7$, $\theta = 0$.}
+\label{viat}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+0.44 & 0.61 & 0.85 & 1.18 & 1.65 & 2.13 & 1.65 & 1.18 & 0.85 & 0.61 & 0.44 \\ \hline
+0.61 & 0.84 & 1.18 & 1.67 & 2.35 & 3.09 & 2.35 & 1.67 & 1.18 & 0.84 & 0.61 \\ \hline
+0.85 & 1.18 & 1.67 & 2.35 & 3.32 & 4.50 & 3.32 & 2.35 & 1.67 & 1.18 & 0.85 \\ \hline
+1.18 & 1.67 & 2.35 & 3.32 & 4.69 & 6.55 & 4.69 & 3.32 & 2.35 & 1.67 & 1.18 \\ \hline
+1.65 & 2.35 & 3.32 & 4.69 & 6.55 & 10.00 & 6.55 & 4.69 & 3.32 & 2.35 & 1.65 \\ \hline
+2.13 & 3.09 & 4.50 & 6.55 & 10.00 & $\pi$ & 10.00 & 6.55 & 4.50 & 3.09 & 2.13 \\ \hline
+1.65 & 2.35 & 3.32 & 4.69 & 6.55 & 10.00 & 6.55 & 4.69 & 3.32 & 2.35 & 1.65 \\ \hline
+1.18 & 1.67 & 2.35 & 3.32 & 4.69 & 6.55 & 4.69 & 3.32 & 2.35 & 1.67 & 1.18 \\ \hline
+0.85 & 1.18 & 1.67 & 2.35 & 3.32 & 4.50 & 3.32 & 2.35 & 1.67 & 1.18 & 0.85 \\ \hline
+0.61 & 0.84 & 1.18 & 1.67 & 2.35 & 3.09 & 2.35 & 1.67 & 1.18 & 0.84 & 0.61 \\ \hline
+0.44 & 0.61 & 0.85 & 1.18 & 1.65 & 2.13 & 1.65 & 1.18 & 0.85 & 0.61 & 0.44 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+We also implemented the Value Iteration algorithm on the reduced state space, acquiring the same values as above, however, we noticed that the algorithm runs significantly faster. Table presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set $\theta$ variable to zero in order our algorithm to produce more accurate results. This may cause an increase in the execution time of the Value Iteration algorithm.
+
+
+\begin{table}[h!]
+\caption{Value Iteration algorithm results. }
 \label{viap}
 \begin{center}
 \begin{tabular}{c@{ }@{ }c@{ }@{ }c@{ }@{ }c}
@@ -603,11 +628,11 @@ The convergence speed (in number of iterations) for different discount factors $
 $11^{4}$ 		& 0.9 				& 29 				& 37774 \\
 				& 0.7 				& 26 				& 34423 	 \\
  				& 0.5 				& 24 				& 31848 	 \\
- 				& 0.1 				& 19 				& 24883  \\
+ 				& 0.1 				& 19 				& 24883  \vspace{0.1cm}  \\ 
 $6^{2}$			& 0.9 				& 22 				& 229 	 \\
 				& 0.7 				& 19 				& 162  \\
 				& 0.5 				& 16 				& 126 	 \\
-				& 0.1 				& 11 				& 88 	 \\
+				& 0.1 				& 11 				& 88 	 \vspace{0.1cm}  \\ 
 $21$ 			& 0.9 				& 22 				& 93  \\
 	 			& 0.7 				& 19 				& 70  \\
 	 			& 0.5 				& 17 				& 67  \\
