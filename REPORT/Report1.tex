@@ -41,6 +41,9 @@
 \newcommand{\p}[2]{\ensuremath{\mathtt{P_{11^2}}\left<#1, #2\right>}}
 \newcommand{\pSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
 \newcommand{\pRSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
+\newcommand{\SN}[0]{\ensuremath{S_{11^4}}}
+\newcommand{\SSW}[0]{\ensuremath{S_{6^2}}}
+\newcommand{\SRSW}[0]{\ensuremath{S_{21}}}
 
 \newcommand{\DrawSmallPred}[2]{\node at (A.center #1 #2) {$\pi$};}
 \newcommand{\DrawSmallPrey}[2]{\node at (A.center #1 #2) {P};}
@@ -272,20 +275,21 @@ Each episode of the simulation ends when the predator catches the prey.  In the 
 \end{table}
 
 \section*{Exercise 2}
-In order to evaluate the random policy we implemented Policy Evaluation, computing the state-value function $V^{\pi_{(S)}}$ and determined the value for each state. For all $s \in S$,
-\[
-V^{\pi_{(S)}} = \sum_{a}\pi(s,a)\sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
-\]
-First, in the naive approach we computed the state value function for every state in the $11^{4}$ space. The produced values for the given states are presented:
-
+In order to evaluate the random policy we implemented Policy Evaluation, computing the state-value function $V^\pi(S)$ and determined the value for each state.  For every state $s \in S$, we iteratively compute
 \begin{align*}
-  V^{\pi_{(S)}}(\left\{\Pred{0}{0},\Prey{5}{5}\right\})   & = 0.0008 \\
-    V^{\pi_{(S)}}(\left\{\Pred{2}{3},\Prey{5}{4}\right\})   &= 0.8900 \\
-    V^{\pi_{(S)}}(\left\{\Pred{2}{10},\Prey{10}{0}\right\}) &= 0.8900 \\
-    V^{\pi_{(S)}}(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= 0.8817
+V^\pi{(S)} = \sum_{a}\pi(s,a)\sum_{s'}P_{ss'}^a[R_{ss'}^a + \gamma V^{\pi}(s')]
+\end{align*}
+This is done according the algorithm in Figure 4.1 of Sutton and Barto.
+
+First, in the naive approach we computed the state-value function for every state in $\SN$.  After Policy Evaluation with $\gamma = 0.8$ has converged, we got the following state-value combinations:
+\begin{align*}
+  V^\pi(S)(\left\{\Pred{0}{0},\Prey{5}{5}\right\})   & = 0.0008 \\
+    V^\pi(S)(\left\{\Pred{2}{3},\Prey{5}{4}\right\})   &= 0.8900 \\
+    V^\pi(S)(\left\{\Pred{2}{10},\Prey{10}{0}\right\}) &= 0.8900 \\
+    V^\pi(S)(\left\{\Pred{10}{10},\Prey{0}{0}\right\}) &= 0.8817
 \end{align*}
 
-Except from the naive state space we accomplished to reduce the state space in $6^2$, and finally in 21. Trying to implement the Policy Evaluation algorithm on the reduced state space, we acquire the same values as above, however, we noticed that the algorithm runs significantly faster. Table presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set $\theta$ variable to zero in order our algorithm to produce more accurate results. This may cause an increase in our algorithm's execution time.
+We have also implemented Policy Evaluation for the reduced state spaces $\SSW$ and $\SRSW$.  The values for above states are for all state spaces the same.  However, we noticed that the algorithm runs significantly faster.  \Autoref{peap} presents the performance results we had performing this algorithm to smaller state spaces than the original one. We set the maximum error bound ($\theta$ in the pseudocode) to zero in order to let our implementation produce more accurate results. This may cause an increase in our implementation's execution time.
 
 \begin{table}[h!]
 \caption{Policy Evaluation algorithm performance.}
@@ -328,7 +332,7 @@ Through this, we only have to compute $V(\cdot)$ for $6^2 = 36$ different states
 
 But even this representation contains symmetry.  This symmetry has its roots in the fact the predator likes to know best; how far away am I from the prey, when I move to this new spot?  Given $\p{x}{y}$, it can compute its Euclidean distance towards the prey $d(\p{x}{y}) = d(\pSW{x}{y}) = \sqrt{x^2+y^2}$.  For each move, it can recompute this distance, and based on this, it will assign a value.  There are only $\sum_{i=1}^{6} i = 21$ different distances, as the Euclidean distance is symmetrical in $x$ and $y$.  The equivalent states under $\mathtt{P}_{21}$ are represented on an 11 by 11 grid in \autoref{fig:statespace21}.  The grid represents the space of $\mathtt{P}_{11^2}$.  A minimal, continuous area of this world is highlighted in red.
 
-We have implemented Policy Evaluation, Value Iteration and Policy Iteration for the naive, $11^4$-sized state space, for the square $6^2$-sized state space, and the triangular state space of $21$ states.
+We have implemented Policy Evaluation, Value Iteration and Policy Iteration for the naive, $11^4$-sized state space, for the square $6^2$-sized state space, and the triangular state space of $21$ states.  We refer to these spaces by $\SN$, $\SSW$ and $\SRSW$ respectively.
 
 \begin{figure}
   \caption{Equivalent states under $\mathtt{P}_{6^2}$ are labeled with the same number.  The predator is assumed to be at $\left<0, 0\right>$.  The states indicate the position of the prey.  A single repetition of this set is highlighted in red.}
