@@ -10,28 +10,29 @@ import environmentPack.Environment;
 
 public class PolicyIteration {
 
-	public static void main(String[] args) {
-		double gamma = 0.7;
-		double theta = 0.01;
-		Coordinate startPos = new Coordinate(0, 0);
+	public static void Run(double gamma, double theta) {
+
 		// Normal state space implementation
-		PolicyIterationImpl(gamma, startPos, theta);
+		System.out.println("\n\nNormal 11^4-state World");
+		PolicyIterationImpl(gamma, theta);
 
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
 		// at 0,0 position.
-		PolicyIterationImplSW(gamma, startPos, theta);
+		System.out.println("\n\nSmall 6^2-state World");
+		PolicyIterationImplSW(gamma, theta);
 
 		// Second way to reduce the state space
 		// only the half of the matrix e.g Upper Triangular Matrix
 		// Due to symmetric values we can implement this state space
 		// as it was the 11x11 state space. There is also a static position
 		// for the prey at 0,0 position.
-		PolicyIterationImplRSW(gamma, startPos, theta);
+		System.out.println("\n\nLittle 21-state World");
+		PolicyIterationImplRSW(gamma, theta);
 
 	}
 
-	public static void PolicyIterationImpl(double discountFactor, Coordinate Prey, double theta) {
+	public static void PolicyIterationImpl(double discountFactor, double theta) {
 
 		long start = System.currentTimeMillis();
 
@@ -257,20 +258,17 @@ public class PolicyIteration {
 					}
 				}
 			}
-			//System.out.println("*" + algorithmSweeps + ": " + instableActions);
+			System.out.println("Iteration " + algorithmSweeps + ": " + instableActions+" Instable actions");
 		} while (!policyStable);
 
 		long end = System.currentTimeMillis();
-		System.out.println("Normal 11x11 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
-		System.out.println("Execution time was " + (end - start) + "ms");
-		System.out.println("PE sweeps: " + peSweeps.toString());
-		PrintPolicyIteration(State[Prey.getX()][Prey.getY()]);
+		System.out.println("Execution time was " + (end - start) + "ms");;
 	}
 
 
 
-	public static void PolicyIterationImplSW(double discountFactor, Coordinate Prey, double theta) {
+	public static void PolicyIterationImplSW(double discountFactor, double theta) {
 
 		long start = System.currentTimeMillis();
 
@@ -504,18 +502,16 @@ public class PolicyIteration {
           }
         }
       }
-      System.out.println("" + algorithmSweeps + ": " + instableActions);
+      System.out.println("Iteration " + algorithmSweeps + ": " + instableActions+" Instable actions");
     } while (!policyStable);
 
     long end = System.currentTimeMillis();
-    System.out.println("\n\nSmall 6x6 World Implementation");
     System.out.println("\nSweeps = " + algorithmSweeps);
     System.out.println("Execution time was " + (end - start) + "ms");
-    QuarterMirroring(State, Prey);
 
   }
 
-	public static void PolicyIterationImplRSW(double discountFactor, Coordinate Prey, double theta) {
+	public static void PolicyIterationImplRSW(double discountFactor, double theta) {
 
 		long start = System.currentTimeMillis();
 
@@ -802,14 +798,12 @@ public class PolicyIteration {
           }
 				}
 			}
-      System.out.println("" + algorithmSweeps + ": " + instableActions);
+			System.out.println("Iteration " + algorithmSweeps + ": " + instableActions+" Instable actions");
     } while (!policyStable);
 
 		long end = System.currentTimeMillis();
-		System.out.println("\n\nLittle 21-states World");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
-		HalfQuarterMirroring(State, Prey);
 
 	}
 

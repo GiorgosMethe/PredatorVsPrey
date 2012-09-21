@@ -12,7 +12,7 @@ public class Simulation {
 	 * each one of them ends when the predator with the random policy manages to
 	 * catch the prey
 	 */
-	public static void main(String[] args) {
+	public static void runSimulation() {
 
 		int[] manytimesdoingsteps = new int[100];
 
@@ -44,7 +44,6 @@ public class Simulation {
 				
 				//Run the simulation
 				env.run();
-				System.out.println(env);
 
 			} while (!env.isDone());
 
@@ -67,8 +66,6 @@ public class Simulation {
 		System.out.println("Mean over 100 runs: " + mean);
 		System.out.println("Stdev over 100 runs: "
 				+ Math.sqrt(squaredsum - (mean * mean)));
-
-		System.exit(0);
 
 	}
 
