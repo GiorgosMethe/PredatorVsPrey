@@ -1,7 +1,7 @@
 \documentclass[a4paper,11pt]{article}
 
 \usepackage{fullpage}
-\usepackage[usenames,dvipsnames]{color}
+\usepackage{color}
 \usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -38,7 +38,9 @@
 
 \newcommand{\Pred}[2]{\ensuremath{\mathtt{Predator}\left<#1, #2\right>}}
 \newcommand{\Prey}[2]{\ensuremath{\mathtt{Prey}\left<#1, #2\right>}}
-\newcommand{\p}[2]{\ensuremath{\mathtt{P}\left<#1, #2\right>}}
+\newcommand{\p}[2]{\ensuremath{\mathtt{P_{11^2}}\left<#1, #2\right>}}
+\newcommand{\pSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
+\newcommand{\pRSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
 
 \newcommand{\DrawSmallPred}[2]{\node at (A.center #1 #2) {$\pi$};}
 \newcommand{\DrawSmallPrey}[2]{\node at (A.center #1 #2) {P};}
@@ -318,9 +320,23 @@ $21$ 			& 0.9 				& 215 				& 475  \\
 
 \newpage
 \section*{Exercise 3}
-When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
+When naively exploring the state space $\mathcal{S}$, you will have to compute the value for all possible states, depending on four variables (the coordinates of both the predator and prey), each of which can have 11 different values.  This results in $11^4 = 14641$ different states.  Because of the toroidal structure of the world, the state $\left\{\Pred{x}{y}, \Prey{x'}{y'}\right\}$ is equivalent to $\left\{\Pred{x+a}{y+b}, \Prey{x'+a}{y'+b}\right\}$; there is no special square in the given world which has features that distinguish it from other squares.  From this follows that we can fix either $x, y$ or $x', y'$ to a certain value.  By doing so, we have removed two degrees of freedom, and reduced the space to only $11^2 = 121$ unique states.  Note that, when the position of the predator and prey are seen as vectors, this represents the difference vector $\Pred{x}{y} - \Prey{x'}{y'}$ or $\Prey{x'}{y'} - \Pred{x}{y}$, when respectively $x', y'$ or $x, y$ are fixed.  We have chosen to fix $x', y'$, and with $\p{x}{y}$ we denote the equivalence class of states for which $\left\{\Pred{x+a}{y+b}, \Prey{a}{b}\right\}$ holds.
 
-Besides the world's lack of an origin, it is also symmetrical in both directions.d
+For the means of computing $V(\cdot)$, we can shrink the state space even more.  Because of the symmetric nature of the world, the predator can catch the prey (and thus collect its reward) just as easily from any side.  This means that the following values correspond:
+\begin{align*}
+V(\pSW{x}{y})
+  &= V(\p{x}{y}) \\
+  &= V(\p{-x}{y}) \\
+  &= V(\p{x}{-y}) \\
+  &= V(\p{-x}{-y}) \\
+  &= V(\p{x + 6 \lambda_1}{y + 6 \lambda_2}
+\end{align*}
+
+Through this, we only have to compute $V(\cdot)$ for $6^2 = 36$ different states.  But even this representation contains symmetry.  
+
+This symmetry has its roots in the fact the predator likes to know best; how far away am I from the prey, when I move to this new spot?  Given $\p{x}{y}$, it can compute its Euclidean distance towards the prey $d(\p{x}{y}) = d(\pSW{x}{y}) = \sqrt{x^2+y^2}$.  For each move, it can recompute this distance, and based on this, it will assign a value.  There are only $\sum_{i=1}^{6} i = 21$ different distances, as the Euclidean distance is symmetrical in $x$ and $y$.
+
+We have implemented Policy Evaluation, Value Iteration and Policy Iteration for the naive, $11^4$-sized state space, for the square $6^2$-sized state space, and the triangular state space of $21$ states.
 
 \begin{figure}
 \begin{center}
