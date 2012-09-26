@@ -162,6 +162,150 @@ public class Predator extends Agent {
 		return NewPosition;
 	}
 
+	/*
+	 * This function return all possible action that a prey or a predator can be
+	 * able to do in relation to the current worldstate. This function is used
+	 * for the normal state space world.
+	 */
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+
+		// a new vector is created to get only the safe actions
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+		// sum of the probability of the safe actions
+		double probSum = 0;
+		for (int i = 0; i < actions.size(); i++) {
+			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
+
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+
+			}
+		}
+
+		// the (1-sum) probability is lost due to unsafe moves. It will be
+		// distributed uniformly to the safe actions
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
+		}
+		
+		return safeActions;
+
+	}
+	
+	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
+
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+
+		// for predator the above actions corresponds to the 11x11 grid
+		// space. We have to convert them into coordinates which are in the
+		// limits of the new 6x6 state space
+		for (int i = 0; i < actions.size(); i++) {
+			if (actions.elementAt(i).coordinate.getX() == 10)
+				actions.elementAt(i).coordinate.setX(1);
+			if (actions.elementAt(i).coordinate.getY() == 10)
+				actions.elementAt(i).coordinate.setY(1);
+			if (actions.elementAt(i).coordinate.getY() == 6)
+				actions.elementAt(i).coordinate.setY(5);
+			if (actions.elementAt(i).coordinate.getX() == 6)
+				actions.elementAt(i).coordinate.setX(5);
+		}
+
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+		double probSum = 0;
+		for (int i = 0; i < actions.size(); i++) {
+			if (this.safePosition(actions.elementAt(i).coordinate,
+					worldState)) {
+
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+
+			}
+		}
+
+		// the (1-sum) probability is lost due to unsafe moves. It will be
+		// distributed uniformly to the safe actions
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1 - probSum)
+					/ safeActions.size();
+		}
+		return safeActions;
+	}
+	
+	/*
+	 * This function return all possible actions that a prey or a predator can
+	 * be able to do in relation to the current worldstate. This function is
+	 * used for the little 21 state space world.
+	 */
+	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
+
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+
+		for (int i = 0; i < actions.size(); i++) {
+			if (actions.elementAt(i).coordinate.getX() == 10)
+				actions.elementAt(i).coordinate.setX(1);
+			if (actions.elementAt(i).coordinate.getY() == 10)
+				actions.elementAt(i).coordinate.setY(1);
+			if (actions.elementAt(i).coordinate.getY() == 6)
+				actions.elementAt(i).coordinate.setY(5);
+			if (actions.elementAt(i).coordinate.getX() == 6)
+				actions.elementAt(i).coordinate.setX(5);
+
+			// for actions which results in coordinates in the lower
+			// triangular matrix
+			// we transpose this element to fit into the upper triangular
+			// matrix we are using for the representation of the 21 states
+			// space
+			if (actions.elementAt(i).coordinate.getY() < actions
+					.elementAt(i).coordinate.getX()) {
+				int x = actions.elementAt(i).coordinate.getX();
+				int y = actions.elementAt(i).coordinate.getY();
+				actions.elementAt(i).coordinate.setX(y);
+				actions.elementAt(i).coordinate.setY(x);
+			}
+
+		}
+
+		Vector<RandomAction> safeActions = new Vector<RandomAction>();
+
+		double probSum = 0;
+
+		for (int i = 0; i < actions.size(); i++) {
+			if (this.safePosition(actions.elementAt(i).coordinate,
+					worldState)) {
+
+				safeActions.add(actions.elementAt(i));
+				probSum += actions.elementAt(i).prob;
+
+			}
+		}
+
+		for (int j = 0; j < safeActions.size(); j++) {
+			safeActions.elementAt(j).prob += (1 - probSum)
+					/ safeActions.size();
+		}
+		return safeActions;
+	}
+	
 	// this function is used to inform us if a possible coordinate is safe for
 	// the predator
 	@Override

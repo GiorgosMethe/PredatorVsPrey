@@ -13,12 +13,12 @@ public class ValueIteration {
 	public static void Run(double gamma, double theta, Coordinate prey) {
 
 		// Normal state space implementation
-		ValueIterationImpl(gamma,theta, prey);
+		//ValueIterationImpl(gamma,theta, prey);
 
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
 		// at 0,0 position.
-		ValueIterationImplSW(gamma,theta, prey);
+		//ValueIterationImplSW(gamma,theta, prey);
 
 		// Second way to reduce the state space
 		// only the half of the matrix e.g Upper Triangular Matrix

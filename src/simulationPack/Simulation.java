@@ -1,7 +1,7 @@
 package simulationPack;
 
+import agentsPack.Predator;
 import agentsPack.Prey;
-import agentsPack.SingleAgentRandom;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
 
@@ -31,8 +31,8 @@ public class Simulation {
 
 			// Generation of the agent-Predator. Predator is going to be added
 			// in the worldstate
-			env.worldState.add(new PolicyPredator("predator", new Coordinate(0,
-					0), new SingleAgentRandom()));
+			env.worldState.add(new Predator("predator", new Coordinate(0,
+					0), null));
 			
 			// Generation of the agent-Prey. Prey is going to be added
 						// in the worldstate
