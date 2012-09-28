@@ -117,9 +117,10 @@ public void qLearning (){
 			newWorldState.add(prey);
 			
 			//the reward for this particular move ??(the prey hasn't moved yet)
-			if(Coordinate.compareCoordinates(this.position, prey.position))
+			if(Coordinate.compareCoordinates(this.position, prey.position)){
 				reward = 10.0;
-			
+				prey.kill();
+				}
 			
 			
 			
