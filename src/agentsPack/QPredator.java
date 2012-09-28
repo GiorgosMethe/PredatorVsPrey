@@ -108,6 +108,11 @@ public void qLearning (){
 			//update the predator's position
 			this.position.setX(nextAction.getX());
 			this.position.setY(nextAction.getY());
+			/*
+			 * I need to check if this position is allowed in RSW.
+			 * 
+			 * 
+			 */
 			
 			//new worldState (so i don't just add +2 agents to the old one)
 			//this is only used in the reward function.			
@@ -122,15 +127,50 @@ public void qLearning (){
 				prey.kill();
 				}
 			
+			else{
 			
+			//Here, I am calculating the prey's possible actions
+			Vector<RandomAction> preyActions = new Vector<RandomAction>();
+			preyActions.addAll(prey.ProbabilityActions(worldState));
 			
-			/*
-			 * Somewhere here i have to calculate the prey's actions.
-			 * And update the predator's position again.
-			 * 
-			 */
-
-			
+				//need a random [0,1] to see what the action will be
+				Double rand = Math.random();
+				
+				//if rand  >0.2 , the prey stays.
+				if (rand>0.2)
+					break;
+				
+				//if the prob is <0.2
+				else{
+					
+				Double step = 0.05;
+				
+				//this is how i will get a random action. Not sure it's correct. 
+				//but it seems correct ;)
+				for (int k=0; k<preyActions.size();k++){
+					if(rand < preyActions.get(k).prob){
+						
+						/*
+						 * 
+						 * I have to move the predator 
+						 * according to what move we decided for the prey.
+						 * (and do the checks).
+						 * 
+						 */
+						
+						}
+					
+					else{
+						//in order to reach the 4th possible move, it will have to
+						//reduce by 0.05 3 times. 
+						rand-=step;
+						}
+					}
+				
+				}
+					
+		
+			}
 
 
 			//new value for this state according to the update function.
@@ -146,14 +186,7 @@ public void qLearning (){
 			
 		}while (prey.isAlive());
 		
-			
-			
-		
-			
-			
-			
-			
-			
+
 			
 			
 		}
