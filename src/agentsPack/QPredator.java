@@ -1,4 +1,5 @@
 package agentsPack;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -8,12 +9,12 @@ import environmentPack.Coordinate;
 
 public class QPredator extends Predator {
 	
-	protected Map<Vector<Agent>,Map< Coordinate, Double>> q;
+	protected Map<Vector<Agent>,Map<Coordinate, Double>> q;
 	
 	public QPredator(String name, Coordinate p, Policy pi, Map<Vector<Agent>,Map<Coordinate, Double>> qInitialization) {
 		super(name, p, pi);
 		if (qInitialization == null) {
-			this.q = new DefaultHashMap<Vector<Agent>,Map<Coordinate, Double>>(new DefaultHashMap<Coordinate, Double>(Double.NEGATIVE_INFINITY));
+			this.q = new DefaultHashMap<Vector<Agent>,Map<Coordinate, Double>>(new DefaultHashMap<Coordinate,Double>(Double.NEGATIVE_INFINITY));
 		}
 		else {
 			this.q = qInitialization;
@@ -53,5 +54,29 @@ public class QPredator extends Predator {
 	@Override
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 		throw new UnsupportedOperationException("Sorry, we only use a really small world.");
+	}
+	public Map<Vector<Agent>,Map<Coordinate,Double>> initializeQ (){
+		
+		Map<Vector<Agent>, Map<Coordinate,Double>> q = new HashMap<Vector<Agent>,Map<Coordinate,Double>>();
+		Prey prey = new Prey("prey", new Coordinate(0,0),null);
+		for (int i=0;i<6;i++)
+				for (int j=0;j<6;j++)
+					if(i<=j){
+						this.position.setX(i);
+						this.position.setY(j);
+						
+						Vector<Agent> worldState = new Vector<Agent>();
+						worldState.add(this);
+						worldState.add(prey);
+							for(Coordinate c : this.possibleActions(worldState)){
+								
+								Map<Coordinate,Double> actionValuePair = new HashMap<Coordinate,Double>();
+								actionValuePair.put(c, 15.0);
+								q.put(worldState,actionValuePair);	
+							}
+					
+					}
+					
+				return q;
 	}
 }

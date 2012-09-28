@@ -51,7 +51,7 @@ public class Environment {
 
 	}
 
-	// After the thinking process of the agents we have to updatethe worldstate
+	// After the thinking process of the agents we have to update the worldstate
 	// in respect to their desired actions
 	public void updateWorldState(Action[] SelectedActions) {
 
