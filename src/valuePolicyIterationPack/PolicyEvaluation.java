@@ -66,7 +66,7 @@ public class PolicyEvaluation {
 							env.worldState.add(P);
 
 							// possible actions for the predator are computed
-							// with respecto to the current worldstate
+							// with respect to to the current worldstate
 							Vector<RandomAction> PredAct = P
 									.ProbabilityActions(env.worldState);
 
@@ -410,7 +410,7 @@ public class PolicyEvaluation {
 								int NewPredPosX = PNew.position.getX() - x;
 								int NewPredPosY = PNew.position.getY() - y;
 
-								// some checks not to excede the limits of the
+								// some checks not to exceed the limits of the
 								// space
 								if (NewPredPosX == 6)
 									NewPredPosX = 5;

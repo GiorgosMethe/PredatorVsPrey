@@ -2,14 +2,15 @@ package agentsPack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
-
 import actionPack.RandomAction;
-
 import environmentPack.Coordinate;
 
 public class QPredator extends Predator {
 	
 	protected Map<Vector<Agent>,Map<Coordinate, Double>> q;
+	private Double alpha = 0.1;
+	private Double gamma = 0.7;
+
 	
 	public QPredator(String name, Coordinate p, Policy pi, Map<Vector<Agent>,Map<Coordinate, Double>> qInitialization) {
 		super(name, p, pi);
@@ -79,4 +80,92 @@ public class QPredator extends Predator {
 					
 				return q;
 	}
+
+
+
+public void qLearning (){
+
+	q= this.initializeQ();
+	
+	for (int i=0 ; i<100; i++){
+			
+		Prey prey = new Prey("prey",new Coordinate(5,5), null);
+		Vector<Agent> worldState = new Vector<Agent>();
+
+		worldState.add(this);
+		worldState.add(prey);
+		
+		do{
+			Double reward = 0.0;
+			Coordinate nextAction = new Coordinate(null);
+			
+			//save the old position, we need it later.
+			Coordinate oldPosition = this.position;
+			
+			//see what the next action will be (according to policy pi).
+			nextAction = this.pi.chooseAction(worldState, this.q);
+		
+			//update the predator's position
+			this.position.setX(nextAction.getX());
+			this.position.setY(nextAction.getY());
+			
+			//new worldState (so i don't just add +2 agents to the old one)
+			//this is only used in the reward function.			
+			Vector<Agent> newWorldState = new Vector<Agent>();
+						
+			newWorldState.add(this);
+			newWorldState.add(prey);
+			
+			//the reward for this particular move ??(the prey hasn't moved yet)
+			if(Coordinate.compareCoordinates(this.position, prey.position))
+				reward = 10.0;
+			
+			
+			
+			
+			/*
+			 * Somewhere here i have to calculate the prey's actions.
+			 * And update the predator's position again.
+			 * 
+			 */
+
+			
+
+
+			//new value for this state according to the update function.
+			//remember, worldState is still the old one (before the Agents move)
+			Double newValue = q.get(worldState).get(oldPosition)+
+					(alpha*(reward+gamma*(q.get(worldState).get(this.position))
+							-q.get(worldState).get(oldPosition)));
+			
+			//this is supposed to update the value of the state we WERE AT. 
+			//not sure it works
+			q.get(worldState).put(oldPosition, newValue);
+			
+			
+		}while (prey.isAlive());
+		
+			
+			
+		
+			
+			
+			
+			
+			
+			
+			
+		}
+			
+		
+	}
+
+
+
+
+
+
+
+
+
 }
