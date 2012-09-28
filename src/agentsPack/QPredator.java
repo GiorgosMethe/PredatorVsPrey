@@ -143,7 +143,7 @@ public void qLearning (){
 				//if the prob is <0.2
 				else{
 					
-				Double step = 0.05;
+				Double step = 0.2/preyActions.size();
 				
 				//this is how i will get a random action. Not sure it's correct. 
 				//but it seems correct ;)
