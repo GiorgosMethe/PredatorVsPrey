@@ -6,6 +6,9 @@ import environmentPack.Coordinate;
 import valuePolicyIterationPack.PolicyEvaluation;
 import valuePolicyIterationPack.PolicyIteration;
 import valuePolicyIterationPack.ValueIteration;
+import valuePolicyIterationPack.epsilonGreedy;
+import agentsPack.QPredator;
+
 
 public class Main {
 
@@ -30,17 +33,18 @@ public class Main {
 			System.out.println("3. Policy Evaluation");
 			System.out.println("4. Policy Iteration");
 			System.out.println("5. Quit PredatorVsPrey");
+			System.out.println("6. Q-Learning");
 			
 			String choice = null;
 			do{
-				System.out.print("\nGive your choice (1-5):");
+				System.out.print("\nGive your choice (1-6):");
 			try {
 				choice = reader.readLine();
 				choiceInt = Integer.parseInt(choice);
 			} catch (Exception e) {
 
 			}
-			}while(choiceInt < 1 || choiceInt > 5);
+			}while(choiceInt < 1 || choiceInt > 6);
 
 			
 			if (choiceInt == 1) {
@@ -197,7 +201,18 @@ public class Main {
 
 				System.out.println("Oh whyy???!!! :(");
 
-			} else {
+			} 
+			
+			else if  (choiceInt == 6){
+				
+				epsilonGreedy e = new epsilonGreedy(0.1);
+				QPredator qpred= new QPredator("qpredator", new Coordinate(0,0), e,null);
+				qpred.qLearning();
+				
+				
+			}
+			
+			else {
 
 				System.err.println("Wrong choice, please give a number 1-5");
 

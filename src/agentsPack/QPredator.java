@@ -97,22 +97,41 @@ public void qLearning (){
 		
 		do{
 			Double reward = 0.0;
-			Coordinate nextAction = new Coordinate(null);
 			
 			//save the old position, we need it later.
 			Coordinate oldPosition = this.position;
 			
 			//see what the next action will be (according to policy pi).
-			nextAction = this.pi.chooseAction(worldState, this.q);
+			Coordinate nextAction = this.pi.chooseAction(worldState, q);
+
 		
 			//update the predator's position
 			this.position.setX(nextAction.getX());
 			this.position.setY(nextAction.getY());
-			/*
-			 * I need to check if this position is allowed in RSW.
-			 * 
-			 * 
-			 */
+		
+			// some checks not to exceed the limits of the
+			// space
+			if (this.position.getX() == 6)
+				this.position.setX(5) ;
+			if (this.position.getX() == -1)
+				this.position.setX(1);
+			if (this.position.getY() == 6)
+				this.position.setY(5);
+			if (this.position.getY() == -1)
+				this.position.setY(1);
+
+			// for positions under the diagonal of the
+			// matrix we
+			// convert them into the symmetrical position.
+			// (i,j) --> (j,i)
+			int NewPredPosXNor = this.position.getX();
+			int NewPredPosYNor = this.position.getY();
+			if (this.position.getY() < this.position.getX()) {
+
+				this.position.setY(NewPredPosXNor);
+				this.position.setX(NewPredPosYNor);
+
+			}
 			
 			//new worldState (so i don't just add +2 agents to the old one)
 			//this is only used in the reward function.			
@@ -150,13 +169,46 @@ public void qLearning (){
 				for (int k=0; k<preyActions.size();k++){
 					if(rand < preyActions.get(k).prob){
 						
-						/*
-						 * 
-						 * I have to move the predator 
-						 * according to what move we decided for the prey.
-						 * (and do the checks).
-						 * 
-						 */
+						int x = preyActions.elementAt(k).coordinate.getX();
+						if (x == 10)
+							x = -1;
+						int y = preyActions.elementAt(k).coordinate.getY();
+						if (y == 10)
+							y = -1;
+
+						// in order to translate this action of the prey
+						// into
+						// a predator's next state we have to move the
+						// predator
+						// in relation to the movement of the prey
+						int NewPredPosX = this.position.getX() - x;
+						int NewPredPosY = this.position.getY() - y;
+
+						// some checks not to exceed the limits of the
+						// space
+						if (NewPredPosX == 6)
+							NewPredPosX = 5;
+						if (NewPredPosX == -1)
+							NewPredPosX = 1;
+						if (NewPredPosY == 6)
+							NewPredPosY = 5;
+						if (NewPredPosY == -1)
+							NewPredPosY = 1;
+
+						// for positions under the diagonal of the
+						// matrix we
+						// convert them into the symmetrical position.
+						// (i,j) --> (j,i)
+						int NewPredPosXNor2 = NewPredPosX;
+						int NewPredPosYNor2 = NewPredPosY;
+						if (NewPredPosY < NewPredPosX) {
+
+							NewPredPosXNor2 = NewPredPosY;
+							NewPredPosYNor2 = NewPredPosX;
+
+						}
+						this.position.setX(NewPredPosXNor2);
+						this.position.setY(NewPredPosYNor2);
 						
 						}
 					
@@ -183,12 +235,17 @@ public void qLearning (){
 			//not sure it works
 			q.get(worldState).put(oldPosition, newValue);
 			
+			worldState.removeAllElements();
+			worldState.add(this);
+			worldState.add(prey);
+			
 			
 		}while (prey.isAlive());
 		
 
 			
-			
+			System.out.println("The prey is caught!");
+			System.out.println(" ");
 		}
 			
 		
