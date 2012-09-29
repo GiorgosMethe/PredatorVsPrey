@@ -24,6 +24,7 @@ public Coordinate chooseAction(Vector<Agent> worldState, Map<Vector<Agent>,Map<C
 	Double r = Math.random();
 	Coordinate maxAction = null;
 	Double maxValue = Double.NEGATIVE_INFINITY;
+	
 	for(Entry<Coordinate, Double> e : qTable.get(worldState).entrySet()){
 		if(e.getValue() > maxValue) {
 			maxValue = e.getValue();

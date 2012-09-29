@@ -7,7 +7,7 @@ import valuePolicyIterationPack.PolicyEvaluation;
 import valuePolicyIterationPack.PolicyIteration;
 import valuePolicyIterationPack.ValueIteration;
 import valuePolicyIterationPack.epsilonGreedy;
-import agentsPack.QPredator;
+import agentsPack.QPredatorNew;
 
 
 public class Main {
@@ -206,7 +206,7 @@ public class Main {
 			else if  (choiceInt == 6){
 				
 				epsilonGreedy e = new epsilonGreedy(0.1);
-				QPredator qpred= new QPredator("qpredator", new Coordinate(0,0), e,null);
+				QPredatorNew qpred= new QPredatorNew("qpredator", new Coordinate(0,0), e);
 				qpred.qLearning();
 				
 				

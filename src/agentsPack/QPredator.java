@@ -64,26 +64,31 @@ public class QPredator extends Predator {
 		for (int i=0;i<6;i++){
 				for (int j=0;j<6;j++){
 					
-					if(i<=j){
+					if(j<=i){
 						this.position.setX(i);
 						this.position.setY(j);
 						
 						Vector<Agent> worldState = new Vector<Agent>();
+						Map<Coordinate,Double> actionValuePair = new HashMap<Coordinate,Double>();
 						worldState.add(this);
 						worldState.add(prey);
+						
 							for(RandomAction ra : this.ProbabilityActionsRSW(worldState)){
 								
-								Map<Coordinate,Double> actionValuePair = new HashMap<Coordinate,Double>();
 								actionValuePair.put(ra.coordinate, 15.0);
-								q.put(worldState,actionValuePair);	
-								System.out.println("Possible action: " + ra.coordinate.toString() + " value of this action: "+ q.get(worldState).get(ra.coordinate));
+								System.out.println("actionvalue size:  "+ actionValuePair.size());
+
 							}
+							
+							q.put(worldState,actionValuePair);	
+							System.out.println("SIZE OF QTABLE   " + q.size());
+							
 					count++;
 					}
 				}
 		}
 		
-		System.out.println("function initializeQ is running now.  No of states initialized:  " + count  );
+		System.out.println("function has finished.  No of states initialized:  " + count  );
 				return q;
 	}
 
@@ -92,21 +97,21 @@ public class QPredator extends Predator {
 public void qLearning (){
 
 	q= this.initializeQ();
-	if (!q.isEmpty())
-		System.out.println("the q table is not empty!  ");
-	this.position.setX(0);
-	this.position.setY(0);
+	
+	System.out.println("SIZE OF Q TABLE" + q.entrySet().size());
+
+	this.position.setX(5);
+	this.position.setY(5);
 	
 	System.out.println("function Qlearning is running now.");
 	
 	for (int i=0 ; i<100; i++){
 			
-		Prey prey = new Prey("prey",new Coordinate(5,5), null);
+		Prey prey = new Prey("prey",new Coordinate(0,0), null);
 		Vector<Agent> worldState = new Vector<Agent>();
 		worldState.add(this);
 		worldState.add(prey);
-		if(!q.isEmpty())
-			System.out.println("fuck you! ");
+
 		do{
 			Double reward = 0.0;
 			
@@ -162,7 +167,7 @@ public void qLearning (){
 			
 			//Here, I am calculating the prey's possible actions
 			Vector<RandomAction> preyActions = new Vector<RandomAction>();
-			preyActions.addAll(prey.ProbabilityActions(worldState));
+			preyActions.addAll(prey.ProbabilityActionsRSW(worldState));
 			
 				//need a random [0,1] to see what the action will be
 				Double rand = Math.random();
