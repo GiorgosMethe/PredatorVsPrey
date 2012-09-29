@@ -60,8 +60,10 @@ public class QPredator extends Predator {
 		
 		Map<Vector<Agent>, Map<Coordinate,Double>> q = new HashMap<Vector<Agent>,Map<Coordinate,Double>>();
 		Prey prey = new Prey("prey", new Coordinate(0,0),null);
-		for (int i=0;i<6;i++)
-				for (int j=0;j<6;j++)
+		int count =0;
+		for (int i=0;i<6;i++){
+				for (int j=0;j<6;j++){
+					
 					if(i<=j){
 						this.position.setX(i);
 						this.position.setY(j);
@@ -69,15 +71,19 @@ public class QPredator extends Predator {
 						Vector<Agent> worldState = new Vector<Agent>();
 						worldState.add(this);
 						worldState.add(prey);
-							for(Coordinate c : this.possibleActions(worldState)){
+							for(RandomAction ra : this.ProbabilityActionsRSW(worldState)){
 								
 								Map<Coordinate,Double> actionValuePair = new HashMap<Coordinate,Double>();
-								actionValuePair.put(c, 15.0);
+								actionValuePair.put(ra.coordinate, 15.0);
 								q.put(worldState,actionValuePair);	
+								System.out.println("Possible action: " + ra.coordinate.toString() + " value of this action: "+ q.get(worldState).get(ra.coordinate));
 							}
-					
+					count++;
 					}
-					
+				}
+		}
+		
+		System.out.println("function initializeQ is running now.  No of states initialized:  " + count  );
 				return q;
 	}
 
@@ -86,15 +92,21 @@ public class QPredator extends Predator {
 public void qLearning (){
 
 	q= this.initializeQ();
+	if (!q.isEmpty())
+		System.out.println("the q table is not empty!  ");
+	this.position.setX(0);
+	this.position.setY(0);
+	
+	System.out.println("function Qlearning is running now.");
 	
 	for (int i=0 ; i<100; i++){
 			
 		Prey prey = new Prey("prey",new Coordinate(5,5), null);
 		Vector<Agent> worldState = new Vector<Agent>();
-
 		worldState.add(this);
 		worldState.add(prey);
-		
+		if(!q.isEmpty())
+			System.out.println("fuck you! ");
 		do{
 			Double reward = 0.0;
 			

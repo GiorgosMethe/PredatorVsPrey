@@ -21,7 +21,6 @@ public epsilonGreedy (Double epsilon) {
 
 @Override
 public Coordinate chooseAction(Vector<Agent> worldState, Map<Vector<Agent>,Map<Coordinate, Double>> qTable){
-	
 	Double r = Math.random();
 	Coordinate maxAction = null;
 	Double maxValue = Double.NEGATIVE_INFINITY;
