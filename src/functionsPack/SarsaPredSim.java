@@ -7,8 +7,8 @@ import agentsPack.Prey;
 import agentsPack.QPredator;
 import environmentPack.Coordinate;
 
-public class QLearningPredSim {
-
+public class SarsaPredSim {
+	
 	public static void main(String[] args) {
 
 		Run();
@@ -21,7 +21,7 @@ public class QLearningPredSim {
 		qP.initializeQTable();
 		int sumMoves = 0;
 
-		for (int i = 0; i < 100000; i++) {
+		for (int i = 0; i < 10000; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
@@ -56,7 +56,7 @@ public class QLearningPredSim {
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 
-					//System.out.println("killed in " + steps + " steps");
+					System.out.println("killed in " + steps + " steps");
 					sumMoves += steps;
 					reward = 10.0;
 					prey.kill();
@@ -105,10 +105,9 @@ public class QLearningPredSim {
 				// new value for this state according to the update function.
 				// remember, worldState is still the old one (before the Agents
 				// move)
-				qP.updateQTable(oldPosition, worldState, reward);
+				//qP.updateQTable(oldPosition, qP.position, reward);
 
 				steps++;
-				
 			} while (prey.lives);
 
 		}
@@ -120,3 +119,4 @@ public class QLearningPredSim {
 	}
 
 }
+
