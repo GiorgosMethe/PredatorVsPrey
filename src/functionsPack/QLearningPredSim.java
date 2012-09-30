@@ -41,9 +41,14 @@ public class QLearningPredSim {
 				Coordinate oldPosition = new Coordinate(qP.position.getX(),
 						qP.position.getY());
 
-				// see what the next action will be (according to policy pi).
-				Coordinate nextAction = qP.chooseEGreedyAction(qP, worldState,
-						0.3);
+				// e-Greedy action selection
+				// Coordinate nextAction = qP.chooseEGreedyAction(qP,
+				// worldState,
+				// 0.01);
+
+				// SoftMax action selection
+				Coordinate nextAction = qP.chooseSoftMaxAction(qP, worldState,
+						0.1);
 
 				// update the predator's position
 				qP.position.setX(nextAction.getX());

@@ -31,8 +31,8 @@ public class Main {
 			System.out.println("2. Value Iteration");
 			System.out.println("3. Policy Evaluation");
 			System.out.println("4. Policy Iteration");
-			System.out.println("5. Quit PredatorVsPrey");
-			System.out.println("6. Q-Learning");
+			System.out.println("5. Q-Learning");
+			System.out.println("6. Exit");
 
 			String choice = null;
 			do {
@@ -188,13 +188,13 @@ public class Main {
 
 				PolicyIteration.Run(gamma, theta);
 
-			} else if (choiceInt == 5) {
+			} else if (choiceInt == 6) {
 
 				System.out.println("Oh whyy???!!! :(");
 
 			}
 
-			else if (choiceInt == 6) {
+			else if (choiceInt == 5) {
 
 				QLearningPredSim.Run();
 
@@ -206,7 +206,7 @@ public class Main {
 
 			}
 
-		} while (choiceInt != 5);
+		} while (choiceInt != 6);
 
 	}
 

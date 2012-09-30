@@ -85,8 +85,6 @@ public class QPredator extends Predator {
 			}
 		}
 
-		this.qTable[0][0] = 10.0;
-
 	}
 
 	public void updateQTable(Coordinate oldPosition, Coordinate NewPosition,
@@ -100,6 +98,33 @@ public class QPredator extends Predator {
 								.getY()]) - this.qTable[oldPosition.getX()][oldPosition
 						.getY()]));
 
+	}
+
+	public Coordinate chooseSoftMaxAction(Agent agent,
+			Vector<Agent> worldState, double temperature) {
+
+		double sum = 0;
+
+		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
+			sum += Math.exp(this.qTable[e.coordinate.getX()][e.coordinate
+					.getY()] / temperature);
+
+		}
+
+		double random = Math.random();
+		double k = 0;
+
+		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
+
+			k += Math.exp(this.qTable[e.coordinate.getX()][e.coordinate.getY()]
+					/ temperature)
+					/ sum;
+
+			if (random <= k) {
+				return e.coordinate;
+			}
+		}
+		return null;
 	}
 
 	public Coordinate chooseEGreedyAction(Agent agent,
