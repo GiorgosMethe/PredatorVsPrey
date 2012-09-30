@@ -20,14 +20,14 @@ public class Coordinate {
 	}
 
 	public static boolean CoordinateSW(Coordinate a) {
-    return (a.getX() >= 0) && (a.getX() <= 5) 
-      && (a.getY() >= 0) && (a.getY() <= 5);
+		return (a.getX() >= 0) && (a.getX() <= 5) && (a.getY() >= 0)
+				&& (a.getY() <= 5);
 	}
 
-  public static boolean CoordinateRSW(Coordinate a) {
-    return Coordinate.CoordinateSW(a) && (a.getX() <= a.getY());
-  }
-	
+	public static boolean CoordinateRSW(Coordinate a) {
+		return Coordinate.CoordinateSW(a) && (a.getX() <= a.getY());
+	}
+
 	public Coordinate toSWCoordinate() {
 		if (Coordinate.CoordinateSW(this)) {
 			return this;
@@ -35,16 +35,17 @@ public class Coordinate {
 		return new Coordinate((this.getX() + 6) % 6, (this.getY() + 6) % 6);
 	}
 
-  public Coordinate toRSWCoordinate() {
-    if (Coordinate.CoordinateRSW(this)) {
-      return this;
-    }
-    Coordinate rswCoordinate = this.toSWCoordinate();
-    if (rswCoordinate.getX() > rswCoordinate.getY()) {
-      rswCoordinate = new Coordinate(rswCoordinate.getY(), rswCoordinate.getX());
-    }
-    return rswCoordinate;
-  }
+	public Coordinate toRSWCoordinate() {
+		if (Coordinate.CoordinateRSW(this)) {
+			return this;
+		}
+		Coordinate rswCoordinate = this.toSWCoordinate();
+		if (rswCoordinate.getX() > rswCoordinate.getY()) {
+			rswCoordinate = new Coordinate(rswCoordinate.getY(),
+					rswCoordinate.getX());
+		}
+		return rswCoordinate;
+	}
 
 	public int getX() {
 		return x;
@@ -71,7 +72,7 @@ public class Coordinate {
 	public static Coordinate difference(Coordinate c1, Coordinate c2) {
 		return new Coordinate(c1.x - c2.x, c1.y - c2.y);
 	}
-	
+
 	public static Coordinate sum(Coordinate c1, Coordinate c2) {
 		return new Coordinate(c1.x + c2.x, c1.y + c2.y);
 	}

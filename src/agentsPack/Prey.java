@@ -104,7 +104,7 @@ public class Prey extends Agent {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/*
 	 * This function return all possible action that a prey or a predator can be
 	 * able to do in relation to the current worldstate. This function is used
@@ -113,17 +113,22 @@ public class Prey extends Agent {
 	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
 		Vector<RandomAction> maybeSafeActions = new Vector<RandomAction>();
 
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getNorth()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getEast()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getWest()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getNorth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getEast()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getWest()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getSouth()));
 
 		// a new vector is created to get only the safe actions
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
 		// sum of the probability of the safe actions
 		for (int i = 0; i < maybeSafeActions.size(); i++) {
-			if (this.safePosition(maybeSafeActions.elementAt(i).coordinate, worldState)) {
+			if (this.safePosition(maybeSafeActions.elementAt(i).coordinate,
+					worldState)) {
 				safeActions.add(maybeSafeActions.elementAt(i));
 			}
 		}
@@ -133,12 +138,12 @@ public class Prey extends Agent {
 		for (int j = 0; j < safeActions.size(); j++) {
 			safeActions.elementAt(j).prob += (1 - 0.8) / safeActions.size();
 		}
-		
+
 		safeActions.addElement(new RandomAction(0.8, this.position));
-		
+
 		return safeActions;
 	}
-	
+
 	/*
 	 * This function return all possible action that a prey or a predator can be
 	 * able to do in relation to the current worldstate. This function is used
@@ -147,10 +152,14 @@ public class Prey extends Agent {
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> maybeSafeActions = new Vector<RandomAction>();
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getNorth()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getEast()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getWest()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getNorth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getEast()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getWest()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getSouth()));
 
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
@@ -173,8 +182,7 @@ public class Prey extends Agent {
 
 			// this coordinate is the translated coordinate, with which we
 			// can check for safety
-			Coordinate RealCoordinate = new Coordinate(realCoordx,
-					realCoordy);
+			Coordinate RealCoordinate = new Coordinate(realCoordx, realCoordy);
 
 			if (this.safePosition(RealCoordinate, worldState)) {
 				safeActions.add(maybeSafeActions.elementAt(i));
@@ -186,11 +194,11 @@ public class Prey extends Agent {
 		for (int j = 0; j < safeActions.size(); j++) {
 			safeActions.elementAt(j).prob += (1 - 0.8) / safeActions.size();
 		}
-		
+
 		safeActions.addElement(new RandomAction(0.8, this.position));
 		return safeActions;
 	}
-	
+
 	/*
 	 * This function return all possible actions that a prey or a predator can
 	 * be able to do in relation to the current worldstate. This function is
@@ -200,10 +208,14 @@ public class Prey extends Agent {
 
 		Vector<RandomAction> maybeSafeActions = new Vector<RandomAction>();
 
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getNorth()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getEast()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getWest()));
-		maybeSafeActions.addElement(new RandomAction(0.05, this.position.getSouth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getNorth()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getEast()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getWest()));
+		maybeSafeActions.addElement(new RandomAction(0.05, this.position
+				.getSouth()));
 
 		Vector<RandomAction> safeActions = new Vector<RandomAction>();
 
@@ -220,8 +232,7 @@ public class Prey extends Agent {
 			if (realCoordy == -1)
 				realCoordy = 1;
 
-			Coordinate RealCoordinate = new Coordinate(realCoordx,
-					realCoordy);
+			Coordinate RealCoordinate = new Coordinate(realCoordx, realCoordy);
 
 			if (this.safePosition(RealCoordinate, worldState)) {
 				safeActions.add(maybeSafeActions.elementAt(i));
@@ -230,10 +241,11 @@ public class Prey extends Agent {
 		for (int j = 0; j < safeActions.size(); j++) {
 			safeActions.elementAt(j).prob = (1 - 0.8) / safeActions.size();
 		}
-		
+
 		safeActions.addElement(new RandomAction(0.8, this.position));
-		
+
 		System.out.println(safeActions);
 		return safeActions;
 	}
+
 }

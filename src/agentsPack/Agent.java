@@ -137,20 +137,23 @@ public abstract class Agent {
 	 * able to do in relation to the current worldstate. This function is used
 	 * for the normal state space world.
 	 */
-	public abstract Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState);
-	
+	public abstract Vector<RandomAction> ProbabilityActions(
+			Vector<Agent> worldState);
+
 	/*
 	 * This function return all possible action that a prey or a predator can be
 	 * able to do in relation to the current worldstate. This function is used
 	 * for the small 6x6 state space world.
 	 */
-	public abstract Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState);
-	
+	public abstract Vector<RandomAction> ProbabilityActionsSW(
+			Vector<Agent> worldState);
+
 	/*
 	 * This function return all possible actions that a prey or a predator can
 	 * be able to do in relation to the current worldstate. This function is
 	 * used for the little 21 state space world.
 	 */
-	public abstract Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState);
+	public abstract Vector<RandomAction> ProbabilityActionsRSW(
+			Vector<Agent> worldState);
 
 }

@@ -1,4 +1,4 @@
-package valuePolicyIterationPack;
+package functionsPack;
 
 import java.util.Vector;
 
@@ -8,29 +8,31 @@ import agentsPack.Prey;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
 
-public class ValueIteration {
+public class PolicyEvaluation {
 
-	public static void Run(double gamma, double theta, Coordinate prey) {
+	public static void Run(double gamma, double theta, Coordinate Prey) {
 
 		// Normal state space implementation
-		//ValueIterationImpl(gamma,theta, prey);
+		PolicyEvaluationImpl(gamma, theta, Prey);
 
 		// First way to reduce the state space
 		// Small World 6x6 matrix with prey standing always
 		// at 0,0 position.
-		//ValueIterationImplSW(gamma,theta, prey);
+		PolicyEvaluationImplSW(gamma, theta, Prey);
 
 		// Second way to reduce the state space
 		// only the half of the matrix e.g Upper Triangular Matrix
 		// Due to symmetric values we can implement this state space
 		// as it was the 11x11 state space. There is also a static position
 		// for the prey at 0,0 position.
-		ValueIterationImplRSW(gamma,theta, prey);
+		PolicyEvaluationImplRSW(gamma, theta, Prey);
 
 	}
 
-	public static void ValueIterationImpl(double discountFactor, double theta, Coordinate Prey) {
+	public static void PolicyEvaluationImpl(double discountFactor,
+			double theta, Coordinate Prey) {
 
+		// this variable represents the time when the algorithm starts running.
 		long start = System.currentTimeMillis();
 
 		double[][][][] State = new double[11][11][11][11];
@@ -39,9 +41,11 @@ public class ValueIteration {
 		int algorithmSweeps = 0;
 
 		do {
-
+			// algorithmSweeps counts the number of sweeps it takes
+			// till the algorithm converges.
 			algorithmSweeps++;
 
+			// this represents the value of Δ.
 			delta = 0;
 
 			// for every possible state of the normal world
@@ -62,7 +66,7 @@ public class ValueIteration {
 							env.worldState.add(P);
 
 							// possible actions for the predator are computed
-							// with respecto to the current worldstate
+							// with respect to to the current worldstate
 							Vector<RandomAction> PredAct = P
 									.ProbabilityActions(env.worldState);
 
@@ -77,7 +81,9 @@ public class ValueIteration {
 
 							} else {
 
-								double max = Double.NEGATIVE_INFINITY;
+								// finalValue will be the Value that represents
+								// the current state.
+								double finalValue = 0;
 
 								for (int ii = 0; ii < PredAct.size(); ii++) {
 
@@ -125,8 +131,11 @@ public class ValueIteration {
 
 										}
 
+										// prob is the probability of every
+										// possible prey's action.
 										double prob = PreyAct.elementAt(jj).prob;
-
+										// the discount factor mutiplied to the
+										// next possible state value.
 										double discount = discountFactor
 												* State[PNew.position.getX()][PNew.position
 														.getY()][PreyAct
@@ -134,19 +143,23 @@ public class ValueIteration {
 														.getX()][PreyAct
 														.elementAt(jj).coordinate
 														.getY()];
-
+										// currentValue represents the inner sum
+										// of the policy evaluation aglorithm
 										currentValue += prob
 												* (reward + discount);
 
 									}
-
-									max = Math.max(max, currentValue);
+									// final Value is equal to the outer sum of
+									// the
+									// policy evaluation algorithm
+									finalValue += currentValue
+											* PredAct.get(ii).prob;
 								}
-
-								State[i][j][x][y] = max;
-
+								// Give each state its value
+								State[i][j][x][y] = finalValue;
+								// recalculate delta
 								delta = Math.max(delta,
-										Math.abs(preValue - max));
+										Math.abs(preValue - finalValue));
 
 							}
 						}
@@ -155,18 +168,20 @@ public class ValueIteration {
 				}
 			}
 
+			// The algorithm runs until Δ<θ (here, θ = 0).
 		} while (delta > theta);
-
+		// this is the time representation when this function ends.
 		long end = System.currentTimeMillis();
 		System.out.println("Normal 11x11 World Implementation");
 		System.out.println("\nSweeps = " + algorithmSweeps);
 		System.out.println("Execution time was " + (end - start) + "ms");
-		PrintValueIteration(State[Prey.getX()][Prey.getY()]);
+		// print the result board
+		PrintPolicyEvaluation(State[Prey.getX()][Prey.getY()]);
 
 	}
 
-	public static void ValueIterationImplSW(double discountFactor, double theta,
-			Coordinate Prey) {
+	public static void PolicyEvaluationImplSW(double discountFactor,
+			double theta, Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -201,7 +216,7 @@ public class ValueIteration {
 
 					} else {
 
-						double max = Double.NEGATIVE_INFINITY;
+						double finalValue = 0;
 
 						for (int ii = 0; ii < PredAct.size(); ii++) {
 
@@ -273,12 +288,13 @@ public class ValueIteration {
 								currentValue += prob * (reward + discount);
 
 							}
-							max = Math.max(max, currentValue);
+							finalValue += currentValue * PredAct.get(ii).prob;
 						}
 
-						State[i][j] = max;
+						State[i][j] = finalValue;
 
-						delta = Math.max(delta, Math.abs(preValue - max));
+						delta = Math
+								.max(delta, Math.abs(preValue - finalValue));
 
 					}
 
@@ -296,8 +312,8 @@ public class ValueIteration {
 
 	}
 
-	public static void ValueIterationImplRSW(double discountFactor, double theta,
-			Coordinate Prey) {
+	public static void PolicyEvaluationImplRSW(double discountFactor,
+			double theta, Coordinate Prey) {
 
 		long start = System.currentTimeMillis();
 
@@ -335,7 +351,7 @@ public class ValueIteration {
 
 					} else {
 
-						double max = Double.NEGATIVE_INFINITY;
+						double finalValue = 0;
 
 						for (int ii = 0; ii < PredAct.size(); ii++) {
 
@@ -400,7 +416,7 @@ public class ValueIteration {
 								int NewPredPosX = PNew.position.getX() - x;
 								int NewPredPosY = PNew.position.getY() - y;
 
-								// some checks not to excede the limits of the
+								// some checks not to exceed the limits of the
 								// space
 								if (NewPredPosX == 6)
 									NewPredPosX = 5;
@@ -433,12 +449,13 @@ public class ValueIteration {
 								currentValue += prob * (reward + discount);
 
 							}
-							max = Math.max(max, currentValue);
+							finalValue += currentValue * PredAct.get(ii).prob;
 						}
 
-						State[i][j] = max;
+						State[i][j] = finalValue;
 
-						delta = Math.max(delta, Math.abs(preValue - max));
+						delta = Math
+								.max(delta, Math.abs(preValue - finalValue));
 
 					}
 
@@ -468,19 +485,17 @@ public class ValueIteration {
 	}
 
 	// printing function of each matrix
-	public static void PrintValueIteration(double[][] StateValues) {
+	public static void PrintPolicyEvaluation(double[][] StateValues) {
 
 		System.out.println("\n");
 		for (int i = 0; i < StateValues.length; i++) {
 
 			for (int j = 0; j < StateValues.length; j++) {
 
-				//System.out.printf(" %.4f |", StateValues[i][j]);
-
 				System.out.printf(" %.4f |", StateValues[i][j]);
-				
+
 			}
-			System.out.println("");
+			System.out.println("\n");
 		}
 	}
 
@@ -488,7 +503,7 @@ public class ValueIteration {
 	// non-zero elements in all positions
 	public static void HalfQuarterMirroring(double[][] SmallWorld, Coordinate c) {
 
-		PrintValueIteration(SmallWorld);
+		PrintPolicyEvaluation(SmallWorld);
 
 		for (int i = 0; i < SmallWorld.length; i++) {
 			for (int j = 0; j < SmallWorld.length; j++) {
@@ -506,10 +521,10 @@ public class ValueIteration {
 
 	// a 6x6 matrix is a quarter of the normal 11x11 grid world
 	// this function convert 6x6 matrices to the normal state space
-	// representation
+	// represantation
 	public static void QuarterMirroring(double[][] SmallWorld, Coordinate Prey) {
 
-		PrintValueIteration(SmallWorld);
+		PrintPolicyEvaluation(SmallWorld);
 		double[][] State = new double[11][11];
 
 		int currentPosX = Prey.getX();
@@ -567,7 +582,7 @@ public class ValueIteration {
 
 		}
 
-		PrintValueIteration(State);
+		PrintPolicyEvaluation(State);
 
 	}
 

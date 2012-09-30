@@ -5,13 +5,9 @@ import java.util.Vector;
 
 import environmentPack.Coordinate;
 
-
-
 public interface Policy {
 
-	
-public abstract  Coordinate chooseAction(Vector<Agent> worldState, Map<Vector<Agent>,Map<Coordinate, Double>> qTable);
-	
-	
-	
+	public abstract Coordinate chooseAction(Vector<Agent> worldState,
+			Map<Vector<Agent>, Map<Coordinate, Double>> qTable);
+
 }

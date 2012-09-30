@@ -11,13 +11,14 @@ public class RandomAction {
 		this.prob = p;
 		this.coordinate = c;
 	}
-	
+
 	public String toString() {
 		return "p(" + this.coordinate + ") = " + this.prob;
 	}
-	public Coordinate getCoordinate(){
-		
+
+	public Coordinate getCoordinate() {
+
 		return coordinate;
-		
+
 	}
 }

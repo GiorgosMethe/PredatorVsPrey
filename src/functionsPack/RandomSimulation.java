@@ -1,11 +1,11 @@
-package simulationPack;
+package functionsPack;
 
 import agentsPack.Predator;
 import agentsPack.Prey;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
 
-public class Simulation {
+public class RandomSimulation {
 
 	/*
 	 * This is the main function of the simulation.It performs 100 hundred steps
@@ -31,18 +31,18 @@ public class Simulation {
 
 			// Generation of the agent-Predator. Predator is going to be added
 			// in the worldstate
-			env.worldState.add(new Predator("predator", new Coordinate(0,
-					0), null));
-			
+			env.worldState.add(new Predator("predator", new Coordinate(0, 0),
+					null));
+
 			// Generation of the agent-Prey. Prey is going to be added
-						// in the worldstate
+			// in the worldstate
 			env.worldState.add(new Prey("prey", new Coordinate(5, 5), null));
 
 			do {
 
 				manytimesdoingsteps[i]++;
-				
-				//Run the simulation
+
+				// Run the simulation
 				env.run();
 
 			} while (!env.isDone());

@@ -195,11 +195,11 @@ public class Predator extends Agent {
 		for (int j = 0; j < safeActions.size(); j++) {
 			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
 		}
-		
+
 		return safeActions;
 
 	}
-	
+
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
@@ -227,8 +227,7 @@ public class Predator extends Agent {
 
 		double probSum = 0;
 		for (int i = 0; i < actions.size(); i++) {
-			if (this.safePosition(actions.elementAt(i).coordinate,
-					worldState)) {
+			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
 
 				safeActions.add(actions.elementAt(i));
 				probSum += actions.elementAt(i).prob;
@@ -239,12 +238,11 @@ public class Predator extends Agent {
 		// the (1-sum) probability is lost due to unsafe moves. It will be
 		// distributed uniformly to the safe actions
 		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1 - probSum)
-					/ safeActions.size();
+			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
 		}
 		return safeActions;
 	}
-	
+
 	/*
 	 * This function return all possible actions that a prey or a predator can
 	 * be able to do in relation to the current worldstate. This function is
@@ -253,7 +251,7 @@ public class Predator extends Agent {
 	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
 
 		Vector<RandomAction> actions = new Vector<RandomAction>();
-		
+
 		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
 		actions.addElement(new RandomAction(0.2, this.position.getEast()));
 		actions.addElement(new RandomAction(0.2, this.position.getWest()));
@@ -275,8 +273,8 @@ public class Predator extends Agent {
 			// we transpose this element to fit into the upper triangular
 			// matrix we are using for the representation of the 21 states
 			// space
-			if (actions.elementAt(i).coordinate.getY() < actions
-					.elementAt(i).coordinate.getX()) {
+			if (actions.elementAt(i).coordinate.getY() < actions.elementAt(i).coordinate
+					.getX()) {
 				int x = actions.elementAt(i).coordinate.getX();
 				int y = actions.elementAt(i).coordinate.getY();
 				actions.elementAt(i).coordinate.setX(y);
@@ -290,8 +288,7 @@ public class Predator extends Agent {
 		double probSum = 0;
 
 		for (int i = 0; i < actions.size(); i++) {
-			if (this.safePosition(actions.elementAt(i).coordinate,
-					worldState)) {
+			if (this.safePosition(actions.elementAt(i).coordinate, worldState)) {
 
 				safeActions.add(actions.elementAt(i));
 				probSum += actions.elementAt(i).prob;
@@ -300,12 +297,11 @@ public class Predator extends Agent {
 		}
 
 		for (int j = 0; j < safeActions.size(); j++) {
-			safeActions.elementAt(j).prob += (1 - probSum)
-					/ safeActions.size();
+			safeActions.elementAt(j).prob += (1 - probSum) / safeActions.size();
 		}
 		return safeActions;
 	}
-	
+
 	// this function is used to inform us if a possible coordinate is safe for
 	// the predator
 	@Override
@@ -326,4 +322,5 @@ public class Predator extends Agent {
 	public String toString() {
 		return "Predator(\"" + this.name + "\", " + this.position + ")";
 	}
+
 }
