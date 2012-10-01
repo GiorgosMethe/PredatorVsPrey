@@ -56,7 +56,7 @@ public class QLearningPredSim {
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 
-					//System.out.println("killed in " + steps + " steps");
+					// System.out.println("killed in " + steps + " steps");
 					sumMoves += steps;
 					reward = 10.0;
 					prey.kill();
@@ -108,7 +108,7 @@ public class QLearningPredSim {
 				qP.updateQTable(oldPosition, worldState, reward);
 
 				steps++;
-				
+
 			} while (prey.lives);
 
 		}

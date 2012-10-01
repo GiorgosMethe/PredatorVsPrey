@@ -4,12 +4,11 @@ import java.util.Vector;
 
 import agentsPack.Agent;
 import agentsPack.Prey;
-import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
 
 public class SarsaPredSim {
-	
+
 	public static void main(String[] args) {
 
 		Run();
@@ -18,7 +17,8 @@ public class SarsaPredSim {
 
 	public static void Run() {
 
-		SarsaPredator sP = new SarsaPredator("SarsaPredator", new Coordinate(5, 5), null);
+		SarsaPredator sP = new SarsaPredator("SarsaPredator", new Coordinate(5,
+				5), null);
 		sP.initializeSarsaTable();
 		int sumMoves = 0;
 
@@ -33,19 +33,17 @@ public class SarsaPredSim {
 			worldState.add(prey);
 
 			int steps = 0;
-			
-			
+
 			Coordinate oldPosition = new Coordinate(sP.position.getX(),
 					sP.position.getY());
 
 			// e-Greedy action selection
-//			 Coordinate nextAction = sP.chooseEGreedyAction(sP,
-//			 worldState,
-//			 0.01);
+			// Coordinate nextAction = sP.chooseEGreedyAction(sP,
+			// worldState,
+			// 0.01);
 
 			// SoftMax action selection
-			Coordinate nextAction = sP.chooseSoftMaxAction(sP, worldState,
-					0.5);
+			Coordinate nextAction = sP.chooseSoftMaxAction(sP, worldState, 0.5);
 
 			do {
 
@@ -54,7 +52,6 @@ public class SarsaPredSim {
 				// update the predator's position
 				sP.position.setX(nextAction.getX());
 				sP.position.setY(nextAction.getY());
-				
 
 				if (Coordinate.compareCoordinates(sP.position, prey.position)) {
 
@@ -105,20 +102,19 @@ public class SarsaPredSim {
 				}
 
 				// e-Greedy action selection
-//				 nextAction = sP.chooseEGreedyAction(sP,
-//				 worldState,
-//				 0.01);
+				// nextAction = sP.chooseEGreedyAction(sP,
+				// worldState,
+				// 0.01);
 
 				// SoftMax action selection
-				nextAction = sP.chooseSoftMaxAction(sP, worldState,
-						0.5);
-				
-				sP.updateSarsaTable(oldPosition,nextAction, reward);
-				
+				nextAction = sP.chooseSoftMaxAction(sP, worldState, 0.5);
+
+				sP.updateSarsaTable(oldPosition, nextAction, reward);
+
 				oldPosition = sP.position;
 
 				steps++;
-				
+
 			} while (prey.lives);
 
 		}
@@ -130,4 +126,3 @@ public class SarsaPredSim {
 	}
 
 }
-

@@ -87,26 +87,23 @@ public class QPredator extends Predator {
 
 	}
 
-	public void updateQTable(Coordinate oldPosition,Vector<Agent> worldState,
+	public void updateQTable(Coordinate oldPosition, Vector<Agent> worldState,
 			double reward) {
-		
-		
+
 		double actionMaxValue = Double.NEGATIVE_INFINITY;
-		for (RandomAction c : this
-				.ProbabilityActionsRSW(worldState)) {
-			
-			if(this.qTable[c.coordinate.getX()][c.coordinate.getY()]> actionMaxValue){
-				actionMaxValue = this.qTable[c.coordinate.getX()][c.coordinate.getY()];
+		for (RandomAction c : this.ProbabilityActionsRSW(worldState)) {
+
+			if (this.qTable[c.coordinate.getX()][c.coordinate.getY()] > actionMaxValue) {
+				actionMaxValue = this.qTable[c.coordinate.getX()][c.coordinate
+						.getY()];
 			}
-			
+
 		}
 
 		this.qTable[oldPosition.getX()][oldPosition.getY()] = this.qTable[oldPosition
 				.getX()][oldPosition.getY()]
-				+ (alpha * (reward
-						+ (gamma
-						* actionMaxValue) - this.qTable[oldPosition.getX()][oldPosition
-						.getY()]));
+				+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
+						.getX()][oldPosition.getY()]));
 
 	}
 

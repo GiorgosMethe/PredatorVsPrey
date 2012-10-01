@@ -190,11 +190,11 @@ public class Main {
 
 				PolicyIteration.Run(gamma, theta);
 
-			}else if (choiceInt == 5) {
+			} else if (choiceInt == 5) {
 
 				QLearningPredSim.Run();
-				
-			}else if (choiceInt == 6) {
+
+			} else if (choiceInt == 6) {
 
 				SarsaPredSim.Run();
 
@@ -202,7 +202,7 @@ public class Main {
 
 				System.out.println("Oh whyy???!!! :(");
 
-			}else {
+			} else {
 
 				System.err.println("Wrong choice, please give a number 1-5");
 
