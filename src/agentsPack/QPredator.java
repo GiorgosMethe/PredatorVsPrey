@@ -4,11 +4,12 @@ import java.util.Map;
 import java.util.Vector;
 
 import actionPack.RandomAction;
+import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
 public class QPredator extends Predator {
 
-	private double qTable[][] = new double[6][6];
+	private Vector<StateActionPair> qTable[][] = new Vector[11][11];
 	private double alpha = 0.1;
 	private double gamma = 0.7;
 
@@ -40,11 +41,6 @@ public class QPredator extends Predator {
 				"Sorry, you should use ProbabilityActionsRSW(worldState).");
 	}
 
-	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
-		throw new UnsupportedOperationException(
-				"Sorry, we only use a really small world.");
-	}
 
 	@Override
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
@@ -52,116 +48,124 @@ public class QPredator extends Predator {
 				"Sorry, we only use a really small world.");
 	}
 
-	public void PrintQTable() {
-		for (int i = 0; i < 6; i++) {
-			System.out.println();
-			for (int j = 0; j < 6; j++) {
-				System.out.print(this.qTable[i][j] + " ");
-			}
-		}
-		System.out.println();
-	}
-
 	public void initializeQTable() {
 
+		int counter = 0;
 		Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				if (j <= i) {
 
-					this.position.setX(i);
-					this.position.setY(j);
-
+				if(j<=i){
+					this.qTable[i][j] = new Vector<StateActionPair>();
+					QPredator qP = new QPredator("", new Coordinate(i, j), null);
 					Vector<Agent> worldState = new Vector<Agent>();
-					worldState.add(this);
+					worldState.add(qP);
 					worldState.add(prey);
 
-					for (RandomAction c : this
-							.ProbabilityActionsRSW(worldState)) {
-						this.qTable[c.coordinate.getX()][c.coordinate.getY()] = 15;
-					}
+					int id = 0;
+					for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
 
+						id++;
+						this.qTable[i][j].add(new StateActionPair(new Coordinate(c.coordinate.getX(),c.coordinate.getY()),
+								15,id));
+
+					}
 				}
 			}
 		}
 
 	}
 
-	public void updateQTable(Coordinate oldPosition, Vector<Agent> worldState,
-			double reward) {
+	public void PrintQTable(){
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 6; j++) {
+				if(j<=i){
+					System.out.println(new Coordinate(i, j));
+					for (StateActionPair c : this.qTable[i][j]) {
 
-		double actionMaxValue = Double.NEGATIVE_INFINITY;
-		for (RandomAction c : this.ProbabilityActionsRSW(worldState)) {
+						System.out.println(c.Action+" "+c.Value);
 
-			if (this.qTable[c.coordinate.getX()][c.coordinate.getY()] > actionMaxValue) {
-				actionMaxValue = this.qTable[c.coordinate.getX()][c.coordinate
-						.getY()];
+					}
+				}
 			}
-
 		}
-
-		this.qTable[oldPosition.getX()][oldPosition.getY()] = this.qTable[oldPosition
-				.getX()][oldPosition.getY()]
-				+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
-						.getX()][oldPosition.getY()]));
-
 	}
 
-	public Coordinate chooseSoftMaxAction(Agent agent,
-			Vector<Agent> worldState, double temperature) {
+	public StateActionPair chooseSoftMaxAction(double temperature) {
 
 		double sum = 0;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-			sum += Math.exp(this.qTable[e.coordinate.getX()][e.coordinate
-					.getY()] / temperature);
+		for (StateActionPair e : this.qTable[this.position.getX()][this.position.getY()]) {
+			sum += Math.exp(e.Value / temperature);
 
 		}
 
 		double random = Math.random();
 		double k = 0;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
+		for (StateActionPair e : this.qTable[this.position.getX()][this.position.getY()]) {
 
-			k += Math.exp(this.qTable[e.coordinate.getX()][e.coordinate.getY()]
-					/ temperature)
-					/ sum;
+			k += Math.exp(e.Value/ temperature) / sum;
 
 			if (random <= k) {
-				return e.coordinate;
+				return e;
 			}
 		}
 		return null;
 	}
 
-	public Coordinate chooseEGreedyAction(Agent agent,
-			Vector<Agent> worldState, double epsilon) {
+	public StateActionPair chooseEGreedyAction(double epsilon) {
 
 		Double r = Math.random();
-		Coordinate maxAction = null;
+		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-			if (qTable[e.coordinate.getX()][e.coordinate.getY()] > maxValue) {
-				maxValue = qTable[e.coordinate.getX()][e.coordinate.getY()];
-				maxAction = e.coordinate;
+		int CountActions = 0;
+		for (StateActionPair e : this.qTable[this.position.getX()][this.position.getY()]) {
+			if (e.Value > maxValue) {
+				maxValue = e.Value;
+				maxAction = e;
 			}
+			CountActions ++;
 		}
 
 		if (r <= epsilon) {
 			Double step = epsilon
-					/ (agent.ProbabilityActionsRSW(worldState).size() - 1);
+					/ (CountActions - 1);
 			Double counter = step;
-			for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-				if (!Coordinate.compareCoordinates(e.coordinate, maxAction)) {
+			for (StateActionPair e : this.qTable[this.position.getX()][this.position.getY()]) {
+				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
 					if (counter <= r) {
-						return e.coordinate;
+						return e;
 					}
 					counter -= step;
 				}
 			}
 		}
 		return maxAction;
+
+	}
+
+	public void updateQTable(Coordinate oldPosition, StateActionPair Action, double reward) {
+
+		double actionMaxValue = Double.NEGATIVE_INFINITY;
+		for (StateActionPair e : this.qTable[this.position.getX()][this.position.getY()]) {
+			if(e.Value > actionMaxValue){
+				actionMaxValue = e.Value;
+			}
+		}
+
+		int actionPosId = -1;
+		for (int i=0;i<this.qTable[this.position.getX()][this.position.getY()].size();i++) {
+			if(this.qTable[this.position.getX()][this.position.getY()].elementAt(i).id == Action.id){
+				actionPosId = i;
+				break;
+			}
+		}
+
+		this.qTable[oldPosition.getX()][oldPosition.getY()].elementAt(actionPosId).Value = this.qTable[oldPosition.getX()][oldPosition.getY()].elementAt(actionPosId).Value
+				+ (alpha * (reward + (gamma * actionMaxValue) - 
+						this.qTable[oldPosition.getX()][oldPosition.getY()].elementAt(actionPosId).Value));
 
 	}
 

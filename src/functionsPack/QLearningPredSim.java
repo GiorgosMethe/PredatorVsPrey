@@ -2,6 +2,7 @@ package functionsPack;
 
 import java.util.Vector;
 
+import actionPack.StateActionPair;
 import agentsPack.Agent;
 import agentsPack.Prey;
 import agentsPack.QPredator;
@@ -21,7 +22,7 @@ public class QLearningPredSim {
 		qP.initializeQTable();
 		int sumMoves = 0;
 
-		for (int i = 0; i < 100000; i++) {
+		for (int i = 0; i < 10; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
@@ -42,21 +43,18 @@ public class QLearningPredSim {
 						qP.position.getY());
 
 				// e-Greedy action selection
-				// Coordinate nextAction = qP.chooseEGreedyAction(qP,
-				// worldState,
-				// 0.01);
+				StateActionPair action = qP.chooseEGreedyAction(0.01);
 
 				// SoftMax action selection
-				Coordinate nextAction = qP.chooseSoftMaxAction(qP, worldState,
-						0.1);
+				//StateActionPair action = qP.chooseSoftMaxAction(0.1);
 
 				// update the predator's position
-				qP.position.setX(nextAction.getX());
-				qP.position.setY(nextAction.getY());
+				qP.position.setX(action.Action.getX());
+				qP.position.setY(action.Action.getY());
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 
-					// System.out.println("killed in " + steps + " steps");
+					System.out.println("killed in " + steps + " steps");
 					sumMoves += steps;
 					reward = 10.0;
 					prey.kill();
@@ -90,7 +88,7 @@ public class QLearningPredSim {
 					int NewPredPosXNor = NewPredPosX;
 					int NewPredPosYNor = NewPredPosY;
 
-					if (NewPredPosY < NewPredPosX) {
+					if (NewPredPosY > NewPredPosX) {
 
 						NewPredPosXNor = NewPredPosY;
 						NewPredPosYNor = NewPredPosX;
@@ -105,7 +103,7 @@ public class QLearningPredSim {
 				// new value for this state according to the update function.
 				// remember, worldState is still the old one (before the Agents
 				// move)
-				qP.updateQTable(oldPosition, worldState, reward);
+				qP.updateQTable(oldPosition, action, reward);
 
 				steps++;
 
