@@ -273,7 +273,7 @@ public class Predator extends Agent {
 			// we transpose this element to fit into the upper triangular
 			// matrix we are using for the representation of the 21 states
 			// space
-			if (actions.elementAt(i).coordinate.getY() < actions.elementAt(i).coordinate
+			if (actions.elementAt(i).coordinate.getY() > actions.elementAt(i).coordinate
 					.getX()) {
 				int x = actions.elementAt(i).coordinate.getX();
 				int y = actions.elementAt(i).coordinate.getY();

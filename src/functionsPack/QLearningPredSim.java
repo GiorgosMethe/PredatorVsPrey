@@ -20,9 +20,10 @@ public class QLearningPredSim {
 
 		QPredator qP = new QPredator("qPredator", new Coordinate(5, 5), null);
 		qP.initializeQTable();
+
 		int sumMoves = 0;
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
