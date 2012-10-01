@@ -22,7 +22,7 @@ public class QLearningPredSim {
 		qP.initializeQTable();
 		int sumMoves = 0;
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
@@ -33,7 +33,8 @@ public class QLearningPredSim {
 			worldState.add(prey);
 
 			int steps = 0;
-
+			boolean absorbingState = false;
+			
 			do {
 
 				Double reward = 0.0;
@@ -58,6 +59,8 @@ public class QLearningPredSim {
 					sumMoves += steps;
 					reward = 10.0;
 					prey.kill();
+					absorbingState = true;
+					
 
 				} else {
 
@@ -103,7 +106,7 @@ public class QLearningPredSim {
 				// new value for this state according to the update function.
 				// remember, worldState is still the old one (before the Agents
 				// move)
-				qP.updateQTable(oldPosition, action, reward);
+				qP.updateQTable(oldPosition, action, reward, absorbingState);
 
 				steps++;
 
