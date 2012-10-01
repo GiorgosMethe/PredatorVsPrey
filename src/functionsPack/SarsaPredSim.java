@@ -5,6 +5,7 @@ import java.util.Vector;
 import agentsPack.Agent;
 import agentsPack.Prey;
 import agentsPack.QPredator;
+import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
 
 public class SarsaPredSim {
@@ -17,44 +18,45 @@ public class SarsaPredSim {
 
 	public static void Run() {
 
-		QPredator qP = new QPredator("qPredator", new Coordinate(5, 5), null);
-		qP.initializeQTable();
+		SarsaPredator sP = new SarsaPredator("SarsaPredator", new Coordinate(5, 5), null);
+		sP.initializeSarsaTable();
 		int sumMoves = 0;
 
 		for (int i = 0; i < 10000; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
-			qP.position.setX(5);
-			qP.position.setY(5);
+			sP.position.setX(5);
+			sP.position.setY(5);
 
-			worldState.add(qP);
+			worldState.add(sP);
 			worldState.add(prey);
 
 			int steps = 0;
+			
+			
+			Coordinate oldPosition = new Coordinate(sP.position.getX(),
+					sP.position.getY());
+
+			// e-Greedy action selection
+//			 Coordinate nextAction = sP.chooseEGreedyAction(sP,
+//			 worldState,
+//			 0.01);
+
+			// SoftMax action selection
+			Coordinate nextAction = sP.chooseSoftMaxAction(sP, worldState,
+					0.5);
 
 			do {
 
 				Double reward = 0.0;
 
-				// save the old position, we need it later.
-				Coordinate oldPosition = new Coordinate(qP.position.getX(),
-						qP.position.getY());
-
-				// e-Greedy action selection
-				// Coordinate nextAction = qP.chooseEGreedyAction(qP,
-				// worldState,
-				// 0.01);
-
-				// SoftMax action selection
-				Coordinate nextAction = qP.chooseSoftMaxAction(qP, worldState,
-						0.1);
-
 				// update the predator's position
-				qP.position.setX(nextAction.getX());
-				qP.position.setY(nextAction.getY());
+				sP.position.setX(nextAction.getX());
+				sP.position.setY(nextAction.getY());
+				
 
-				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
+				if (Coordinate.compareCoordinates(sP.position, prey.position)) {
 
 					System.out.println("killed in " + steps + " steps");
 					sumMoves += steps;
@@ -73,8 +75,8 @@ public class SarsaPredSim {
 					if (y == 10)
 						y = -1;
 
-					int NewPredPosX = qP.position.getX() - x;
-					int NewPredPosY = qP.position.getY() - y;
+					int NewPredPosX = sP.position.getX() - x;
+					int NewPredPosY = sP.position.getY() - y;
 
 					// some checks not to excede the limits of the
 					// space
@@ -97,24 +99,33 @@ public class SarsaPredSim {
 
 					}
 
-					qP.position.setX(NewPredPosXNor);
-					qP.position.setY(NewPredPosYNor);
+					sP.position.setX(NewPredPosXNor);
+					sP.position.setY(NewPredPosYNor);
 
 				}
 
-				// new value for this state according to the update function.
-				// remember, worldState is still the old one (before the Agents
-				// move)
-				//qP.updateQTable(oldPosition, qP.position, reward);
+				// e-Greedy action selection
+//				 nextAction = sP.chooseEGreedyAction(sP,
+//				 worldState,
+//				 0.01);
+
+				// SoftMax action selection
+				nextAction = sP.chooseSoftMaxAction(sP, worldState,
+						0.5);
+				
+				sP.updateSarsaTable(oldPosition,nextAction, reward);
+				
+				oldPosition = sP.position;
 
 				steps++;
+				
 			} while (prey.lives);
 
 		}
 
-		System.out.println("the average is" + (sumMoves / 10000));
+		System.out.println("the average is: " + (sumMoves / 10000));
 
-		qP.PrintQTable();
+		sP.PrintSarsaTable();
 
 	}
 

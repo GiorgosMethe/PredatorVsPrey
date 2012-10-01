@@ -8,6 +8,7 @@ import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.QLearningPredSim;
 import functionsPack.RandomSimulation;
+import functionsPack.SarsaPredSim;
 import functionsPack.ValueIteration;
 
 public class Main {
@@ -32,7 +33,8 @@ public class Main {
 			System.out.println("3. Policy Evaluation");
 			System.out.println("4. Policy Iteration");
 			System.out.println("5. Q-Learning");
-			System.out.println("6. Exit");
+			System.out.println("6. Sarsa-Learning");
+			System.out.println("7. Exit");
 
 			String choice = null;
 			do {
@@ -43,7 +45,7 @@ public class Main {
 				} catch (Exception e) {
 
 				}
-			} while (choiceInt < 1 || choiceInt > 6);
+			} while (choiceInt < 1 || choiceInt > 7);
 
 			if (choiceInt == 1) {
 
@@ -188,25 +190,25 @@ public class Main {
 
 				PolicyIteration.Run(gamma, theta);
 
-			} else if (choiceInt == 6) {
+			}else if (choiceInt == 5) {
+
+				QLearningPredSim.Run();
+				
+			}else if (choiceInt == 6) {
+
+				SarsaPredSim.Run();
+
+			} else if (choiceInt == 7) {
 
 				System.out.println("Oh whyy???!!! :(");
 
-			}
-
-			else if (choiceInt == 5) {
-
-				QLearningPredSim.Run();
-
-			}
-
-			else {
+			}else {
 
 				System.err.println("Wrong choice, please give a number 1-5");
 
 			}
 
-		} while (choiceInt != 6);
+		} while (choiceInt != 7);
 
 	}
 

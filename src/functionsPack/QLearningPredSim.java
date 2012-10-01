@@ -113,7 +113,7 @@ public class QLearningPredSim {
 
 		}
 
-		System.out.println("the average is" + (sumMoves / 10000));
+		System.out.println("the average is: " + (sumMoves / 10000));
 
 		qP.PrintQTable();
 
