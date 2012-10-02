@@ -66,7 +66,7 @@ public class SarsaPredator extends Predator {
 					id++;
 					this.sarsaTable[i][j].add(new StateActionPair(
 							new Coordinate(c.coordinate.getX(), c.coordinate
-									.getY()), 0, id));
+									.getY()), 15, id));
 
 				}
 
@@ -148,53 +148,40 @@ public class SarsaPredator extends Predator {
 
 	}
 
-	public void updateSarsaTable(Coordinate oldPosition,
-			StateActionPair oldAction, StateActionPair action, double reward,
-			boolean absorbing) {
+	public void updateSarsaTable(Coordinate stateOld,
+			StateActionPair actionOld, StateActionPair actionNew,double reward, boolean absorb) {
 
 		int oldActionPosId = -1;
-		for (int i = 0; i < this.sarsaTable[oldPosition.getX()][oldPosition
-				.getY()].size(); i++) {
-			if (this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
-					.elementAt(i).id == oldAction.id) {
+		for (int i = 0; i < this.sarsaTable[stateOld.getX()][stateOld.getY()]
+				.size(); i++) {
+			if (this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(i).id == actionOld.id) {
 				oldActionPosId = i;
 				break;
 			}
 		}
 
-		int actionPosId = -1;
-		for (int j = 0; j < this.sarsaTable[oldAction.Action.getX()][oldAction.Action
-				.getY()].size(); j++) {
-			if (this.sarsaTable[oldAction.Action.getX()][oldAction.Action
-					.getY()].elementAt(j).id == action.id) {
-				actionPosId = j;
+		int newActionPosId = -1;
+		for (int i = 0; i < this.sarsaTable[actionOld.Action.getX()][actionOld.Action
+				.getY()].size(); i++) {
+			if (this.sarsaTable[actionOld.Action.getX()][actionOld.Action
+					.getY()].elementAt(i).id == actionNew.id) {
+				newActionPosId = i;
 				break;
 			}
 		}
 
-		if (!absorbing) {
-
-			this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
-					.elementAt(oldActionPosId).Value = this.sarsaTable[oldPosition
-					.getX()][oldPosition.getY()].elementAt(oldActionPosId).Value
-					+ alpha
-					* (reward
-							+ gamma
-							* this.sarsaTable[action.Action.getX()][action.Action
-									.getY()].elementAt(actionPosId).Value - this.sarsaTable[oldPosition
-								.getX()][oldPosition.getY()]
-							.elementAt(oldActionPosId).Value);
-
-		} else {
-
-			this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
-					.elementAt(oldActionPosId).Value = this.sarsaTable[oldPosition
-					.getX()][oldPosition.getY()].elementAt(oldActionPosId).Value
-					+ alpha
-					* (reward - this.sarsaTable[oldPosition.getX()][oldPosition
-							.getY()].elementAt(oldActionPosId).Value);
-
+		if(absorb){
+			this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value = 
+					this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value +
+					alpha * (reward + ( gamma * 0 ) - this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value );
+		}else{
+			this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value = 
+					this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value +
+					alpha * (reward + ( gamma * this.sarsaTable[actionOld.Action.getX()][actionOld.Action.getY()]
+							.elementAt(newActionPosId).Value ) - this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value );
 		}
+		
+		
 	}
 
 }

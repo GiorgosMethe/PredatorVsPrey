@@ -1,5 +1,7 @@
 package functionsPack;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import actionPack.StateActionPair;
@@ -7,6 +9,10 @@ import agentsPack.Agent;
 import agentsPack.Prey;
 import agentsPack.QPredator;
 import environmentPack.Coordinate;
+import com.jmatio.*;
+import com.jmatio.io.MatFileWriter;
+import com.jmatio.types.MLChar;
+import com.jmatio.types.MLDouble;
 
 public class QLearningPredSim {
 
@@ -23,7 +29,7 @@ public class QLearningPredSim {
 
 		int sumMoves = 0;
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 50; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();

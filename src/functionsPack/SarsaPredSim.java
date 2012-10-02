@@ -108,12 +108,12 @@ public class SarsaPredSim {
 
 				// SoftMax action selection
 				// StateActionPair newAction = sP.chooseSoftMaxAction(0.5);
-
-				sP.updateSarsaTable(oldPosition, action, newAction, reward,
-						absorbingState);
-
+				
+				sP.updateSarsaTable(oldPosition,action,newAction,reward,absorbingState);
+				
+				
 				action = newAction;
-
+				
 				oldPosition = sP.position;
 
 				steps++;
