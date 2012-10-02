@@ -25,9 +25,11 @@ public abstract class LearningPredator extends Predator {
 		// TODO Auto-generated constructor stub
 	}
 
+	// In the implementing class, make sure this returns True if and only if the algorithm is on-policy
 	public abstract boolean onPolicyLearning();
+	// Receive one state-action pair and its observed reward and next state per update. 
+	// If the algorithm is off-policy, you don't need to implement the loop. That has been done in observe(SARSdata). 
 	public abstract void updateQTable(SARSdata sars);
-	public abstract void updateQTable(Vector<SARSdata> episode);
 	
 	public void observe(SARSdata sars) {
 		if (this.onPolicyLearning()) {
@@ -36,7 +38,9 @@ public abstract class LearningPredator extends Predator {
 		else {
 			this.episodes.lastElement().add(sars);
 			if (sars.isAbsorbingState()) {
-				this.updateQTable(this.episodes.lastElement());
+				for (SARSdata _sars : this.episodes.lastElement()) {
+					this.updateQTable(_sars);
+				}
 				this.episodes.add(new Vector<SARSdata>());
 			}
 		}
