@@ -2,6 +2,7 @@ package functionsPack;
 
 import java.util.Vector;
 
+import actionPack.StateActionPair;
 import agentsPack.Agent;
 import agentsPack.Prey;
 import agentsPack.SarsaPredator;
@@ -38,20 +39,20 @@ public class SarsaPredSim {
 					sP.position.getY());
 
 			// e-Greedy action selection
-			// Coordinate nextAction = sP.chooseEGreedyAction(sP,
-			// worldState,
-			// 0.01);
+			StateActionPair action = sP.chooseEGreedyAction(0.1);
 
 			// SoftMax action selection
-			Coordinate nextAction = sP.chooseSoftMaxAction(sP, worldState, 0.5);
+			// StateActionPair action = sP.chooseSoftMaxAction(0.5);
+
+			boolean absorbingState = false;
 
 			do {
 
 				Double reward = 0.0;
 
 				// update the predator's position
-				sP.position.setX(nextAction.getX());
-				sP.position.setY(nextAction.getY());
+				sP.position.setX(action.Action.getX());
+				sP.position.setY(action.Action.getY());
 
 				if (Coordinate.compareCoordinates(sP.position, prey.position)) {
 
@@ -59,6 +60,7 @@ public class SarsaPredSim {
 					sumMoves += steps;
 					reward = 10.0;
 					prey.kill();
+					absorbingState = true;
 
 				} else {
 
@@ -89,7 +91,7 @@ public class SarsaPredSim {
 					int NewPredPosXNor = NewPredPosX;
 					int NewPredPosYNor = NewPredPosY;
 
-					if (NewPredPosY < NewPredPosX) {
+					if (NewPredPosY > NewPredPosX) {
 
 						NewPredPosXNor = NewPredPosY;
 						NewPredPosYNor = NewPredPosX;
@@ -102,14 +104,15 @@ public class SarsaPredSim {
 				}
 
 				// e-Greedy action selection
-				// nextAction = sP.chooseEGreedyAction(sP,
-				// worldState,
-				// 0.01);
+				StateActionPair newAction = sP.chooseEGreedyAction(0.1);
 
 				// SoftMax action selection
-				nextAction = sP.chooseSoftMaxAction(sP, worldState, 0.5);
+				// StateActionPair newAction = sP.chooseSoftMaxAction(0.5);
 
-				sP.updateSarsaTable(oldPosition, nextAction, reward);
+				sP.updateSarsaTable(oldPosition, action, newAction, reward,
+						absorbingState);
+
+				action = newAction;
 
 				oldPosition = sP.position;
 
@@ -121,7 +124,7 @@ public class SarsaPredSim {
 
 		System.out.println("the average is: " + (sumMoves / 10000));
 
-		sP.PrintSarsaTable();
+		sP.printSarsaTable();
 
 	}
 

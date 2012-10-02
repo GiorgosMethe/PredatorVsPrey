@@ -9,6 +9,7 @@ import environmentPack.Coordinate;
 
 public class QPredator extends Predator {
 
+	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = new Vector[6][6];
 	private double alpha = 0.1;
 	private double gamma = 0.7;
@@ -49,25 +50,22 @@ public class QPredator extends Predator {
 
 	public void initializeQTable() {
 
-		int counter = 0;
 		Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (j <= i) {
-					this.qTable[i][j] = new Vector<StateActionPair>();
-					QPredator qP = new QPredator("", new Coordinate(i, j), null);
-					Vector<Agent> worldState = new Vector<Agent>();
-					worldState.add(qP);
-					worldState.add(prey);
-					int id = 0;
+			for (int j = 0; j <= i; j++) {
 
-					for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
-						id++;
-						this.qTable[i][j].add(new StateActionPair(
-								new Coordinate(c.coordinate.getX(),
-										c.coordinate.getY()), 15, id));
-						
-					}
+				this.qTable[i][j] = new Vector<StateActionPair>();
+				QPredator qP = new QPredator("", new Coordinate(i, j), null);
+				Vector<Agent> worldState = new Vector<Agent>();
+				worldState.add(qP);
+				worldState.add(prey);
+				int id = 0;
+
+				for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
+					id++;
+					this.qTable[i][j].add(new StateActionPair(new Coordinate(
+							c.coordinate.getX(), c.coordinate.getY()), 15, id));
+
 				}
 
 			}
@@ -95,7 +93,7 @@ public class QPredator extends Predator {
 		double sum = 0;
 
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-		                                                           .getY()]) {
+				.getY()]) {
 			sum += Math.exp(e.Value / temperature);
 
 		}
@@ -104,7 +102,7 @@ public class QPredator extends Predator {
 		double k = 0;
 
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-		                                                           .getY()]) {
+				.getY()]) {
 
 			k += Math.exp(e.Value / temperature) / sum;
 
@@ -123,7 +121,7 @@ public class QPredator extends Predator {
 
 		int CountActions = 0;
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-		                                                           .getY()]) {
+				.getY()]) {
 			if (e.Value > maxValue) {
 				maxValue = e.Value;
 				maxAction = e;
@@ -135,7 +133,7 @@ public class QPredator extends Predator {
 			Double step = epsilon / (CountActions - 1);
 			Double counter = step;
 			for (StateActionPair e : this.qTable[this.position.getX()][this.position
-			                                                           .getY()]) {
+					.getY()]) {
 				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
 					if (counter <= r) {
 						return e;
@@ -153,7 +151,7 @@ public class QPredator extends Predator {
 
 		int actionPosId = -1;
 		for (int i = 0; i < this.qTable[this.position.getX()][this.position
-		                                                      .getY()].size(); i++) {
+				.getY()].size(); i++) {
 			if (this.qTable[this.position.getX()][this.position.getY()]
 					.elementAt(i).id == Action.id) {
 				actionPosId = i;
@@ -165,7 +163,7 @@ public class QPredator extends Predator {
 
 			double actionMaxValue = Double.NEGATIVE_INFINITY;
 			for (StateActionPair e : this.qTable[this.position.getX()][this.position
-			                                                           .getY()]) {
+					.getY()]) {
 				if (e.Value > actionMaxValue) {
 					actionMaxValue = e.Value;
 				}
@@ -173,17 +171,18 @@ public class QPredator extends Predator {
 
 			this.qTable[oldPosition.getX()][oldPosition.getY()]
 					.elementAt(actionPosId).Value = this.qTable[oldPosition
-					                                            .getX()][oldPosition.getY()].elementAt(actionPosId).Value
-					                                            + (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
-					                                                                                                        .getX()][oldPosition.getY()].elementAt(actionPosId).Value));
+					.getX()][oldPosition.getY()].elementAt(actionPosId).Value
+					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
+							.getX()][oldPosition.getY()].elementAt(actionPosId).Value));
 
 		} else {
 
 			this.qTable[oldPosition.getX()][oldPosition.getY()]
 					.elementAt(actionPosId).Value = this.qTable[oldPosition
-					                                            .getX()][oldPosition.getY()].elementAt(actionPosId).Value
-					                                            +alpha*(reward - this.qTable[oldPosition.getX()][oldPosition.getY()]
-					                                            		.elementAt(actionPosId).Value);
+					.getX()][oldPosition.getY()].elementAt(actionPosId).Value
+					+ alpha
+					* (reward - this.qTable[oldPosition.getX()][oldPosition
+							.getY()].elementAt(actionPosId).Value);
 
 		}
 	}

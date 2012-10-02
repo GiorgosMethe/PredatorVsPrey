@@ -23,7 +23,7 @@ public class QLearningPredSim {
 
 		int sumMoves = 0;
 
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 10000; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
@@ -35,7 +35,7 @@ public class QLearningPredSim {
 
 			int steps = 0;
 			boolean absorbingState = false;
-			
+
 			do {
 
 				Double reward = 0.0;
@@ -45,10 +45,10 @@ public class QLearningPredSim {
 						qP.position.getY());
 
 				// e-Greedy action selection
-				StateActionPair action = qP.chooseEGreedyAction(0.01);
+				StateActionPair action = qP.chooseEGreedyAction(0.1);
 
 				// SoftMax action selection
-				//StateActionPair action = qP.chooseSoftMaxAction(0.1);
+				// StateActionPair action = qP.chooseSoftMaxAction(0.1);
 
 				// update the predator's position
 				qP.position.setX(action.Action.getX());
@@ -61,7 +61,6 @@ public class QLearningPredSim {
 					reward = 10.0;
 					prey.kill();
 					absorbingState = true;
-					
 
 				} else {
 

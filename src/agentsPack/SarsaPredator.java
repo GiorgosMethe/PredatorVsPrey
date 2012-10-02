@@ -4,11 +4,13 @@ import java.util.Map;
 import java.util.Vector;
 
 import actionPack.RandomAction;
+import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
 public class SarsaPredator extends Predator {
 
-	private double sarsaTable[][] = new double[6][6];
+	@SuppressWarnings("unchecked")
+	private Vector<StateActionPair> sarsaTable[][] = new Vector[6][6];
 	private double alpha = 0.1;
 	private double gamma = 0.7;
 
@@ -41,12 +43,6 @@ public class SarsaPredator extends Predator {
 	}
 
 	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
-		throw new UnsupportedOperationException(
-				"Sorry, we only use a really small world.");
-	}
-
-	@Override
 	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
 		throw new UnsupportedOperationException(
 				"Sorry, we only use a really small world.");
@@ -56,100 +52,93 @@ public class SarsaPredator extends Predator {
 
 		Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j <= i; j++) {
+
+				this.sarsaTable[i][j] = new Vector<StateActionPair>();
+				SarsaPredator sP = new SarsaPredator("", new Coordinate(i, j),
+						null);
+				Vector<Agent> worldState = new Vector<Agent>();
+				worldState.add(sP);
+				worldState.add(prey);
+				int id = 0;
+
+				for (RandomAction c : sP.ProbabilityActionsRSW(worldState)) {
+					id++;
+					this.sarsaTable[i][j].add(new StateActionPair(
+							new Coordinate(c.coordinate.getX(), c.coordinate
+									.getY()), 0, id));
+
+				}
+
+			}
+		}
+
+	}
+
+	public void printSarsaTable() {
+		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
 				if (j <= i) {
+					System.out.println(new Coordinate(i, j));
+					for (StateActionPair c : this.sarsaTable[i][j]) {
 
-					this.position.setX(i);
-					this.position.setY(j);
+						System.out.println(c.Action + " " + c.Value);
 
-					Vector<Agent> worldState = new Vector<Agent>();
-					worldState.add(this);
-					worldState.add(prey);
-
-					for (RandomAction c : this
-							.ProbabilityActionsRSW(worldState)) {
-						this.sarsaTable[c.coordinate.getX()][c.coordinate
-								.getY()] = 0;
 					}
-
 				}
 			}
 		}
-		this.sarsaTable[0][0] = 10;
-
 	}
 
-	public void PrintSarsaTable() {
-		for (int i = 0; i < 6; i++) {
-			System.out.println();
-			for (int j = 0; j < 6; j++) {
-				System.out.print(this.sarsaTable[i][j] + " ");
-			}
-		}
-		System.out.println();
-	}
-
-	public void updateSarsaTable(Coordinate oldPosition, Coordinate NewAction,
-			double reward) {
-
-		this.sarsaTable[oldPosition.getX()][oldPosition.getY()] = this.sarsaTable[oldPosition
-				.getX()][oldPosition.getY()]
-				+ (alpha * (reward
-						+ (gamma * this.sarsaTable[NewAction.getX()][NewAction
-								.getY()]) - this.sarsaTable[oldPosition.getX()][oldPosition
-						.getY()]));
-
-	}
-
-	public Coordinate chooseSoftMaxAction(Agent agent,
-			Vector<Agent> worldState, double temperature) {
+	public StateActionPair chooseSoftMaxAction(double temperature) {
 
 		double sum = 0;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-			sum += Math.exp(this.sarsaTable[e.coordinate.getX()][e.coordinate
-					.getY()] / temperature);
+		for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
+				.getY()]) {
+			sum += Math.exp(e.Value / temperature);
 
 		}
 
 		double random = Math.random();
 		double k = 0;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
+		for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
+				.getY()]) {
 
-			k += Math.exp(this.sarsaTable[e.coordinate.getX()][e.coordinate
-					.getY()] / temperature)
-					/ sum;
+			k += Math.exp(e.Value / temperature) / sum;
 
 			if (random <= k) {
-				return e.coordinate;
+				return e;
 			}
 		}
 		return null;
 	}
 
-	public Coordinate chooseEGreedyAction(Agent agent,
-			Vector<Agent> worldState, double epsilon) {
+	public StateActionPair chooseEGreedyAction(double epsilon) {
 
 		Double r = Math.random();
-		Coordinate maxAction = null;
+		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
 
-		for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-			if (sarsaTable[e.coordinate.getX()][e.coordinate.getY()] > maxValue) {
-				maxValue = sarsaTable[e.coordinate.getX()][e.coordinate.getY()];
-				maxAction = e.coordinate;
+		int CountActions = 0;
+		for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
+				.getY()]) {
+			if (e.Value > maxValue) {
+				maxValue = e.Value;
+				maxAction = e;
 			}
+			CountActions++;
 		}
 
 		if (r <= epsilon) {
-			Double step = epsilon
-					/ (agent.ProbabilityActionsRSW(worldState).size() - 1);
+			Double step = epsilon / (CountActions - 1);
 			Double counter = step;
-			for (RandomAction e : agent.ProbabilityActionsRSW(worldState)) {
-				if (!Coordinate.compareCoordinates(e.coordinate, maxAction)) {
+			for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
+					.getY()]) {
+				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
 					if (counter <= r) {
-						return e.coordinate;
+						return e;
 					}
 					counter -= step;
 				}
@@ -157,6 +146,55 @@ public class SarsaPredator extends Predator {
 		}
 		return maxAction;
 
+	}
+
+	public void updateSarsaTable(Coordinate oldPosition,
+			StateActionPair oldAction, StateActionPair action, double reward,
+			boolean absorbing) {
+
+		int oldActionPosId = -1;
+		for (int i = 0; i < this.sarsaTable[oldPosition.getX()][oldPosition
+				.getY()].size(); i++) {
+			if (this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
+					.elementAt(i).id == oldAction.id) {
+				oldActionPosId = i;
+				break;
+			}
+		}
+
+		int actionPosId = -1;
+		for (int j = 0; j < this.sarsaTable[oldAction.Action.getX()][oldAction.Action
+				.getY()].size(); j++) {
+			if (this.sarsaTable[oldAction.Action.getX()][oldAction.Action
+					.getY()].elementAt(j).id == action.id) {
+				actionPosId = j;
+				break;
+			}
+		}
+
+		if (!absorbing) {
+
+			this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
+					.elementAt(oldActionPosId).Value = this.sarsaTable[oldPosition
+					.getX()][oldPosition.getY()].elementAt(oldActionPosId).Value
+					+ alpha
+					* (reward
+							+ gamma
+							* this.sarsaTable[action.Action.getX()][action.Action
+									.getY()].elementAt(actionPosId).Value - this.sarsaTable[oldPosition
+								.getX()][oldPosition.getY()]
+							.elementAt(oldActionPosId).Value);
+
+		} else {
+
+			this.sarsaTable[oldPosition.getX()][oldPosition.getY()]
+					.elementAt(oldActionPosId).Value = this.sarsaTable[oldPosition
+					.getX()][oldPosition.getY()].elementAt(oldActionPosId).Value
+					+ alpha
+					* (reward - this.sarsaTable[oldPosition.getX()][oldPosition
+							.getY()].elementAt(oldActionPosId).Value);
+
+		}
 	}
 
 }
