@@ -171,14 +171,18 @@ public class SarsaPredator extends Predator {
 		}
 
 		if(absorb){
+			
 			this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value = 
 					this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value +
 					alpha * (reward + ( gamma * 0 ) - this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value );
+		
 		}else{
+			
 			this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value = 
 					this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value +
 					alpha * (reward + ( gamma * this.sarsaTable[actionOld.Action.getX()][actionOld.Action.getY()]
 							.elementAt(newActionPosId).Value ) - this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value );
+		
 		}
 		
 		
