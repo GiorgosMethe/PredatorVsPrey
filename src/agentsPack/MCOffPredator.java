@@ -8,7 +8,7 @@ import java.util.Vector;
 import environmentPack.Coordinate;
 import environmentPack.SARSdata;
 
-public class MCOffPredator extends LearningPredator {
+public class MCOffPredator extends LearningPredator { 
 
 	protected Map<Pair<Vector<Agent>, Coordinate>, Double> numerator;
 	protected Map<Pair<Vector<Agent>, Coordinate>, Double> denominator;

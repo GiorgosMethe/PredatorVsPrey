@@ -6,7 +6,7 @@ import java.util.Vector;
 import environmentPack.Coordinate;
 import environmentPack.SARSdata;
 
-public class MCOnPredator extends LearningPredator {
+public class MCOnPredator extends LearningPredator { 
 
 	protected Map<Pair<Vector<Agent>, Coordinate>, Vector<Double>> returns;
 
