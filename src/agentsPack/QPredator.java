@@ -10,7 +10,7 @@ import environmentPack.Coordinate;
 public class QPredator extends Predator {
 
 	@SuppressWarnings("unchecked")
-	private Vector<StateActionPair> qTable[][] = new Vector[6][6];
+	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
 	private double alpha = 0.1;
 	private double gamma = 0.7;
 

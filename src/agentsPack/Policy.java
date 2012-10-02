@@ -1,13 +1,19 @@
 package agentsPack;
 
-import java.util.Map;
 import java.util.Vector;
 
 import environmentPack.Coordinate;
 
-public interface Policy {
+public abstract class Policy {
 
-	public abstract Coordinate chooseAction(Vector<Agent> worldState,
-			Map<Vector<Agent>, Map<Coordinate, Double>> qTable);
+	public abstract Coordinate chooseAction(Vector<Agent> worldState, QTable qTable);
+	
+	public Double actionProbability(Vector<Agent> worldState, Coordinate action, QTable qTable) {
+		Double denominator = 0.0;
+		for (Double value : qTable.get(worldState).values()) {
+			denominator += value;
+		}
+		return qTable.get(worldState, action) / denominator;
+	}
 
 }
