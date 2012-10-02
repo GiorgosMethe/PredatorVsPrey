@@ -9,7 +9,7 @@ import environmentPack.Coordinate;
 import agentsPack.Policy;
 
 
-public class EGreedyPolicy implements Policy {
+public class EGreedyPolicy extends Policy {
 
 	public double epsilon;
 

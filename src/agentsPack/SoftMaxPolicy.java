@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import environmentPack.Coordinate;
 
-public class SoftMaxPolicy implements Policy {
+public class SoftMaxPolicy extends Policy {
 
 	public Double temperature;
 	

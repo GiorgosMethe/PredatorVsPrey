@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import environmentPack.Coordinate;
 
-public class ArbitraryPolicy implements Policy {
+public class ArbitraryPolicy extends Policy {
 
 	protected Map<Vector<Agent>, Coordinate> arbitraryActions;
 
