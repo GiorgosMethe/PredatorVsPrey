@@ -29,14 +29,13 @@ public class SarsaPredSim {
 			Vector<Agent> worldState = new Vector<Agent>();
 			sP.position.setX(5);
 			sP.position.setY(5);
-
+			
 			worldState.add(sP);
 			worldState.add(prey);
 
 			int steps = 0;
 
-			Coordinate oldPosition = new Coordinate(sP.position.getX(),
-					sP.position.getY());
+			Coordinate oldPosition;
 
 			// e-Greedy action selection
 			StateActionPair action = sP.chooseEGreedyAction(0.1);
@@ -48,22 +47,14 @@ public class SarsaPredSim {
 
 			do {
 
-				Double reward = 0.0;
-
-				// update the predator's position
+				oldPosition = new Coordinate(sP.position.getX(), sP.position.getY());
+				
 				sP.position.setX(action.Action.getX());
 				sP.position.setY(action.Action.getY());
-
-				if (Coordinate.compareCoordinates(sP.position, prey.position)) {
-
-					System.out.println("killed in " + steps + " steps");
-					sumMoves += steps;
-					reward = 10.0;
-					prey.kill();
-					absorbingState = true;
-
-				} else {
-
+				
+				if(Coordinate.compareCoordinates(sP.position,prey.position)){
+					break;
+				}else{
 					// Here, I am calculating the prey's possible actions
 					Coordinate preyAction = prey.doAction(worldState);
 
@@ -74,8 +65,8 @@ public class SarsaPredSim {
 					if (y == 10)
 						y = -1;
 
-					int NewPredPosX = sP.position.getX() - x;
-					int NewPredPosY = sP.position.getY() - y;
+					int NewPredPosX = qP.position.getX() - x;
+					int NewPredPosY = qP.position.getY() - y;
 
 					// some checks not to excede the limits of the
 					// space
@@ -98,34 +89,12 @@ public class SarsaPredSim {
 
 					}
 
-					sP.position.setX(NewPredPosXNor);
-					sP.position.setY(NewPredPosYNor);
-
+					qP.position.setX(NewPredPosXNor);
+					qP.position.setY(NewPredPosYNor);
 				}
-
-				// e-Greedy action selection
-				StateActionPair newAction = sP.chooseEGreedyAction(0.1);
-
-				// SoftMax action selection
-				// StateActionPair newAction = sP.chooseSoftMaxAction(0.5);
-				
-				sP.updateSarsaTable(oldPosition,action,newAction,reward,absorbingState);
-				
-				
-				action = newAction;
-				
-				oldPosition = sP.position;
-
 				steps++;
-
-			} while (prey.lives);
-
+			}while(prey.lives);
 		}
-
-		System.out.println("the average is: " + (sumMoves / 10000));
-
-		sP.printSarsaTable();
-
 	}
 
 }
