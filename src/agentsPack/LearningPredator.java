@@ -27,9 +27,18 @@ public abstract class LearningPredator extends Predator {
 
 	// In the implementing class, make sure this returns True if and only if the algorithm is on-policy
 	public abstract boolean onPolicyLearning();
-	// Receive one state-action pair and its observed reward and next state per update. 
-	// If the algorithm is off-policy, you don't need to implement the loop. That has been done in observe(SARSdata). 
-	public abstract void updateQTable(SARSdata sars);
+	
+	// Receive one state-action pair and its observed reward and next state per update, and learn from the data. 
+	// If the algorithm is off-policy, implement the updateQTable(Vector<SARSdata>). 
+	public void updateQTable(SARSdata sars) {
+		throw new UnsupportedOperationException("This is an off-policy learning algorithm.");
+	}
+
+	// Receive an episode and learn from the data. 
+	// If the algorithm is on-policy, implement the updateQTable(SARSdata).
+	public void updateQTable(Vector<SARSdata> episode) {
+		throw new UnsupportedOperationException("This is an on-policy learning algorithm.");
+	}
 	
 	public void observe(SARSdata sars) {
 		if (this.onPolicyLearning()) {
@@ -38,13 +47,19 @@ public abstract class LearningPredator extends Predator {
 		else {
 			this.episodes.lastElement().add(sars);
 			if (sars.isAbsorbingState()) {
-				for (SARSdata _sars : this.episodes.lastElement()) {
-					this.updateQTable(_sars);
-				}
+				this.updateQTable(this.episodes.lastElement());
 				this.episodes.add(new Vector<SARSdata>());
 			}
 		}
 	}	
+
+	public void observe(Vector<Agent> currentState, Coordinate action, Vector<Agent> nextState, Double reward) {
+		this.observe(new SARSdata(currentState, action, nextState, reward));
+	}
+	
+	public void observe(Vector<Agent> currentState, Coordinate action, Vector<Agent> nextState, Double reward, boolean isAbsorbingState) {
+		this.observe(new SARSdata(currentState, action, nextState, reward, isAbsorbingState));
+	}
 	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
