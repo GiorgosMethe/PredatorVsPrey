@@ -26,6 +26,9 @@ public class MCOnPredator extends LearningPredator {
 	
 	@Override
 	public void updateQTable(SARSdata sars) {
+		if (sars.isAbsorbingState()) {
+			return;
+		}
 		this.returns.get(sars.getStateAction()).add(sars.reward);
 		double avg = 0;
 		for (Double prevReward : this.returns.get(sars.getStateAction())) {
