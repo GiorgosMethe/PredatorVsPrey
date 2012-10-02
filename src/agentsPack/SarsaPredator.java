@@ -117,6 +117,7 @@ public class SarsaPredator extends Predator {
 
 	public StateActionPair chooseEGreedyAction(double epsilon) {
 
+		System.out.print(this.position+" --> ");
 		Double r = Math.random();
 		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
@@ -144,12 +145,13 @@ public class SarsaPredator extends Predator {
 				}
 			}
 		}
+		System.out.println(maxAction.Action);
 		return maxAction;
 
 	}
 
 	public void updateSarsaTable(Coordinate stateOld,
-			StateActionPair actionOld, StateActionPair actionNew,double reward, boolean absorb) {
+			StateActionPair actionOld, StateActionPair actionNew,Coordinate State, double reward, boolean absorb) {
 
 		int oldActionPosId = -1;
 		for (int i = 0; i < this.sarsaTable[stateOld.getX()][stateOld.getY()]
@@ -180,7 +182,7 @@ public class SarsaPredator extends Predator {
 			
 			this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value = 
 					this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value +
-					alpha * (reward + ( gamma * this.sarsaTable[actionOld.Action.getX()][actionOld.Action.getY()]
+					alpha * (reward + ( gamma * this.sarsaTable[State.getX()][State.getY()]
 							.elementAt(newActionPosId).Value ) - this.sarsaTable[stateOld.getX()][stateOld.getY()].elementAt(oldActionPosId).Value );
 		
 		}

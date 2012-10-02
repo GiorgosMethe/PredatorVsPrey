@@ -23,19 +23,20 @@ public class SarsaPredSim {
 		sP.initializeSarsaTable();
 		int sumMoves = 0;
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 1000; i++) {
 
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
 			sP.position.setX(5);
 			sP.position.setY(5);
-			
+
 			worldState.add(sP);
 			worldState.add(prey);
 
 			int steps = 0;
 
-			Coordinate oldPosition;
+			Coordinate oldPosition = new Coordinate(sP.position.getX(),
+					sP.position.getY());
 
 			// e-Greedy action selection
 			StateActionPair action = sP.chooseEGreedyAction(0.1);
@@ -43,19 +44,20 @@ public class SarsaPredSim {
 			// SoftMax action selection
 			// StateActionPair action = sP.chooseSoftMaxAction(0.5);
 
-			boolean absorbingState = false;
-
-			do {
-
-				oldPosition = new Coordinate(sP.position.getX(), sP.position.getY());
+			while(prey.lives){
 				
-				sP.position.setX(action.Action.getX());
-				sP.position.setY(action.Action.getY());
-				
-				if(Coordinate.compareCoordinates(sP.position,prey.position)){
+				if(Coordinate.compareCoordinates(sP.position, prey.position)){
+					System.out.println("steps: "+steps);
+					prey.kill();
 					break;
 				}else{
-					// Here, I am calculating the prey's possible actions
+				
+					oldPosition = new Coordinate(sP.position.getX(),
+							sP.position.getY());
+					
+					sP.position.setX(action.Action.getX());
+					sP.position.setY(action.Action.getY());
+					
 					Coordinate preyAction = prey.doAction(worldState);
 
 					int x = preyAction.getX();
@@ -65,8 +67,8 @@ public class SarsaPredSim {
 					if (y == 10)
 						y = -1;
 
-					int NewPredPosX = qP.position.getX() - x;
-					int NewPredPosY = qP.position.getY() - y;
+					int NewPredPosX = sP.position.getX() - x;
+					int NewPredPosY = sP.position.getY() - y;
 
 					// some checks not to excede the limits of the
 					// space
@@ -89,12 +91,36 @@ public class SarsaPredSim {
 
 					}
 
-					qP.position.setX(NewPredPosXNor);
-					qP.position.setY(NewPredPosYNor);
+					// s = s'
+					sP.position.setX(NewPredPosXNor);
+					sP.position.setY(NewPredPosYNor);
+								
+					// a'
+					StateActionPair newAction = sP.chooseEGreedyAction(0.1);
+					
+					double reward = 0.0;
+					boolean absorb = false;
+					if(Coordinate.compareCoordinates(sP.position,prey.position)){
+						reward = 10.0;
+						absorb = true;
+						
+					}
+					
+					sP.updateSarsaTable(oldPosition, action, newAction, sP.position, reward, absorb);
+					
+					// a = a'
+					action = newAction;
+					steps++;
 				}
-				steps++;
-			}while(prey.lives);
+			}
+			
+
+			
 		}
+		System.out.println("the average is: " + (sumMoves / 10000));
+
+		sP.printSarsaTable();
+
 	}
 
 }
