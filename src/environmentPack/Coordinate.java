@@ -106,6 +106,13 @@ public class Coordinate {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Coordinate)) {
+			return false;
+		}
+		return Coordinate.compareCoordinates(this, (Coordinate) o);
+	}
+	@Override
 	public String toString() {
 		return "<" + this.x + "," + this.y + ">";
 	}
