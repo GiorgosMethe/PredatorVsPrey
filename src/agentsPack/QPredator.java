@@ -1,7 +1,10 @@
 package agentsPack;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
+
+import matPack.MatFileGenerator;
 
 import actionPack.RandomAction;
 import actionPack.StateActionPair;
@@ -11,11 +14,13 @@ public class QPredator extends Predator {
 
 	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
-	private double alpha = 0.1;
-	private double gamma = 0.7;
+	private double alpha;
+	private double gamma;
 
-	public QPredator(String name, Coordinate p, Policy pi) {
+	public QPredator(String name, Coordinate p, Policy pi, double alpha, double gamma) {
 		super(name, p, pi);
+		this.alpha = alpha;
+		this.gamma = gamma;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -55,7 +60,7 @@ public class QPredator extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
-				QPredator qP = new QPredator("", new Coordinate(i, j), null);
+				QPredator qP = new QPredator("", new Coordinate(i, j), null, alpha, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
 				worldState.add(qP);
 				worldState.add(prey);
@@ -75,14 +80,14 @@ public class QPredator extends Predator {
 
 	public void PrintQTable() {
 		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (j <= i) {
-					System.out.println(new Coordinate(i, j));
+			for (int j = 0; j <= i; j++) {
+					
+				System.out.println(new Coordinate(i, j));
 					for (StateActionPair c : this.qTable[i][j]) {
 
 						System.out.println(c.Action + " " + c.Value);
 
-					}
+
 				}
 			}
 		}
@@ -185,6 +190,123 @@ public class QPredator extends Predator {
 							.getY()].elementAt(actionPosId).Value);
 
 		}
+	}
+	
+	
+	public static void RunQLearning(int number, double a, double gamma,
+			String policy, double policyParameter) {
+
+		QPredator qP = new QPredator("qPredator", new Coordinate(5, 5), null, a, gamma);
+		qP.initializeQTable();
+
+		double[] output = new double[number];
+		for (int i = 0; i < number; i++) {
+
+			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
+			Vector<Agent> worldState = new Vector<Agent>();
+			qP.position.setX(5);
+			qP.position.setY(5);
+
+			worldState.add(qP);
+			worldState.add(prey);
+
+			int steps = 0;
+			boolean absorbingState = false;
+
+			do {
+
+				Double reward = 0.0;
+
+				// save the old position, we need it later.
+				Coordinate oldPosition = new Coordinate(qP.position.getX(),
+						qP.position.getY());
+
+				StateActionPair action = null;
+				if (policy.equalsIgnoreCase("e")) {
+					// e-Greedy action selection
+					action = qP.chooseEGreedyAction(policyParameter);
+				} else if (policy.equalsIgnoreCase("s")) {
+					// SoftMax action selection
+					action = qP.chooseSoftMaxAction(policyParameter);
+				}
+
+				// SoftMax action selection
+				// StateActionPair action = qP.chooseSoftMaxAction(0.1);
+
+				// update the predator's position
+				qP.position.setX(action.Action.getX());
+				qP.position.setY(action.Action.getY());
+
+				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
+					
+					output[i] = steps;
+					reward = 10.0;
+					prey.kill();
+					absorbingState = true;
+
+				} else {
+
+					// Here, I am calculating the prey's possible actions
+					Coordinate preyAction = prey.doAction(worldState);
+
+					int x = preyAction.getX();
+					if (x == 10)
+						x = -1;
+					int y = preyAction.getY();
+					if (y == 10)
+						y = -1;
+
+					int NewPredPosX = qP.position.getX() - x;
+					int NewPredPosY = qP.position.getY() - y;
+
+					// some checks not to excede the limits of the
+					// space
+					if (NewPredPosX == 6)
+						NewPredPosX = 5;
+					if (NewPredPosX == -1)
+						NewPredPosX = 1;
+					if (NewPredPosY == 6)
+						NewPredPosY = 5;
+					if (NewPredPosY == -1)
+						NewPredPosY = 1;
+
+					int NewPredPosXNor = NewPredPosX;
+					int NewPredPosYNor = NewPredPosY;
+
+					if (NewPredPosY > NewPredPosX) {
+
+						NewPredPosXNor = NewPredPosY;
+						NewPredPosYNor = NewPredPosX;
+
+					}
+
+					qP.position.setX(NewPredPosXNor);
+					qP.position.setY(NewPredPosYNor);
+
+				}
+
+				// new value for this state according to the update function.
+				// remember, worldState is still the old one (before the Agents
+				// move)
+				qP.updateQTable(oldPosition, action, reward, absorbingState);
+
+				steps++;
+
+			} while (prey.lives);
+
+		}
+
+		qP.PrintQTable();
+		
+		try {
+			MatFileGenerator.write(output, "Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("An output .mat file has generated with the name: "+"Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter)+".mat");
+
 	}
 
 }

@@ -2,13 +2,12 @@ package mainPack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
+import agentsPack.QPredator;
+import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
-import functionsPack.QLearningPredSim;
 import functionsPack.RandomSimulation;
-import functionsPack.SarsaPredSim;
 import functionsPack.ValueIteration;
 
 public class Main {
@@ -24,7 +23,7 @@ public class Main {
 
 		int choiceInt = 0;
 
-		System.out.println("Welcome to the PredatorVsPrey V.1");
+		System.out.println("Welcome to the PredatorVsPrey V.2");
 		System.out.println("------------------------------------");
 		do {
 
@@ -192,11 +191,11 @@ public class Main {
 
 			} else if (choiceInt == 5) {
 
-				QLearningPredSim.Run();
+				QPredator.RunQLearning(1000, 0.5, 0.7, "s", 0.8);
 
 			} else if (choiceInt == 6) {
 
-				SarsaPredSim.Run();
+				SarsaPredator.RunSarsa(1000, 0.5, 0.7, "s", 0.8);
 
 			} else if (choiceInt == 7) {
 
