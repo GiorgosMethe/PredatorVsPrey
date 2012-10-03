@@ -1,8 +1,7 @@
 package agentsPack;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import environmentPack.Coordinate;
 
@@ -79,20 +78,66 @@ public class QTable extends DefaultHashMap<Vector<Agent>, Map<Coordinate, Double
 	}
 	
 	public String getString(int representation) {
-		if (representation == 11*11) {
-			return "";
+		return this.getString(representation, new Coordinate(0,0));
+	}
+	
+	public String getString(int representation, Coordinate preyPosition) {
+		Vector<Agent> worldState = new Vector<Agent>(2);
+		Coordinate predatorPosition = new Coordinate(0, 0);
+		worldState.add(new Predator("", predatorPosition, null));
+		worldState.add(new Prey("", preyPosition, null));
+		String result = "";
+		
+		switch (representation) {
+		case 21:
+			for (int i = 0; i < 6; i++) {
+				predatorPosition.setX(i);
+				for (int j = 0; j <= i; j++) {
+					predatorPosition.setY(j);
+					result += predatorPosition + ": "; 
+					for (Map.Entry<Coordinate, Double> actionValue : this.get(worldState).entrySet()) {
+						result += "[" + actionValue.getKey() + ": " + actionValue.getValue() + "]  ";
+					}
+					result += "\n";
+				}
+			}
+			break;
+		case 11*11:
+		case 6*6:
+			int maxcoord = (int) Math.sqrt(representation);
+			for (int i = 0; i < maxcoord; i++) {
+				predatorPosition.setX(i);
+				for (int j = 0; j < maxcoord; j++) {
+					predatorPosition.setY(j);
+					result += predatorPosition + ": ";
+					for (Map.Entry<Coordinate, Double> actionValue : this.get(worldState).entrySet()) {
+						result += "[" + actionValue.getKey() + ": " + actionValue.getValue() + "]  ";
+					}
+					result += "\n";
+				}
+			}
+			break;
+		default:
+			for (Map.Entry<Vector<Agent>, Map<Coordinate, Double>> entry : this.entrySet()) {
+				Agent p = null;
+				for (Agent a : entry.getKey()) {
+					if (a instanceof Prey) {
+						p = a;
+					}
+				}
+				result += p.position + ": ";
+				//result += entry.getKey() + ": ";
+				for (Map.Entry<Coordinate, Double> actionEntry : entry.getValue().entrySet()) { 
+					result += "[" + actionEntry.getKey() + ": " + actionEntry.getValue() + "]  ";
+				}
+				result += "\n";
+			}
 		}
-		else if (representation == 6*6) {
-			return "";
-		}
-		else if (representation == 21) {
-			return "";
-		}
-		return "Unknown representation.";
+		return result + "\n\n" + this.size();
 	}
 	
 	public String toString() {
-		return this.getString(11*11);
+		return this.getString(-1);
 	}
 
 }
