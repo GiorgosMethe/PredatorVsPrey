@@ -1,7 +1,7 @@
 package agentsPack;
 
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
@@ -68,7 +68,7 @@ public abstract class LearningPredator extends Predator {
 	}
 
 	public void printQTable() {
-		System.out.println(this.qTable.getString(6*6));
+		System.out.println(this.qTable.getString(-1));
 	}
 
 	// Deactivate planning predator's methods
