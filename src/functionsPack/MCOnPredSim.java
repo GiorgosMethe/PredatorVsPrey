@@ -2,7 +2,7 @@ package functionsPack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import environmentPack.Coordinate;
 
@@ -115,7 +115,7 @@ public class MCOnPredSim {
 			// StateActionPair action = sP.chooseSoftMaxAction(0.5);
 
 			while (prey.lives) {
-				dummyCurrent.position = new Coordinate(predator.position);
+				dummyCurrent.position = new Coordinate(predator.position.getX(), predator.position.getY());
 
 				predatorAction = predator.doAction(worldState).toSWCoordinate();
 
@@ -123,7 +123,8 @@ public class MCOnPredSim {
 				predator.position.setY(predatorAction.getY());
 
 				if (Coordinate.compareCoordinates(predator.position, prey.position)) {
-					dummyNext.position = new Coordinate(predator.position);
+					dummyNext.position = new Coordinate(predator.position.getX(), predator.position.getY());
+					predator.observe(currentState, predatorAction, nextState, 10.0);
 					prey.kill();
 				}
 				else {
@@ -165,7 +166,7 @@ public class MCOnPredSim {
 					predator.position.setX(NewPredPosXNor);
 					predator.position.setY(NewPredPosYNor);
 
-					dummyNext.position = new Coordinate(predator.position);
+					dummyNext.position = new Coordinate(predator.position.getX(), predator.position.getY());
 
 					predator.observe(currentState, predatorAction, nextState, 0.0);
 				}
