@@ -1,6 +1,6 @@
 package functionsPack;
 
-import java.util.Vector;
+import agentsPack.Vector;
 
 import actionPack.RandomAction;
 import agentsPack.Predator;

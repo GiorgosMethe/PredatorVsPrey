@@ -1,6 +1,6 @@
 package agentsPack;
 
-import java.util.Vector;
+import agentsPack.Vector;
 
 import environmentPack.Coordinate;
 

@@ -1,6 +1,6 @@
 package environmentPack;
 
-import java.util.Vector;
+import agentsPack.Vector;
 
 import actionPack.Action;
 import agentsPack.Agent;

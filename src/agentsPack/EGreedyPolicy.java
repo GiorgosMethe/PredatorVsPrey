@@ -1,7 +1,7 @@
 package agentsPack;
 
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 import java.util.Map.Entry;
 import agentsPack.Agent;
 import agentsPack.DefaultHashMap;

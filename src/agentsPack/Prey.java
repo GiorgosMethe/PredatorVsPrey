@@ -1,7 +1,7 @@
 package agentsPack;
 
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
@@ -69,7 +69,7 @@ public class Prey extends Agent {
 
 	@Override
 	public String toString() {
-		return "Prey(\"" + this.name + "\", " + this.position + ">)";
+		return "Prey(\"" + this.name + "\", " + this.position + ")";
 	}
 
 	@Override
