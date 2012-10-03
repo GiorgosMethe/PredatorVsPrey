@@ -1,7 +1,7 @@
 package agentsPack;
 
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import environmentPack.Coordinate;
 import environmentPack.SARSdata;
@@ -29,11 +29,15 @@ public class MCOnPredator extends LearningPredator {
 		if (sars.isAbsorbingState()) {
 			return;
 		}
-		this.returns.get(sars.getStateAction()).add(sars.reward);
+		System.out.println("..");
+		Vector<Double> returns = this.returns.get(sars.getStateAction());
+		returns.add(sars.reward);
+		this.returns.put(sars.getStateAction(), returns);
 		double avg = 0;
 		for (Double prevReward : this.returns.get(sars.getStateAction())) {
 			avg += prevReward;
 		}
+		System.out.println(this.returns.get(sars.getStateAction()).size());
 		avg /= this.returns.get(sars.getStateAction()).size();
 		this.qTable.put(sars.getStateAction(), avg);
 	}
