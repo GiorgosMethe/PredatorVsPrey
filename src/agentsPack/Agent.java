@@ -1,7 +1,7 @@
 package agentsPack;
 
 import java.util.Map;
-import java.util.Vector;
+import agentsPack.Vector;
 
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
@@ -156,4 +156,18 @@ public abstract class Agent {
 	public abstract Vector<RandomAction> ProbabilityActionsRSW(
 			Vector<Agent> worldState);
 
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Agent)) {
+			return false;
+		}
+		Agent that = (Agent) o;
+		
+		return (that == null ? this == null : 
+			(that.lives == this.lives)
+				&& (that.name == null ? this.name == null : that.name.equals(this.name))
+				&& (that.position == null ? this.position == null : that.position.equals(this.position))
+				/*&& (that.pi == null ? this.pi == null : that.pi.equals(this.pi))*/);
+	}
 }
