@@ -4,18 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultHashMap<K, V> extends HashMap<K, V> {
-	public interface DefaultFactory<K, V> {
-		public V getDefault(K key);
+	public interface DefaultFactory<Input, Output> {
+		public Output getDefault(Input key);
 	}
 	
-	public class SimpleDefaultFactory<K, V> implements DefaultFactory<K, V> {
-		public V defaultValue;
+	public class SimpleDefaultFactory<Input, Output> implements DefaultFactory<Input, Output> {
+		public Output defaultValue;
 		
-		SimpleDefaultFactory(V defaultValue) {
+		SimpleDefaultFactory(Output defaultValue) {
 			this.defaultValue = defaultValue;
 		}
 		
-		public V getDefault(K key) {
+		public Output getDefault(Input key) {
 			return this.defaultValue;
 		}
 	}
