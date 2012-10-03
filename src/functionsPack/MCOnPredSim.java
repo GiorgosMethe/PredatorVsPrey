@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import environmentPack.Coordinate;
 
-import actionPack.StateActionPair;
 import agentsPack.Agent;
 import agentsPack.EGreedyPolicy;
 import agentsPack.LearningPredator;
@@ -95,9 +94,10 @@ public class MCOnPredSim {
 		nextState.add(dummyCurrent);
 		
 		int sumMoves = 0;
+		final int EPISODE_COUNT = 1000;
 
-		for (int i = 0; i < 1000; i++) {
-			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
+		for (int i = 0; i < EPISODE_COUNT; i++) {
+			Prey prey = new Prey("prey", new Coordinate(0, 5), null);
 			Vector<Agent> worldState = new Vector<Agent>();
 			predator.position.setX(5);
 			predator.position.setY(5);
@@ -115,20 +115,16 @@ public class MCOnPredSim {
 			// StateActionPair action = sP.chooseSoftMaxAction(0.5);
 
 			while (prey.lives) {
-
-				System.out.printf("%d -- %d\n", sumMoves, steps);
-				
 				dummyCurrent.position = new Coordinate(predator.position);
 
-				predatorAction = predator.doAction(worldState);
+				predatorAction = predator.doAction(worldState).toSWCoordinate();
 
 				predator.position.setX(predatorAction.getX());
 				predator.position.setY(predatorAction.getY());
 
 				if (Coordinate.compareCoordinates(predator.position, prey.position)) {
-					prey.kill();
 					dummyNext.position = new Coordinate(predator.position);
-					predator.observe(currentState, predatorAction, nextState, 10.0, false);
+					prey.kill();
 				}
 				else {
 
@@ -176,11 +172,12 @@ public class MCOnPredSim {
 				steps++;
 			}
 			predator.observe(nextState, null, null, 0.0, true);
+			sumMoves += steps + 1;
 
 
 
 		}
-		System.out.println("the average is: " + (sumMoves / 10000));
+		System.out.println("the average is: " + (sumMoves / (double) EPISODE_COUNT));
 
 		predator.printQTable();
 
