@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import matPack.MatFileGenerator;
-
 import actionPack.RandomAction;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
@@ -125,33 +124,50 @@ public class SarsaPredator extends Predator {
 		Double r = Math.random();
 		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
-
+		Vector<StateActionPair> tempMaxVector = new Vector<StateActionPair>();
 		int CountActions = 0;
 		for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
 				.getY()]) {
-			if (e.Value > maxValue) {
-				maxValue = e.Value;
-				maxAction = e;
+			if (e.Value >= maxValue) {
+				if (e.Value == maxValue) {
+					tempMaxVector.add(e);
+				} else {
+					tempMaxVector.removeAllElements();
+					maxValue = e.Value;
+					tempMaxVector.add(e);
+				}
 			}
 			CountActions++;
 		}
 
-		if (r <= epsilon) {
-			Double step = epsilon / (CountActions - 1);
-			Double counter = step;
-			for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
-					.getY()]) {
-				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
-					if (counter <= r) {
-						return e;
-					}
-					counter -= step;
-				}
+		double rand = Math.random();
+		double step = 1 / tempMaxVector.size();
+		double counter = step;
+		int maxAct = 0;
+		for (int ii = 0; ii < tempMaxVector.size(); ii++) {
+			if (counter >= rand) {
+				maxAct = ii;
+				break;
 			}
+			counter += step;
 		}
 
-		return maxAction;
+		if (r <= epsilon) {
+			double step1 = epsilon / (CountActions - 1);
+			double counter1 = epsilon - step1;
+			for (StateActionPair e : this.sarsaTable[this.position.getX()][this.position
+					.getY()]) {
+				if (!Coordinate.compareCoordinates(e.Action,
+						tempMaxVector.elementAt(maxAct).Action)) {
+					if (counter1 <= r) {
+						return e;
+					}
+					counter1 -= step1;
+				}
+			}
 
+		}
+		return tempMaxVector.elementAt(maxAct);
 	}
 
 	public void updateSarsaTable(Coordinate stateOld,
@@ -209,7 +225,7 @@ public class SarsaPredator extends Predator {
 				5), null, a, gamma);
 		sP.initializeSarsaTable();
 		int sumMoves = 0;
-		
+
 		double[] output = new double[number];
 
 		for (int i = 0; i < number; i++) {
@@ -320,15 +336,22 @@ public class SarsaPredator extends Predator {
 		System.out.println("the average is: " + (sumMoves / 10000));
 
 		sP.printSarsaTable();
-		
+
 		try {
-			MatFileGenerator.write(output, "Sarsa"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter));
+			MatFileGenerator.write(
+					output,
+					"Sarsa" + "_" + String.valueOf(a) + "_"
+							+ String.valueOf(gamma) + "_" + policy + "_"
+							+ String.valueOf(policyParameter));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.println("An output .mat file has generated with the name: "+"Sarsa"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter)+".mat");
+
+		System.out.println("An output .mat file has generated with the name: "
+				+ "Sarsa" + "_" + String.valueOf(a) + "_"
+				+ String.valueOf(gamma) + "_" + policy + "_"
+				+ String.valueOf(policyParameter) + ".mat");
 
 	}
 

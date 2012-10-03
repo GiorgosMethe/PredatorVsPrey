@@ -191,11 +191,12 @@ public class Main {
 				PolicyIteration.Run(gamma, theta);
 
 			} else if (choiceInt == 5) {
-				
+
 				String numberStr = null;
 				int number = 999;
 				do {
-					System.out.print("\nGive a positive integer >0 for the number of steps:");
+					System.out
+							.print("\nGive a positive integer >0 for the number of episodes:");
 					try {
 						numberStr = reader.readLine();
 						number = Integer.parseInt(numberStr);
@@ -203,12 +204,12 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (number <= 0);
-				
-				
+
 				String alphaStr = null;
 				double alpha = 999;
 				do {
-					System.out.print("\nGive a positive <1 learning rate for the predator:");
+					System.out
+							.print("\nGive a positive <1 learning rate for the predator:");
 					try {
 						alphaStr = reader.readLine();
 						alpha = Double.parseDouble(alphaStr);
@@ -216,11 +217,12 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (alpha > 1 || alpha <= 0);
-				
+
 				String gammaStr = null;
 				double gamma = 999;
 				do {
-					System.out.print("\nGive a positive discount factor for < 1 :");
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
 					try {
 						gammaStr = reader.readLine();
 						gamma = Double.parseDouble(gammaStr);
@@ -228,21 +230,24 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (gamma > 1 || gamma <= 0);
-				
+
 				String policy = "";
 				do {
-					System.out.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+					System.out
+							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
 					try {
 						policy = reader.readLine();
 					} catch (Exception e) {
 						System.err.println("Oh no you broke the program!");
 					}
-				} while (!policy.equalsIgnoreCase("e") && !policy.equalsIgnoreCase("s"));
-				
+				} while (!policy.equalsIgnoreCase("e")
+						&& !policy.equalsIgnoreCase("s"));
+
 				String policyParStr = null;
 				double policyPar = 999;
 				do {
-					System.out.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+					System.out
+							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
 					try {
 						policyParStr = reader.readLine();
 						policyPar = Double.parseDouble(policyParStr);
@@ -258,7 +263,8 @@ public class Main {
 				String numberStr = null;
 				int number = 999;
 				do {
-					System.out.print("\nGive a positive integer >0 for the number of steps:");
+					System.out
+							.print("\nGive a positive integer >0 for the number of episodes:");
 					try {
 						numberStr = reader.readLine();
 						number = Integer.parseInt(numberStr);
@@ -266,12 +272,12 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (number <= 0);
-				
-				
+
 				String alphaStr = null;
 				double alpha = 999;
 				do {
-					System.out.print("\nGive a positive <1 learning rate for the predator:");
+					System.out
+							.print("\nGive a positive <1 learning rate for the predator:");
 					try {
 						alphaStr = reader.readLine();
 						alpha = Double.parseDouble(alphaStr);
@@ -279,11 +285,12 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (alpha > 1 || alpha <= 0);
-				
+
 				String gammaStr = null;
 				double gamma = 999;
 				do {
-					System.out.print("\nGive a positive discount factor for < 1 :");
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
 					try {
 						gammaStr = reader.readLine();
 						gamma = Double.parseDouble(gammaStr);
@@ -291,21 +298,24 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (gamma > 1 || gamma <= 0);
-				
+
 				String policy = "";
 				do {
-					System.out.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+					System.out
+							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
 					try {
 						policy = reader.readLine();
 					} catch (Exception e) {
 						System.err.println("Oh no you broke the program!");
 					}
-				} while (!policy.equalsIgnoreCase("e") && !policy.equalsIgnoreCase("s"));
-				
+				} while (!policy.equalsIgnoreCase("e")
+						&& !policy.equalsIgnoreCase("s"));
+
 				String policyParStr = null;
 				double policyPar = 999;
 				do {
-					System.out.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+					System.out
+							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
 					try {
 						policyParStr = reader.readLine();
 						policyPar = Double.parseDouble(policyParStr);
@@ -313,8 +323,7 @@ public class Main {
 						System.err.println("Oh no you broke the program!");
 					}
 				} while (policyPar > 1 || policyPar < 0);
-				
-				
+
 				SarsaPredator.RunSarsa(number, alpha, gamma, policy, policyPar);
 
 			} else if (choiceInt == 7) {

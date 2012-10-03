@@ -6,13 +6,15 @@ import java.util.Vector;
 import environmentPack.Coordinate;
 import environmentPack.SARSdata;
 
-public class MCOnPredator extends LearningPredator { 
+public class MCOnPredator extends LearningPredator {
 
 	protected Map<Pair<Vector<Agent>, Coordinate>, Vector<Double>> returns;
 
-	public MCOnPredator(String name, Coordinate p, Policy pi, Double initialQValue) {
+	public MCOnPredator(String name, Coordinate p, Policy pi,
+			Double initialQValue) {
 		super(name, p, pi, initialQValue);
-		this.returns = new DefaultHashMap<Pair<Vector<Agent>, Coordinate>, Vector<Double>>(new Vector<Double>());
+		this.returns = new DefaultHashMap<Pair<Vector<Agent>, Coordinate>, Vector<Double>>(
+				new Vector<Double>());
 	}
 
 	public MCOnPredator(String name, Coordinate p, Policy pi) {
@@ -23,7 +25,7 @@ public class MCOnPredator extends LearningPredator {
 	public boolean onPolicyLearning() {
 		return true;
 	}
-	
+
 	@Override
 	public void updateQTable(SARSdata sars) {
 		if (sars.isAbsorbingState()) {

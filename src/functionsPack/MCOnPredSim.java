@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-import environmentPack.Coordinate;
-
 import agentsPack.Agent;
 import agentsPack.EGreedyPolicy;
 import agentsPack.LearningPredator;
@@ -14,6 +12,7 @@ import agentsPack.Policy;
 import agentsPack.Predator;
 import agentsPack.Prey;
 import agentsPack.SoftMaxPolicy;
+import environmentPack.Coordinate;
 
 public class MCOnPredSim {
 
@@ -42,57 +41,57 @@ public class MCOnPredSim {
 			} catch (Exception e) {
 				System.out.println("No... That was wrong.");
 			}
-		} 
-		while (choiceInt < 1 || choiceInt > 2);
+		} while (choiceInt < 1 || choiceInt > 2);
 
 		if (choiceInt == 1) {
 			Double epsilon = Double.NEGATIVE_INFINITY;
 			do {
-				System.out.println("Give a double value for epsilon (0 <= e <= 1): ");
+				System.out
+						.println("Give a double value for epsilon (0 <= e <= 1): ");
 				try {
 					choice = reader.readLine();
 					epsilon = Double.parseDouble(choice);
 				} catch (Exception e) {
 					System.out.println("No... That was wrong.");
 				}
-			} 
-			while (epsilon < 0 || epsilon > 1);
+			} while (epsilon < 0 || epsilon > 1);
 			policy = new EGreedyPolicy(epsilon);
-		}
-		else if (choiceInt == 2) {
+		} else if (choiceInt == 2) {
 			Double temperature = Double.NEGATIVE_INFINITY;
 			do {
-				System.out.println("Give a double value for the temperature (t > 0): ");
+				System.out
+						.println("Give a double value for the temperature (t > 0): ");
 				try {
 					choice = reader.readLine();
 					temperature = Double.parseDouble(choice);
 				} catch (Exception e) {
 					System.out.println("No... That was wrong.");
 				}
-			} 
-			while (temperature <= 0);
+			} while (temperature <= 0);
 			policy = new SoftMaxPolicy(temperature);
 		}
 		Double initialQValue = Double.NEGATIVE_INFINITY;
 		do {
-			System.out.println("Give a double value for the initial value of Q(s,a) for all s,a: ");
+			System.out
+					.println("Give a double value for the initial value of Q(s,a) for all s,a: ");
 			try {
 				choice = reader.readLine();
 				initialQValue = Double.parseDouble(choice);
 			} catch (Exception e) {
 				System.out.println("No... That was wrong.");
 			}
-		} 
-		while (Double.isInfinite(initialQValue) || Double.isNaN(initialQValue));
+		} while (Double.isInfinite(initialQValue)
+				|| Double.isNaN(initialQValue));
 
-		LearningPredator predator = new MCOnPredator("", new Coordinate(5, 5), policy, initialQValue);
-		Predator dummyCurrent = new Predator("", new Coordinate(5,5), null);
-		Predator dummyNext = new Predator("", new Coordinate(5,5), null);
+		LearningPredator predator = new MCOnPredator("", new Coordinate(5, 5),
+				policy, initialQValue);
+		Predator dummyCurrent = new Predator("", new Coordinate(5, 5), null);
+		Predator dummyNext = new Predator("", new Coordinate(5, 5), null);
 		Vector<Agent> currentState = new Vector<Agent>();
 		Vector<Agent> nextState = new Vector<Agent>();
 		currentState.add(dummyCurrent);
 		nextState.add(dummyCurrent);
-		
+
 		int sumMoves = 0;
 		final int EPISODE_COUNT = 1000;
 
@@ -122,11 +121,11 @@ public class MCOnPredSim {
 				predator.position.setX(predatorAction.getX());
 				predator.position.setY(predatorAction.getY());
 
-				if (Coordinate.compareCoordinates(predator.position, prey.position)) {
+				if (Coordinate.compareCoordinates(predator.position,
+						prey.position)) {
 					dummyNext.position = new Coordinate(predator.position);
 					prey.kill();
-				}
-				else {
+				} else {
 
 					preyAction = prey.doAction(worldState);
 
@@ -167,21 +166,19 @@ public class MCOnPredSim {
 
 					dummyNext.position = new Coordinate(predator.position);
 
-					predator.observe(currentState, predatorAction, nextState, 0.0);
+					predator.observe(currentState, predatorAction, nextState,
+							0.0);
 				}
 				steps++;
 			}
 			predator.observe(nextState, null, null, 0.0, true);
 			sumMoves += steps + 1;
 
-
-
 		}
-		System.out.println("the average is: " + (sumMoves / (double) EPISODE_COUNT));
+		System.out.println("the average is: "
+				+ (sumMoves / (double) EPISODE_COUNT));
 
 		predator.printQTable();
 
 	}
 }
-
-
