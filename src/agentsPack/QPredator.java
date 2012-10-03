@@ -81,11 +81,11 @@ public class QPredator extends Predator {
 	public void PrintQTable() {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
-					
-				System.out.println(new Coordinate(i, j));
-					for (StateActionPair c : this.qTable[i][j]) {
 
-						System.out.println(c.Action + " " + c.Value);
+				System.out.println(new Coordinate(i, j));
+				for (StateActionPair c : this.qTable[i][j]) {
+
+					System.out.println(c.Action + " " + c.Value);
 
 
 				}
@@ -98,7 +98,7 @@ public class QPredator extends Predator {
 		double sum = 0;
 
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-				.getY()]) {
+		                                                           .getY()]) {
 			sum += Math.exp(e.Value / temperature);
 
 		}
@@ -107,7 +107,7 @@ public class QPredator extends Predator {
 		double k = 0;
 
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-				.getY()]) {
+		                                                           .getY()]) {
 
 			k += Math.exp(e.Value / temperature) / sum;
 
@@ -126,19 +126,18 @@ public class QPredator extends Predator {
 
 		int CountActions = 0;
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
-				.getY()]) {
+		                                                           .getY()]) {
 			if (e.Value > maxValue) {
 				maxValue = e.Value;
 				maxAction = e;
 			}
 			CountActions++;
 		}
-
 		if (r <= epsilon) {
 			Double step = epsilon / (CountActions - 1);
 			Double counter = step;
 			for (StateActionPair e : this.qTable[this.position.getX()][this.position
-					.getY()]) {
+			                                                           .getY()]) {
 				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
 					if (counter <= r) {
 						return e;
@@ -146,9 +145,9 @@ public class QPredator extends Predator {
 					counter -= step;
 				}
 			}
+
 		}
 		return maxAction;
-
 	}
 
 	public void updateQTable(Coordinate oldPosition, StateActionPair Action,
@@ -156,7 +155,7 @@ public class QPredator extends Predator {
 
 		int actionPosId = -1;
 		for (int i = 0; i < this.qTable[this.position.getX()][this.position
-				.getY()].size(); i++) {
+		                                                      .getY()].size(); i++) {
 			if (this.qTable[this.position.getX()][this.position.getY()]
 					.elementAt(i).id == Action.id) {
 				actionPosId = i;
@@ -168,7 +167,7 @@ public class QPredator extends Predator {
 
 			double actionMaxValue = Double.NEGATIVE_INFINITY;
 			for (StateActionPair e : this.qTable[this.position.getX()][this.position
-					.getY()]) {
+			                                                           .getY()]) {
 				if (e.Value > actionMaxValue) {
 					actionMaxValue = e.Value;
 				}
@@ -176,23 +175,23 @@ public class QPredator extends Predator {
 
 			this.qTable[oldPosition.getX()][oldPosition.getY()]
 					.elementAt(actionPosId).Value = this.qTable[oldPosition
-					.getX()][oldPosition.getY()].elementAt(actionPosId).Value
-					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
-							.getX()][oldPosition.getY()].elementAt(actionPosId).Value));
+					                                            .getX()][oldPosition.getY()].elementAt(actionPosId).Value
+					                                            + (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
+					                                                                                                        .getX()][oldPosition.getY()].elementAt(actionPosId).Value));
 
 		} else {
 
 			this.qTable[oldPosition.getX()][oldPosition.getY()]
 					.elementAt(actionPosId).Value = this.qTable[oldPosition
-					.getX()][oldPosition.getY()].elementAt(actionPosId).Value
-					+ alpha
-					* (reward - this.qTable[oldPosition.getX()][oldPosition
-							.getY()].elementAt(actionPosId).Value);
+					                                            .getX()][oldPosition.getY()].elementAt(actionPosId).Value
+					                                            + alpha
+					                                            * (reward - this.qTable[oldPosition.getX()][oldPosition
+					                                                                                        .getY()].elementAt(actionPosId).Value);
 
 		}
 	}
-	
-	
+
+
 	public static void RunQLearning(int number, double a, double gamma,
 			String policy, double policyParameter) {
 
@@ -238,7 +237,7 @@ public class QPredator extends Predator {
 				qP.position.setY(action.Action.getY());
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
-					
+
 					output[i] = steps;
 					reward = 10.0;
 					prey.kill();
@@ -297,14 +296,14 @@ public class QPredator extends Predator {
 		}
 
 		qP.PrintQTable();
-		
+
 		try {
 			MatFileGenerator.write(output, "Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("An output .mat file has generated with the name: "+"Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter)+".mat");
 
 	}
