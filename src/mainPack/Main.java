@@ -2,6 +2,7 @@ package mainPack;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
