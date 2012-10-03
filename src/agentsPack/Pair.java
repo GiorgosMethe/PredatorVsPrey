@@ -35,4 +35,8 @@ public class Pair<T1, T2> {
 	    		 (this.getSecond() == null ? 0 : this.getSecond().hashCode());
 
 	}
+	
+	public String toString() {
+		return "<" + this.getFirst().toString() + ", " + this.getSecond().toString() + ">"; 
+	}
 }
