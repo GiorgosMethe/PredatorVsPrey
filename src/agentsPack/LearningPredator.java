@@ -67,7 +67,7 @@ public abstract class LearningPredator extends Predator {
 		return this.pi.chooseAction(worldState, qTable);
 	}
 
-	public void PrintQTable() {
+	public void printQTable() {
 		System.out.println(this.qTable.getString(6*6));
 	}
 
