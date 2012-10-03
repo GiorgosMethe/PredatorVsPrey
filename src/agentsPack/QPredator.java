@@ -5,7 +5,6 @@ import java.util.Map;
 import agentsPack.Vector;
 
 import matPack.MatFileGenerator;
-
 import actionPack.RandomAction;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
@@ -17,7 +16,8 @@ public class QPredator extends Predator {
 	private double alpha;
 	private double gamma;
 
-	public QPredator(String name, Coordinate p, Policy pi, double alpha, double gamma) {
+	public QPredator(String name, Coordinate p, Policy pi, double alpha,
+			double gamma) {
 		super(name, p, pi);
 		this.alpha = alpha;
 		this.gamma = gamma;
@@ -60,7 +60,8 @@ public class QPredator extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
-				QPredator qP = new QPredator("", new Coordinate(i, j), null, alpha, gamma);
+				QPredator qP = new QPredator("", new Coordinate(i, j), null,
+						alpha, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
 				worldState.add(qP);
 				worldState.add(prey);
@@ -81,12 +82,11 @@ public class QPredator extends Predator {
 	public void PrintQTable() {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
-					
+
 				System.out.println(new Coordinate(i, j));
-					for (StateActionPair c : this.qTable[i][j]) {
+				for (StateActionPair c : this.qTable[i][j]) {
 
-						System.out.println(c.Action + " " + c.Value);
-
+					System.out.println(c.Action + " " + c.Value);
 
 				}
 			}
@@ -123,32 +123,50 @@ public class QPredator extends Predator {
 		Double r = Math.random();
 		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
-
+		Vector<StateActionPair> tempMaxVector = new Vector<StateActionPair>();
 		int CountActions = 0;
 		for (StateActionPair e : this.qTable[this.position.getX()][this.position
 				.getY()]) {
-			if (e.Value > maxValue) {
-				maxValue = e.Value;
-				maxAction = e;
+			if (e.Value >= maxValue) {
+				if (e.Value == maxValue) {
+					tempMaxVector.add(e);
+				} else {
+					tempMaxVector.removeAllElements();
+					maxValue = e.Value;
+					tempMaxVector.add(e);
+				}
 			}
 			CountActions++;
 		}
 
+		double rand = Math.random();
+		double step = 1 / tempMaxVector.size();
+		double counter = step;
+		int maxAct = 0;
+		for (int ii = 0; ii < tempMaxVector.size(); ii++) {
+			if (counter >= rand) {
+				maxAct = ii;
+				break;
+			}
+			counter += step;
+		}
+
 		if (r <= epsilon) {
-			Double step = epsilon / (CountActions - 1);
-			Double counter = step;
+			double step1 = epsilon / (CountActions - 1);
+			double counter1 = epsilon - step1;
 			for (StateActionPair e : this.qTable[this.position.getX()][this.position
 					.getY()]) {
-				if (!Coordinate.compareCoordinates(e.Action, maxAction.Action)) {
-					if (counter <= r) {
+				if (!Coordinate.compareCoordinates(e.Action,
+						tempMaxVector.elementAt(maxAct).Action)) {
+					if (counter1 <= r) {
 						return e;
 					}
-					counter -= step;
+					counter1 -= step1;
 				}
 			}
-		}
-		return maxAction;
 
+		}
+		return tempMaxVector.elementAt(maxAct);
 	}
 
 	public void updateQTable(Coordinate oldPosition, StateActionPair Action,
@@ -191,12 +209,12 @@ public class QPredator extends Predator {
 
 		}
 	}
-	
-	
+
 	public static void RunQLearning(int number, double a, double gamma,
 			String policy, double policyParameter) {
 
-		QPredator qP = new QPredator("qPredator", new Coordinate(5, 5), null, a, gamma);
+		QPredator qP = new QPredator("qPredator", new Coordinate(5, 5), null,
+				a, gamma);
 		qP.initializeQTable();
 
 		double[] output = new double[number];
@@ -238,7 +256,7 @@ public class QPredator extends Predator {
 				qP.position.setY(action.Action.getY());
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
-					
+
 					output[i] = steps;
 					reward = 10.0;
 					prey.kill();
@@ -297,15 +315,22 @@ public class QPredator extends Predator {
 		}
 
 		qP.PrintQTable();
-		
+
 		try {
-			MatFileGenerator.write(output, "Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter));
+			MatFileGenerator.write(
+					output,
+					"Q-Learning" + "_" + String.valueOf(a) + "_"
+							+ String.valueOf(gamma) + "_" + policy + "_"
+							+ String.valueOf(policyParameter));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		System.out.println("An output .mat file has generated with the name: "+"Q-Learning"+"_"+String.valueOf(a)+"_"+String.valueOf(gamma)+"_"+policy+"_"+String.valueOf(policyParameter)+".mat");
+
+		System.out.println("An output .mat file has generated with the name: "
+				+ "Q-Learning" + "_" + String.valueOf(a) + "_"
+				+ String.valueOf(gamma) + "_" + policy + "_"
+				+ String.valueOf(policyParameter) + ".mat");
 
 	}
 

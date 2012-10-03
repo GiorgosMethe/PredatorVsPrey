@@ -66,3 +66,7 @@ Thumbs.db
 *.prefs
 
 .settings/org.eclipse.jdt.core.prefs
+
+*.mat
+
+*.m

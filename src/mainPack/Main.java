@@ -192,11 +192,139 @@ public class Main {
 
 			} else if (choiceInt == 5) {
 
-				QPredator.RunQLearning(1000, 0.5, 0.7, "s", 0.8);
+				String numberStr = null;
+				int number = 999;
+				do {
+					System.out
+							.print("\nGive a positive integer >0 for the number of episodes:");
+					try {
+						numberStr = reader.readLine();
+						number = Integer.parseInt(numberStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (number <= 0);
+
+				String alphaStr = null;
+				double alpha = 999;
+				do {
+					System.out
+							.print("\nGive a positive <1 learning rate for the predator:");
+					try {
+						alphaStr = reader.readLine();
+						alpha = Double.parseDouble(alphaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (alpha > 1 || alpha <= 0);
+
+				String gammaStr = null;
+				double gamma = 999;
+				do {
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
+					try {
+						gammaStr = reader.readLine();
+						gamma = Double.parseDouble(gammaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (gamma > 1 || gamma <= 0);
+
+				String policy = "";
+				do {
+					System.out
+							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+					try {
+						policy = reader.readLine();
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (!policy.equalsIgnoreCase("e")
+						&& !policy.equalsIgnoreCase("s"));
+
+				String policyParStr = null;
+				double policyPar = 999;
+				do {
+					System.out
+							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+					try {
+						policyParStr = reader.readLine();
+						policyPar = Double.parseDouble(policyParStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (policyPar > 1 || policyPar < 0);
+
+				QPredator.RunQLearning(number, alpha, gamma, policy, policyPar);
 
 			} else if (choiceInt == 6) {
 
-				SarsaPredator.RunSarsa(1000, 0.5, 0.7, "s", 0.8);
+				String numberStr = null;
+				int number = 999;
+				do {
+					System.out
+							.print("\nGive a positive integer >0 for the number of episodes:");
+					try {
+						numberStr = reader.readLine();
+						number = Integer.parseInt(numberStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (number <= 0);
+
+				String alphaStr = null;
+				double alpha = 999;
+				do {
+					System.out
+							.print("\nGive a positive <1 learning rate for the predator:");
+					try {
+						alphaStr = reader.readLine();
+						alpha = Double.parseDouble(alphaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (alpha > 1 || alpha <= 0);
+
+				String gammaStr = null;
+				double gamma = 999;
+				do {
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
+					try {
+						gammaStr = reader.readLine();
+						gamma = Double.parseDouble(gammaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (gamma > 1 || gamma <= 0);
+
+				String policy = "";
+				do {
+					System.out
+							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+					try {
+						policy = reader.readLine();
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (!policy.equalsIgnoreCase("e")
+						&& !policy.equalsIgnoreCase("s"));
+
+				String policyParStr = null;
+				double policyPar = 999;
+				do {
+					System.out
+							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+					try {
+						policyParStr = reader.readLine();
+						policyPar = Double.parseDouble(policyParStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (policyPar > 1 || policyPar < 0);
+
+				SarsaPredator.RunSarsa(number, alpha, gamma, policy, policyPar);
 
 			} else if (choiceInt == 7) {
 

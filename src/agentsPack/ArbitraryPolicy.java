@@ -10,7 +10,8 @@ public class ArbitraryPolicy extends Policy {
 
 	protected Map<Vector<Agent>, Coordinate> arbitraryActions;
 
-	// Arbitrary = every time you look up the action for s, you pick the same random action
+	// Arbitrary = every time you look up the action for s, you pick the same
+	// random action
 	public ArbitraryPolicy() {
 		this.arbitraryActions = new HashMap<Vector<Agent>, Coordinate>();
 	}
@@ -27,8 +28,10 @@ public class ArbitraryPolicy extends Policy {
 			if (pred == null) {
 				throw new NullPointerException("No Predator in the worldState?");
 			}
-			Vector<Coordinate> possibleActions = pred.possibleActions(worldState);
-			this.arbitraryActions.put(worldState, possibleActions.get((int) (Math.random() * possibleActions.size())));
+			Vector<Coordinate> possibleActions = pred
+					.possibleActions(worldState);
+			this.arbitraryActions.put(worldState, possibleActions
+					.get((int) (Math.random() * possibleActions.size())));
 		}
 		return this.arbitraryActions.get(worldState);
 	}

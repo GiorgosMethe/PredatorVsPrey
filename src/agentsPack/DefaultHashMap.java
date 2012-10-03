@@ -19,20 +19,20 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 			return this.defaultValue;
 		}
 	}
-	
+
 	/**
 	 * This made Eclipse really happy.
 	 */
 	private static final long serialVersionUID = 1554353438471176710L;
 
-	protected DefaultFactory<K,V> defaultFactory;
+	protected DefaultFactory<K, V> defaultFactory;
 
 	public DefaultHashMap(V defaultValue) {
 		// TODO Auto-generated constructor stub
 		super();
 		this.defaultFactory = new SimpleDefaultFactory<K, V>(defaultValue);
 	}
-	
+
 	public DefaultHashMap(DefaultFactory<K, V> defaultFactory) {
 		// TODO Auto-generated constructor stub
 		super();
@@ -43,8 +43,9 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 		super(initialCapacity);
 		this.defaultFactory = new SimpleDefaultFactory<K, V>(defaultValue);
 	}
-	
-	public DefaultHashMap(int initialCapacity, DefaultFactory<K,V> defaultFactory) {
+
+	public DefaultHashMap(int initialCapacity,
+			DefaultFactory<K, V> defaultFactory) {
 		super(initialCapacity);
 		this.defaultFactory = defaultFactory;
 	}
@@ -54,7 +55,8 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 		this.defaultFactory = new SimpleDefaultFactory<K, V>(defaultValue);
 	}
 
-	public DefaultHashMap(Map<? extends K, ? extends V> m, DefaultFactory<K, V> defaultFactory) {
+	public DefaultHashMap(Map<? extends K, ? extends V> m,
+			DefaultFactory<K, V> defaultFactory) {
 		super(m);
 		this.defaultFactory = defaultFactory;
 	}
@@ -64,7 +66,8 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 		this.defaultFactory = new SimpleDefaultFactory<K, V>(defaultValue);
 	}
 
-	public DefaultHashMap(int initialCapacity, float loadFactor, DefaultFactory<K, V> defaultFactory) {
+	public DefaultHashMap(int initialCapacity, float loadFactor,
+			DefaultFactory<K, V> defaultFactory) {
 		super(initialCapacity, loadFactor);
 		this.defaultFactory = defaultFactory;
 	}
