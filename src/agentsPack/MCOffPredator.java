@@ -13,12 +13,16 @@ public class MCOffPredator extends LearningPredator {
 	protected Map<Pair<Vector<Agent>, Coordinate>, Double> numerator;
 	protected Map<Pair<Vector<Agent>, Coordinate>, Double> denominator;
 
-	public MCOffPredator(String name, Coordinate p, double initialQValue) {
+	public MCOffPredator(String name, Coordinate p, Policy pi, double initialQValue) {
 		super(name, p, new ArbitraryPolicy(), initialQValue);
 		this.numerator = new DefaultHashMap<Pair<Vector<Agent>, Coordinate>, Double>(0.0);
 		this.denominator= new DefaultHashMap<Pair<Vector<Agent>, Coordinate>, Double>(0.0);
 	}
 
+	public MCOffPredator(String name, Coordinate p, Policy pi) {
+		super(name, p, pi);
+	}
+	
 	public MCOffPredator(String name, Coordinate p) {
 		super(name, p, new ArbitraryPolicy());
 	}
