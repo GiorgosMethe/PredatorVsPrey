@@ -14,7 +14,7 @@ public class SARSdata {
 	private boolean isAbsorbingState;
 	
 	public SARSdata(Vector<Agent> currentState, Coordinate action, Vector<Agent> nextState, Double reward) {
-		this(currentState, action, nextState, reward, (currentState.size() <= 1));
+		this(currentState, action, nextState, reward, (currentState.size() <= 1 || action == null || nextState == null));
 	}
 	
 	public SARSdata(Vector<Agent> currentState, Coordinate action, Vector<Agent> nextState, Double reward, boolean isAbsorbingState) {

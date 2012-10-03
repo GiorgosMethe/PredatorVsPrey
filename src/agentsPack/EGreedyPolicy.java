@@ -21,20 +21,31 @@ public class EGreedyPolicy extends Policy {
 	@Override
 	public Coordinate chooseAction(Vector<Agent> worldState, QTable qTable){
 		Double r = Math.random();
-		Coordinate maxAction = null;
+		
 		Double maxValue = Double.NEGATIVE_INFINITY;
+		Coordinate maxAction = null;
 
-		for(Entry<Coordinate, Double> e : qTable.get(worldState).entrySet()){
-			if(e.getValue() > maxValue) {
-				maxValue = e.getValue();
-				maxAction = e.getKey();
+		Map<Double, Vector<Coordinate>> valueActionMap = new DefaultHashMap<Double, Vector<Coordinate>>(new Vector<Coordinate>());
+		Vector<Coordinate> actions;
+		
+		for (Entry<Coordinate, Double> e : qTable.get(worldState).entrySet()){
+			actions = valueActionMap.get(e.getValue());
+			actions.add(e.getKey());
+			valueActionMap.put(e.getValue(), actions);
+		}
+		
+		for (Double value : valueActionMap.keySet()) {
+			if (value > maxValue) {
+				maxValue = value;
 			}
 		}
+		
+		maxAction = valueActionMap.get(maxValue).get((int) (Math.random() * 5));
 
-		if (r <= epsilon) {
+		if (r <= this.epsilon) {
 			Map<Coordinate, Double> actionValueMap = new DefaultHashMap<Coordinate, Double>(qTable.get(worldState), 0.0);
 			actionValueMap.remove(maxAction);
-			Double step = (1 - epsilon) / actionValueMap.size();
+			Double step = (1 - this.epsilon) / actionValueMap.size();
 			Double counter = step;
 			for (Coordinate a : actionValueMap.keySet()) {
 				if (counter <= r) {
@@ -49,7 +60,7 @@ public class EGreedyPolicy extends Policy {
 
 
 	public double getEpsilon() {
-		return epsilon;
+		return this.epsilon;
 	}
 
 
