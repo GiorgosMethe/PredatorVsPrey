@@ -90,13 +90,11 @@ public class MCOffPredator extends Predator {
 	public void PrintQTable() {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
-
 				System.out.println(new Coordinate(i, j));
-				for (StateActionPair c : this.updatedQTable[i][j]) {
-
-					System.out.println(c.Action + " " + c.Value);
-
+				for (StateActionPair c : this.qTable[i][j]) {
+					System.out.print(c.Action + " " + c.Value + "  ");
 				}
+				System.out.println("\n");
 			}
 		}
 	}

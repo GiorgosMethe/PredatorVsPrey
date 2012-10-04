@@ -79,16 +79,14 @@ public class SarsaPredator extends Predator {
 
 	}
 
-	public void printSarsaTable() {
+	public void PrintSarsaTable() {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
 				System.out.println(new Coordinate(i, j));
 				for (StateActionPair c : this.sarsaTable[i][j]) {
-
-					System.out.println(c.Action + " " + c.Value);
-
+					System.out.print(c.Action + " " + c.Value + "  ");
 				}
-
+				System.out.println("\n");
 			}
 		}
 	}
@@ -334,7 +332,7 @@ public class SarsaPredator extends Predator {
 		}
 		System.out.println("the average is: " + (sumMoves / 10000));
 
-		sP.printSarsaTable();
+		sP.PrintSarsaTable();
 
 		try {
 			MatFileGenerator.write(
