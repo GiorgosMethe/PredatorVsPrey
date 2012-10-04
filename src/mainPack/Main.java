@@ -331,7 +331,7 @@ public class Main {
 				SarsaPredator.RunSarsa(number, alpha, gamma, policy, policyPar);
 
 			} else if (choiceInt == 7) {
-				// MCOnPolicy
+
 				String numberStr = null;
 				int number = 999;
 				do {
@@ -345,10 +345,23 @@ public class Main {
 					}
 				} while (number <= 0);
 
+				String gammaStr = null;
+				double gamma = 999;
+				do {
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
+					try {
+						gammaStr = reader.readLine();
+						gamma = Double.parseDouble(gammaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (gamma > 1 || gamma <= 0);
+
 				String policy = "";
 				do {
 					System.out
-							.print("\nType (s) for SoftMax policy or (e) for \u03B5-Greedy:");
+							.print("\nType (s) for SoftMax policy or (e) for \u03B5-greedy:");
 					try {
 						policy = reader.readLine();
 					} catch (Exception e) {
@@ -361,7 +374,7 @@ public class Main {
 				double policyPar = 999;
 				do {
 					System.out
-							.print("\nGive a positive <1 policy parameter, \u03B5 for \u03B5-Greedy, temperature for softMax:");
+							.print("\nGive a positive <1 policy parameter, \u03B5 for \u03B5-greedy, temperature for softMax:");
 					try {
 						policyParStr = reader.readLine();
 						policyPar = Double.parseDouble(policyParStr);
@@ -370,7 +383,8 @@ public class Main {
 					}
 				} while (policyPar > 1 || policyPar < 0);
 
-				MCOnPredator.RunMonteCarlo(number, policy, policyPar);
+				MCOnPredator.RunMonteCarloOn(number, gamma, policy, policyPar);
+				
 			} else if (choiceInt == 8) {
 				// MCOffPolicy
 			} else if (choiceInt == 9) {
