@@ -166,6 +166,12 @@ public class MCOnPredator extends Predator {
 		}
 		return tempMaxVector.elementAt(maxAct);
 	}
+	
+	public void updateQtable(Coordinate s, int actionID, double average){
+		
+		this.qTable[s.getX()][s.getY()].elementAt(actionID).Value = average;
+		
+	}
 
 	public static void RunMonteCarloOn(int number, double gamma,
 			String policy, double policyParameter) {
@@ -290,7 +296,9 @@ public class MCOnPredator extends Predator {
 						break;
 					}
 				}
-				qP.qTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = average;
+				
+				qP.updateQtable(s.State,actionID,average);
+				
 					
 			}
 		}
