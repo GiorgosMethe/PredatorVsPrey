@@ -383,7 +383,7 @@ public class Main {
 					}
 				} while (policyPar > 1 || policyPar < 0);
 
-				MCOnPredator.RunMonteCarloOn(number, gamma, policy, policyPar);
+				MCOnPredator.RunMonteCarloLearning(number, gamma, policyParStr, policyPar);
 				
 			} else if (choiceInt == 8) {
 				// MCOffPolicy

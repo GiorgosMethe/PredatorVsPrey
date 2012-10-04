@@ -3,15 +3,14 @@ package agentsPack;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-import agentsPack.Vector;
+
 import matPack.MatFileGenerator;
 import actionPack.RandomAction;
 import actionPack.SAPair;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
-public class MCOnPredator extends Predator {	
-	
+public class MCOnPredator extends Predator {
 
 	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
@@ -22,6 +21,10 @@ public class MCOnPredator extends Predator {
 		super(name, p, pi);
 		this.gamma = gamma;
 		// TODO Auto-generated constructor stub
+	}
+	
+	public static void main(String[] args) {
+		MCOnPredator.RunMonteCarloLearning(1000, 0.7, "e", 0.01);
 	}
 
 	@Override
@@ -60,34 +63,30 @@ public class MCOnPredator extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
-				MCOnPredator qP = new MCOnPredator("", new Coordinate(i, j), null, gamma);
+				MCOnPredator mcOffP = new MCOnPredator("", new Coordinate(i, j), null, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
-				worldState.add(qP);
+				worldState.add(mcOffP);
 				worldState.add(prey);
 				int id = 0;
 
-				for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
+				for (RandomAction c : mcOffP.ProbabilityActionsRSW(worldState)) {
 					id++;
 					this.qTable[i][j].add(new StateActionPair(new Coordinate(
 							c.coordinate.getX(), c.coordinate.getY()), 15, id));
 
 				}
-
 			}
 		}
-
 	}
 
 	public void PrintQTable() {
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
-
 				System.out.println(new Coordinate(i, j));
 				for (StateActionPair c : this.qTable[i][j]) {
-
-					System.out.println(c.Action + " " + c.Value);
-
+					System.out.print(c.Action + " " + c.Value+"  ");
 				}
+				System.out.println("\n");
 			}
 		}
 	}
@@ -166,60 +165,54 @@ public class MCOnPredator extends Predator {
 		}
 		return tempMaxVector.elementAt(maxAct);
 	}
-	
-	public void updateQtable(Coordinate s, int actionID, double average){
-		
-		this.qTable[s.getX()][s.getY()].elementAt(actionID).Value = average;
+
+	public void updateQTable() {
 		
 	}
 
-	public static void RunMonteCarloOn(int number, double gamma,
+	public static void RunMonteCarloLearning(int number, double gamma,
 			String policy, double policyParameter) {
 
-		MCOnPredator qP = new MCOnPredator("qPredator", new Coordinate(5, 5), null, gamma);
-		qP.initializeQTable();
+		MCOnPredator mcOffP = new MCOnPredator("mcOffPredator", new Coordinate(5, 5), null,
+				 gamma);
+		mcOffP.initializeQTable();
 
 		double[] output = new double[number];
 		for (int i = 0; i < number; i++) {
 
+			Vector<SAPair> episode = new Vector<SAPair>();
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
-			qP.position.setX(5);
-			qP.position.setY(5);
+			mcOffP.position.setX(5);
+			mcOffP.position.setY(5);
 
-			worldState.add(qP);
+			worldState.add(mcOffP);
 			worldState.add(prey);
 
 			int steps = 0;
 
-			Vector<SAPair> SApairList = new Vector<SAPair>();
-
 			do {
 
-				// save the old position, we need it later.
-				Coordinate oldPosition = new Coordinate(qP.position.getX(),
-						qP.position.getY());
-
+				Coordinate oldposition = new Coordinate(mcOffP.position.getX(), mcOffP.position.getY());
 				StateActionPair action = null;
 				if (policy.equalsIgnoreCase("e")) {
 					// e-Greedy action selection
-					action = qP.chooseEGreedyAction(policyParameter);
+					action = mcOffP.chooseEGreedyAction(policyParameter);
 				} else if (policy.equalsIgnoreCase("s")) {
 					// SoftMax action selection
-					action = qP.chooseSoftMaxAction(policyParameter);
+					action = mcOffP.chooseSoftMaxAction(policyParameter);
 				}
 
 				// SoftMax action selection
-				// StateActionPair action = qP.chooseSoftMaxAction(0.1);
+				// StateActionPair action = mcOffP.chooseSoftMaxAction(0.1);
 
 				// update the predator's position
-				qP.position.setX(action.Action.getX());
-				qP.position.setY(action.Action.getY());
-				
-				SApairList.add(new SAPair(oldPosition, action));
+				mcOffP.position.setX(action.Action.getX());
+				mcOffP.position.setY(action.Action.getY());
 
-				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
+				if (Coordinate.compareCoordinates(mcOffP.position, prey.position)) {
 
+					System.out.println("killed in :"+steps);
 					output[i] = steps;
 					prey.kill();
 
@@ -235,8 +228,8 @@ public class MCOnPredator extends Predator {
 					if (y == 10)
 						y = -1;
 
-					int NewPredPosX = qP.position.getX() - x;
-					int NewPredPosY = qP.position.getY() - y;
+					int NewPredPosX = mcOffP.position.getX() - x;
+					int NewPredPosY = mcOffP.position.getY() - y;
 
 					// some checks not to excede the limits of the
 					// space
@@ -259,14 +252,14 @@ public class MCOnPredator extends Predator {
 
 					}
 
-					qP.position.setX(NewPredPosXNor);
-					qP.position.setY(NewPredPosYNor);
+					mcOffP.position.setX(NewPredPosXNor);
+					mcOffP.position.setY(NewPredPosYNor);
 
 				}
+				episode.add(new SAPair(oldposition, action));
+				steps++;
 
 			} while (prey.lives);
-			
-			
 			@SuppressWarnings("unchecked")
 			Vector<Double> R[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
 			for (int j = 0; j < 6; j++) {
@@ -276,9 +269,9 @@ public class MCOnPredator extends Predator {
 					}
 				}
 			}
-			Collections.reverse(SApairList);
+			Collections.reverse(episode);
 			double Return = 10.0 / gamma;
-			for(SAPair s : SApairList){
+			for(SAPair s : episode){
 				Return *= gamma;
 				R[s.State.getX()][s.State.getY()][s.Action.id - 1].add(Return);
 				
@@ -290,25 +283,28 @@ public class MCOnPredator extends Predator {
 				double average = sum/R[s.State.getX()][s.State.getY()][s.Action.id - 1].size();
 				
 				int actionID = -1;
-				for(int j=0;j<qP.qTable[s.State.getX()][s.State.getY()].size();j++){
-					if(qP.qTable[s.State.getX()][s.State.getY()].elementAt(j).id == s.Action.id){
+				for(int j=0;j<mcOffP.qTable[s.State.getX()][s.State.getY()].size();j++){
+					if(mcOffP.qTable[s.State.getX()][s.State.getY()].elementAt(j).id == s.Action.id){
 						actionID = j;
 						break;
 					}
 				}
 				
-				qP.updateQtable(s.State,actionID,average);
+				mcOffP.qTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = average;
 				
 					
 			}
+			
+			episode.clear();
+
 		}
-		
-		qP.PrintQTable();
+
+		mcOffP.PrintQTable();
 
 		try {
 			MatFileGenerator.write(
 					output,
-					"MConLine-Learning" + "_"
+					"Q-Learning" + "_"
 							+ String.valueOf(gamma) + "_" + policy + "_"
 							+ String.valueOf(policyParameter));
 		} catch (IOException e) {
@@ -317,9 +313,10 @@ public class MCOnPredator extends Predator {
 		}
 
 		System.out.println("An output .mat file has generated with the name: "
-				+ "MConLine-Learning" + "_" 
+				+ "Q-Learning" + "_"
 				+ String.valueOf(gamma) + "_" + policy + "_"
 				+ String.valueOf(policyParameter) + ".mat");
 
 	}
+
 }
