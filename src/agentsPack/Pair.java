@@ -24,7 +24,7 @@ public class Pair<T1, T2> {
 			return false;
 		}
 		Pair<T1, T2> other = (Pair<T1, T2>) o;
-		return (this.getFirst() == null ? other.getFirst() == null : this
+		return (other == null) || (this.getFirst() == null ? other.getFirst() == null : this
 				.getFirst().equals(other.getFirst()))
 				&& (this.getSecond() == null ? other.getSecond() == null : this
 						.getSecond().equals(other.getSecond()));
