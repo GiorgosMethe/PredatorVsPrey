@@ -19,13 +19,7 @@ public class MCOnPredator extends Predator {
 
 	public MCOnPredator(String name, Coordinate p, Policy pi) {
 		super(name, p, pi);
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				for (int k = 0; k < 5; k++) {
-					returns[i][j][k] = new Vector<Double>();
-				}
-			}
-		}
+		this.initializeReturns();
 	}
 
 	@Override
@@ -100,6 +94,16 @@ public class MCOnPredator extends Predator {
 		}
 	}
 
+	public void initializeReturns() {
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 6; j++) {
+				for (int k = 0; k < 5; k++) {
+					returns[i][j][k] = new Vector<Double>();
+				}
+			}
+		}
+	}
+	
 	public StateActionPair chooseSoftMaxAction(double temperature) {
 
 		double sum = 0;
@@ -202,7 +206,7 @@ public class MCOnPredator extends Predator {
 			for (Double returnedValue : this.returns[oldPosition.getX()][oldPosition.getY()][actionPosId]) {
 				avgReturn += returnedValue;
 			}
-			avgReturn = avgReturn /= this.returns[oldPosition.getX()][oldPosition.getY()][actionPosId].size();
+			avgReturn /= (double) this.returns[oldPosition.getX()][oldPosition.getY()][actionPosId].size();
 
 			this.qTable[oldPosition.getX()][oldPosition.getY()].elementAt(actionPosId).Value 
 				= avgReturn;
@@ -221,7 +225,7 @@ public class MCOnPredator extends Predator {
 
 		double[] output = new double[number];
 		for (int i = 0; i < number; i++) {
-
+			mcP.initializeReturns();
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
 			mcP.position.setX(5);
