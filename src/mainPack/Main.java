@@ -3,6 +3,7 @@ package mainPack;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import agentsPack.MCOnPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
@@ -24,6 +25,7 @@ public class Main {
 
 		int choiceInt = 0;
 
+		System.out.println("\u03B5");
 		System.out.println("Welcome to the PredatorVsPrey V.2");
 		System.out.println("------------------------------------");
 		do {
@@ -34,18 +36,20 @@ public class Main {
 			System.out.println("4. Policy Iteration");
 			System.out.println("5. Q-Learning");
 			System.out.println("6. Sarsa-Learning");
-			System.out.println("7. Exit");
+			System.out.println("7. On-policy Monte Carlo learning");
+			System.out.println("8. Off-policy Monte Carlo learning");
+			System.out.println("9. Exit");
 
 			String choice = null;
 			do {
-				System.out.print("\nGive your choice (1-6):");
+				System.out.print("\nGive your choice (1-9):");
 				try {
 					choice = reader.readLine();
 					choiceInt = Integer.parseInt(choice);
 				} catch (Exception e) {
 
 				}
-			} while (choiceInt < 1 || choiceInt > 7);
+			} while (choiceInt < 1 || choiceInt > 10);
 
 			if (choiceInt == 1) {
 
@@ -234,7 +238,7 @@ public class Main {
 				String policy = "";
 				do {
 					System.out
-							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+							.print("\nType (s) for SoftMax policy or (e) for \u03B5-Greedy:");
 					try {
 						policy = reader.readLine();
 					} catch (Exception e) {
@@ -247,7 +251,7 @@ public class Main {
 				double policyPar = 999;
 				do {
 					System.out
-							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+							.print("\nGive a positive <1 policy parameter, \u03B5 for \u03B5-greedy, temperature for softmax:");
 					try {
 						policyParStr = reader.readLine();
 						policyPar = Double.parseDouble(policyParStr);
@@ -302,7 +306,7 @@ public class Main {
 				String policy = "";
 				do {
 					System.out
-							.print("\nType (s) for SoftMax policy or (e) for e-Greedy:");
+							.print("\nType (s) for SoftMax policy or (e) for \u03B5-greedy:");
 					try {
 						policy = reader.readLine();
 					} catch (Exception e) {
@@ -315,7 +319,7 @@ public class Main {
 				double policyPar = 999;
 				do {
 					System.out
-							.print("\nGive a positive <1 policy parameter, alpha for e-Greedy, temperature for softMax:");
+							.print("\nGive a positive <1 policy parameter, \u03B5 for \u03B5-greedy, temperature for softMax:");
 					try {
 						policyParStr = reader.readLine();
 						policyPar = Double.parseDouble(policyParStr);
@@ -327,6 +331,49 @@ public class Main {
 				SarsaPredator.RunSarsa(number, alpha, gamma, policy, policyPar);
 
 			} else if (choiceInt == 7) {
+				// MCOnPolicy
+				String numberStr = null;
+				int number = 999;
+				do {
+					System.out
+							.print("\nGive a positive integer >0 for the number of episodes:");
+					try {
+						numberStr = reader.readLine();
+						number = Integer.parseInt(numberStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (number <= 0);
+
+				String policy = "";
+				do {
+					System.out
+							.print("\nType (s) for SoftMax policy or (e) for \u03B5-Greedy:");
+					try {
+						policy = reader.readLine();
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (!policy.equalsIgnoreCase("e")
+						&& !policy.equalsIgnoreCase("s"));
+
+				String policyParStr = null;
+				double policyPar = 999;
+				do {
+					System.out
+							.print("\nGive a positive <1 policy parameter, \u03B5 for \u03B5-Greedy, temperature for softMax:");
+					try {
+						policyParStr = reader.readLine();
+						policyPar = Double.parseDouble(policyParStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (policyPar > 1 || policyPar < 0);
+
+				MCOnPredator.RunMonteCarlo(number, policy, policyPar);
+			} else if (choiceInt == 8) {
+				// MCOffPolicy
+			} else if (choiceInt == 9) {
 
 				System.out.println("Oh whyy???!!! :(");
 
