@@ -12,5 +12,7 @@ public class SAPair {
 		State = state;
 		Action = action;
 	}
-
+	public String toString() {
+		return "{s=" + this.State + ", a=" + this.Action + "}";
+	}
 }
