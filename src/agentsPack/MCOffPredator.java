@@ -2,6 +2,7 @@ package agentsPack;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import agentsPack.Vector;
 import matPack.MatFileGenerator;
@@ -78,8 +79,7 @@ public class MCOffPredator extends Predator {
 				for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
 					id++;
 					qTable[i][j].add(new StateActionPair(new Coordinate(
-							c.coordinate.getX(), c.coordinate.getY()), 15, id));
-
+							c.coordinate.getX(), c.coordinate.getY()), (i==0 && j==0 ? Double.POSITIVE_INFINITY : 15.0), id));
 				}
 
 			}
@@ -102,26 +102,37 @@ public class MCOffPredator extends Predator {
 	}
 
 	public StateActionPair chooseOptimalAction() {
-		double maxValue = Double.NEGATIVE_INFINITY;
-		StateActionPair maxA = null;
+		Map<Double, Vector<StateActionPair>> reverseLookup = new HashMap<Double, Vector<StateActionPair>>();
 		for (StateActionPair s : this.updatedQTable[this.position.getX()][this.position.getY()]) {
-			if (s.Value > maxValue) {
-				maxValue = s.Value;
-				maxA = s;
+			if (!reverseLookup.containsKey(s.Value)) {
+				reverseLookup.put(s.Value, new Vector<StateActionPair>());
+			}
+			reverseLookup.get(s.Value).add(s);
+		}
+		double maxValue = Collections.max(reverseLookup.keySet());
+		
+		double random = Math.random();
+		double inspectedArea = 0;
+		for (StateActionPair s : reverseLookup.get(maxValue)) {
+			inspectedArea += s.Value;
+			if (inspectedArea >= random) {
+				return s;
 			}
 		}
-		return maxA;
+		return null;
 	}
+	
 	public StateActionPair chooseMaxAction() {
-		double maxValue = Double.NEGATIVE_INFINITY;
-		StateActionPair maxA = null;
+		Map<Double, Vector<StateActionPair>> reverseLookup = new HashMap<Double, Vector<StateActionPair>>();
 		for (StateActionPair s : this.qTable[this.position.getX()][this.position.getY()]) {
-			if (s.Value > maxValue) {
-				maxValue = s.Value;
-				maxA = s;
+			if (!reverseLookup.containsKey(s.Value)) {
+				reverseLookup.put(s.Value, new Vector<StateActionPair>());
 			}
+			reverseLookup.get(s.Value).add(s);
 		}
-		return maxA;
+		double maxValue = Collections.max(reverseLookup.keySet());
+		
+		return reverseLookup.get(maxValue).get((int) (Math.random() * reverseLookup.get(maxValue).size()));
 	}
 	
 	public StateActionPair chooseSoftMaxAction(double temperature) {
@@ -141,15 +152,14 @@ public class MCOffPredator extends Predator {
 		double[] output = new double[number];
 		
 		for (int i = 0; i < number; i++) {
-
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
+			qP.position = new Coordinate(5,5);
 			Vector<Agent> worldState = new Vector<Agent>();
 			qP.position.setX(5);
 			qP.position.setY(5);
 
 			worldState.add(qP);
 			worldState.add(prey);
-
 			Vector<SAPair> SApairList = new Vector<SAPair>();
 			
 			// Training episode
@@ -175,10 +185,10 @@ public class MCOffPredator extends Predator {
 				qP.position.setY(action.Action.getY());
 				
 				SApairList.add(new SAPair(oldPosition, action));
-
+				
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 					prey.kill();
-
+					break;
 				} else {
 
 					// Here, I am calculating the prey's possible actions
@@ -219,27 +229,30 @@ public class MCOffPredator extends Predator {
 					qP.position.setY(NewPredPosYNor);
 
 				}
-System.out.print(",");
 			} while (prey.lives);
 			
 			// Update QTable
-			Collections.reverse(SApairList);
+			//Collections.reverse(SApairList);
 			double Return = 10.0 / gamma;
 			double w = 1.0;
-			for(SAPair s : SApairList){
+			SAPair s;
+			
+			for (int j = SApairList.size() - 1; j >= 0; j--) {
+				s = SApairList.get(j);
 				Return *= gamma;
 				w *= 1.0 / qP.probilityStateAction(s, policy, policyParameter);
 				qP.numerator[s.State.getX()][s.State.getY()][s.Action.id] += (w * Return);
 				qP.denominator[s.State.getX()][s.State.getY()][s.Action.id] += w;
 
 				int actionID = -1;
-				for(int j=0;j<qP.qTable[s.State.getX()][s.State.getY()].size();j++){
-					if(qP.qTable[s.State.getX()][s.State.getY()].elementAt(j).id == s.Action.id){
-						actionID = j;
+				for(int k=0;k<qP.updatedQTable[s.State.getX()][s.State.getY()].size();k++){
+					if(qP.updatedQTable[s.State.getX()][s.State.getY()].elementAt(k).id == s.Action.id){
+						actionID = k;
 						break;
 					}
 				}
-				qP.qTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = qP.numerator[s.State.getX()][s.State.getY()][s.Action.id] / qP.denominator[s.State.getX()][s.State.getY()][s.Action.id];
+				
+				qP.updatedQTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = qP.numerator[s.State.getX()][s.State.getY()][s.Action.id] / qP.denominator[s.State.getX()][s.State.getY()][s.Action.id];
 
 				Coordinate optimalAction = null;
 				double maxValue = Double.NEGATIVE_INFINITY;
@@ -249,8 +262,8 @@ System.out.print(",");
 						optimalAction = sap.Action;
 					}
 				}
-				
-				if (s.Action.Action != optimalAction) {
+
+				if (s.Action.Action.getX() == optimalAction.getX() && s.Action.Action.getY() == optimalAction.getY()) {
 					break;
 				}
 			}
@@ -258,20 +271,16 @@ System.out.print(",");
 			// Show what you have learnt
 			prey.lives = true;
 			int steps = 0;
+			qP.position = new Coordinate(5,5);
+			
 			do {
 
+				steps++;
 				// save the old position, we need it later.
 				Coordinate oldPosition = new Coordinate(qP.position.getX(),
 						qP.position.getY());
-
 				StateActionPair action = null;
-				if (policy.equalsIgnoreCase("e")) {
-					// e-Greedy action selection
-					action = qP.chooseEGreedyAction(policyParameter);
-				} else if (policy.equalsIgnoreCase("s")) {
-					// SoftMax action selection
-					action = qP.chooseSoftMaxAction(policyParameter);
-				}
+				action = qP.chooseOptimalAction();
 
 				// SoftMax action selection
 				// StateActionPair action = qP.chooseSoftMaxAction(0.1);
@@ -279,11 +288,10 @@ System.out.print(",");
 				// update the predator's position
 				qP.position.setX(action.Action.getX());
 				qP.position.setY(action.Action.getY());
-				
+				System.out.println(qP.position);
 				SApairList.add(new SAPair(oldPosition, action));
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
-
 					output[i] = steps;
 					prey.kill();
 
@@ -327,12 +335,38 @@ System.out.print(",");
 					qP.position.setY(NewPredPosYNor);
 
 				}
-System.out.print(".");
 			} while (prey.lives);
+			
+			//System.out.print("?");
+			/*
+			for (int j = 0; j < 6; j++) {
+				if (qP.qTable[j] != null && qP.updatedQTable[j] != null) {
+					for (int k = 0; k < 6; k++) {
+						if (qP.qTable[j][k] != null && qP.updatedQTable[j][k] != null) {
+							if (qP.qTable[j][k].size() != qP.updatedQTable[j][k].size()) {
+								System.out.println(qP.qTable[j][k]);
+								System.out.println(qP.updatedQTable[j][k]);
+							}
+							else {
+								for (int l = 0; l < qP.qTable[j][k].size(); l++) {
+									if (!qP.qTable[j][k].get(l).equals(qP.updatedQTable[j][k].get(l))) {
+										System.out.println(j + "," + k + ": " + qP.qTable[j][k].get(l) + "  --  " + qP.updatedQTable[j][k].get(l));
+									}
+									else {
+										System.out.print('=');
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			*/
 		}
 		
 		qP.PrintQTable();
-
+		
+		/*
 		try {
 			MatFileGenerator.write(
 					output,
@@ -343,12 +377,12 @@ System.out.print(".");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		System.out.println("An output .mat file has generated with the name: "
 				+ "MCoffLine-Learning" + "_" 
 				+ String.valueOf(gamma) + "_" + policy + "_"
 				+ String.valueOf(policyParameter) + ".mat");
-
+		*/
 	}
 
 	private double probilityStateAction(SAPair s, String policy, double policyParameter) {
@@ -371,6 +405,6 @@ System.out.print(".");
 	}
 	
 	public static void main(String[] args) {
-		RunMonteCarloOff(1, 0.3, "e", 0.2);
+		RunMonteCarloOff(1000, 0.7, "e", 0.2);
 	}
 }
