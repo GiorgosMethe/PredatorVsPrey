@@ -2,7 +2,6 @@ package agentsPack;
 
 import java.io.IOException;
 import java.util.Map;
-import agentsPack.Vector;
 
 import matPack.MatFileGenerator;
 import actionPack.RandomAction;

@@ -1,10 +1,9 @@
 package functionsPack;
 
-import agentsPack.Vector;
-
 import actionPack.RandomAction;
 import agentsPack.Predator;
 import agentsPack.Prey;
+import agentsPack.Vector;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
 

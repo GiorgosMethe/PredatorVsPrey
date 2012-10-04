@@ -112,6 +112,7 @@ public class Coordinate {
 		}
 		return Coordinate.compareCoordinates(this, (Coordinate) o);
 	}
+
 	@Override
 	public String toString() {
 		return "<" + this.x + "," + this.y + ">";

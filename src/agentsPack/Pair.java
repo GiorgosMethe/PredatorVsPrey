@@ -24,8 +24,9 @@ public class Pair<T1, T2> {
 			return false;
 		}
 		Pair<T1, T2> other = (Pair<T1, T2>) o;
-		return (other == null) || (this.getFirst() == null ? other.getFirst() == null : this
-				.getFirst().equals(other.getFirst()))
+		return (other == null)
+				|| (this.getFirst() == null ? other.getFirst() == null : this
+						.getFirst().equals(other.getFirst()))
 				&& (this.getSecond() == null ? other.getSecond() == null : this
 						.getSecond().equals(other.getSecond()));
 	}
@@ -35,8 +36,9 @@ public class Pair<T1, T2> {
 				^ (this.getSecond() == null ? 0 : this.getSecond().hashCode());
 
 	}
-	
+
 	public String toString() {
-		return "<" + this.getFirst().toString() + ", " + this.getSecond().toString() + ">"; 
+		return "<" + this.getFirst().toString() + ", "
+				+ this.getSecond().toString() + ">";
 	}
 }

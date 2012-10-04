@@ -7,14 +7,15 @@ public class DefaultHashMap<K, V> extends HashMap<K, V> {
 	public interface DefaultFactory<Input, Output> {
 		public Output getDefault(Input key);
 	}
-	
-	public class SimpleDefaultFactory<Input, Output> implements DefaultFactory<Input, Output> {
+
+	public class SimpleDefaultFactory<Input, Output> implements
+			DefaultFactory<Input, Output> {
 		public Output defaultValue;
-		
+
 		SimpleDefaultFactory(Output defaultValue) {
 			this.defaultValue = defaultValue;
 		}
-		
+
 		public Output getDefault(Input key) {
 			return this.defaultValue;
 		}

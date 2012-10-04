@@ -1,11 +1,10 @@
 package environmentPack;
 
-import agentsPack.Vector;
-
 import actionPack.Action;
 import agentsPack.Agent;
 import agentsPack.Predator;
 import agentsPack.Prey;
+import agentsPack.Vector;
 
 public class Environment {
 

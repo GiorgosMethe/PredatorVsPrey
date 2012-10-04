@@ -1,9 +1,8 @@
 package environmentPack;
 
-import agentsPack.Vector;
-
 import agentsPack.Agent;
 import agentsPack.Pair;
+import agentsPack.Vector;
 
 public class SARSdata {
 

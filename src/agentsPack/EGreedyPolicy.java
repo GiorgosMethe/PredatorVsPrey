@@ -2,7 +2,6 @@ package agentsPack;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import agentsPack.Vector;
 
 import environmentPack.Coordinate;
 

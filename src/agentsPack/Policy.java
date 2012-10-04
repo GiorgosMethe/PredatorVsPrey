@@ -1,7 +1,5 @@
 package agentsPack;
 
-import agentsPack.Vector;
-
 import environmentPack.Coordinate;
 
 public abstract class Policy {

@@ -1,7 +1,6 @@
 package agentsPack;
 
 import java.util.Map;
-import agentsPack.Vector;
 
 import actionPack.RandomAction;
 import environmentPack.Coordinate;
