@@ -151,7 +151,7 @@ Increasing the value of $\alpha$ means that we consider the most recent informat
  
 \section*{Exercise 2}
 
-In this exercise we have implemented Q-learning with $\epsilon$ -greedy action decision for different values for $\epsilon$ , using different initial values for the Q-learning table each time. We have used 3 different values for the initialization of the Q-table, a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case.
+In this exercise we have implemented Q-learning with $\epsilon$ -greedy action decision for different values for $\epsilon$ , using different initial values for the Q-learning table each time. We have used 3 different values for the initialization of the Q-table, a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
 
 We have chosen particular values for $\epsilon$ to test how, and what the predator learn to do. For $\epsilon = 0$, the predator will always choose the action for which the Q-learning table has maximum value, thus, the agent will converge to the optimal path really fast if the initial values of the Q-table are lower than the immediate reward of the absorbing state, but it will become explorative if the Q-table values are optimistically initialized.
 
@@ -162,6 +162,15 @@ We have used the value of 0.8 for $\epsilon$ aswell, because in this case, each 
 
 Finally, we have also included $\epsilon = 0.99$ in our experimentation, for the reason that this value leaves almost zero probability for the agent to choose the optimal action. So, what happens in this case is that the predator learns not to use the optimal action each time he has to take a decision, so as we see in the graphs, the number of steps it takes him to find the prey is increased dramatically as time goes by.
 
+
+\begin{figure} [h]
+\centering
+\includegraphics[width=1.0\textwidth,height=0.4\textheight]{epsilonsQ5.png}
+\caption{Performance of Q-Learning with $\epsilon$-greedy for $Q_{initial} = 5$.}
+\label{Figure 1}
+\end{figure}
+
+It should be pointed out that for $Q_{initial} = 10$ and $Q_{initial} = 15$ the graphs are quite similar, with the plot of $\epsilon = 0.99$ dominating the other values. We only included this graph to show how this particular value of $\epsilon$ affects the behavior of the agent.
 \section*{Exercise 3}
 
 \section*{Exercise 4}
