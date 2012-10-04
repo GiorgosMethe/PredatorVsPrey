@@ -24,9 +24,9 @@ public class StateActionPair {
 		StateActionPair that = (StateActionPair) o;
 		
 		return (that == null) 
-				|| ((this.Action == null ? that.Action == null : that.Action.equals(this.Action) 
+				|| ((this.Action == null ? that.Action == null : that.Action.equals(this.Action)) 
 					|| (this.Value == that.Value)
-					|| (this.id == that.id))); 
+					|| (this.id == that.id)); 
 	}
 	
 	@Override
@@ -37,5 +37,9 @@ public class StateActionPair {
 		}
 		hashCode = id * ((int) this.Value) ^ hashCode;
 		return hashCode;
+	}
+	
+	public String toString() {
+		return "(a=" + this.Action + ", v=" + this.Value + ", #=" + this.id + ")";
 	}
 }

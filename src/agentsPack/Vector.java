@@ -52,4 +52,12 @@ public class Vector<T> extends java.util.Vector<T> {
 		}
 		return hashCode;
 	}
+	
+	@Override
+	public String toString() {
+		String result = "[";
+		for (int i = 0; i < this.size(); result += this.get(i).toString(), i++, result += i < this.size() ? ", " : "");
+		result += "]";
+		return result;
+	}
 }
