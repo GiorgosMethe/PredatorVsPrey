@@ -59,12 +59,12 @@ public class MCOffPredator extends Predator {
 				"Sorry, we only use a really small world.");
 	}
 
-	public void initializeQTable() {
-		this.qTable = initializeQTable(this.qTable);
-		this.updatedQTable = initializeQTable(this.updatedQTable);
+	public void initializeQTable(double initialValue) {
+		this.qTable = initializeQTable(this.qTable, initialValue);
+		this.updatedQTable = initializeQTable(this.updatedQTable, initialValue);
 	}
 	
-	public Vector<StateActionPair>[][] initializeQTable(Vector<StateActionPair> qTable[][]) {
+	public Vector<StateActionPair>[][] initializeQTable(Vector<StateActionPair> qTable[][], double initialValue) {
 		Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
@@ -79,7 +79,7 @@ public class MCOffPredator extends Predator {
 				for (RandomAction c : qP.ProbabilityActionsRSW(worldState)) {
 					id++;
 					qTable[i][j].add(new StateActionPair(new Coordinate(
-							c.coordinate.getX(), c.coordinate.getY()), (i==0 && j==0 ? Double.POSITIVE_INFINITY : 15.0), id));
+							c.coordinate.getX(), c.coordinate.getY()), (i==0 && j==0 ? Double.POSITIVE_INFINITY : initialValue), id));
 				}
 
 			}
@@ -113,8 +113,9 @@ public class MCOffPredator extends Predator {
 		
 		double random = Math.random();
 		double inspectedArea = 0;
+		double step = 1.0 / reverseLookup.get(maxValue).size();
 		for (StateActionPair s : reverseLookup.get(maxValue)) {
-			inspectedArea += s.Value;
+			inspectedArea += step;
 			if (inspectedArea >= random) {
 				return s;
 			}
@@ -143,11 +144,11 @@ public class MCOffPredator extends Predator {
 		return this.chooseMaxAction();
 	}
 
-	public static void RunMonteCarloOff(int number, double gamma,
+	public static void RunMonteCarloOff(int number, double initialValue, double gamma,
 			String policy, double policyParameter) {
 
 		MCOffPredator qP = new MCOffPredator("qPredator", new Coordinate(5, 5), null, gamma);
-		qP.initializeQTable();
+		qP.initializeQTable(initialValue);
 		
 		double[] output = new double[number];
 		
@@ -236,13 +237,13 @@ public class MCOffPredator extends Predator {
 			double Return = 10.0 / gamma;
 			double w = 1.0;
 			SAPair s;
-			
+
 			for (int j = SApairList.size() - 1; j >= 0; j--) {
 				s = SApairList.get(j);
 				Return *= gamma;
 				w *= 1.0 / qP.probilityStateAction(s, policy, policyParameter);
-				qP.numerator[s.State.getX()][s.State.getY()][s.Action.id] += (w * Return);
-				qP.denominator[s.State.getX()][s.State.getY()][s.Action.id] += w;
+				qP.numerator[s.State.getX()][s.State.getY()][s.Action.id - 1] += (w * Return);
+				qP.denominator[s.State.getX()][s.State.getY()][s.Action.id - 1] += w;
 
 				int actionID = -1;
 				for(int k=0;k<qP.updatedQTable[s.State.getX()][s.State.getY()].size();k++){
@@ -252,7 +253,7 @@ public class MCOffPredator extends Predator {
 					}
 				}
 				
-				qP.updatedQTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = qP.numerator[s.State.getX()][s.State.getY()][s.Action.id] / qP.denominator[s.State.getX()][s.State.getY()][s.Action.id];
+				qP.updatedQTable[s.State.getX()][s.State.getY()].elementAt(actionID).Value = qP.numerator[s.State.getX()][s.State.getY()][s.Action.id - 1] / qP.denominator[s.State.getX()][s.State.getY()][s.Action.id - 1];
 
 				Coordinate optimalAction = null;
 				double maxValue = Double.NEGATIVE_INFINITY;
@@ -288,7 +289,7 @@ public class MCOffPredator extends Predator {
 				// update the predator's position
 				qP.position.setX(action.Action.getX());
 				qP.position.setY(action.Action.getY());
-				System.out.println(qP.position);
+				
 				SApairList.add(new SAPair(oldPosition, action));
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
@@ -336,7 +337,6 @@ public class MCOffPredator extends Predator {
 
 				}
 			} while (prey.lives);
-			
 			//System.out.print("?");
 			/*
 			for (int j = 0; j < 6; j++) {
@@ -405,6 +405,6 @@ public class MCOffPredator extends Predator {
 	}
 	
 	public static void main(String[] args) {
-		RunMonteCarloOff(1000, 0.7, "e", 0.2);
+		RunMonteCarloOff(1000, 9.0, 0.7, "e", 0.8);
 	}
 }
