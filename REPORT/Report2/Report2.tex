@@ -36,42 +36,32 @@
     urlcolor=mygreylink     % can put red here to visualize the links
 }
 
-\newcommand{\Pred}[2]{\ensuremath{\mathtt{Predator}\left<#1, #2\right>}}
-\newcommand{\Prey}[2]{\ensuremath{\mathtt{Prey}\left<#1, #2\right>}}
-\newcommand{\p}[2]{\ensuremath{\mathtt{P_{11^2}}\left<#1, #2\right>}}
-\newcommand{\pSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
-\newcommand{\pRSW}[2]{\ensuremath{\mathtt{P_{6^2}}\left<#1, #2\right>}}
-\newcommand{\SN}[0]{\ensuremath{S_{11^4}}}
-\newcommand{\SSW}[0]{\ensuremath{S_{6^2}}}
-\newcommand{\SRSW}[0]{\ensuremath{S_{21}}}
-
-\newcommand{\rightuparrow}{\ensuremath{\rightarrow\!\!\!\!\!\uparrow}}
-\newcommand{\rightdownarrow}{\ensuremath{\rightarrow\!\!\!\!\!\downarrow}}
-\newcommand{\leftuparrow}{\ensuremath{\leftarrow\!\!\!\!\uparrow}}
-\newcommand{\leftdownarrow}{\ensuremath{\leftarrow\!\!\!\!\downarrow}}
-
-\newcommand{\DrawSmallPred}[2]{\node at (A.center #1 #2) {$\pi$};}
-\newcommand{\DrawSmallPrey}[2]{\node at (A.center #1 #2) {P};}
-\newcommand{\DrawBigPred}[2]  {\node at (A.center #1 #2) {\Huge $\pi$};}
-\newcommand{\DrawBigPrey}[2]  {\node at (A.center #1 #2) {\Huge P};}
+\definecolor{hlcolor}{rgb}{1, 0, 0}
+\definecolor{mygrey}{gray}{.85}
+\definecolor{mygreylink}{gray}{.30}
+\textheight=8.6in
+\raggedbottom
+\addtolength{\oddsidemargin}{-0.375in}
+\addtolength{\evensidemargin}{0.375in}
+\addtolength{\textwidth}{0.5in}
+\addtolength{\topmargin}{-.375in}
+\addtolength{\textheight}{0.75in}
 
 
 \newcommand{\resheading}[1]{{\large \colorbox{mygrey}{\begin{minipage}{\textwidth}{\textbf{#1 \vphantom{p\^{E}}}}\end{minipage}}}}
 
 \newcommand{\mywebheader}{
   \begin{tabular}{@{}p{5in}p{4in}}
-  {\resheading{Assignment 1: Single Agent Planning}} & {\Large 21 September, 2012}\\\vspace{0.2cm}
+  {\resheading{Assignment 2: Single Agent Learning}} & {\Large 5 October, 2012}\\\vspace{0.2cm}
   \end{tabular}}
 
 \begin{document}
 
 
 \begin{center}
-{\LARGE \textbf{Autonomous Agents}}\\ [1em] \vspace{0.1cm}
-\Large\textbf{5 October 2012 }\\ \vspace{0.1cm}
-\Large\text{Assignment 2: Single Agent Learning}
+{\LARGE \textbf{Autonomous Agents}}\\ [1em]
 \end{center}
-
+\mywebheader
 
 \begin{center}
 {\Large By:} \\ \vspace{0.1cm}
@@ -79,8 +69,6 @@
 {\Large Georgios Methenitis} \\ \vspace{0.1cm}
 {\Large Patrick de Kok} \\ \vspace{0.1cm}
 {\Large Marios Tzakris}
-
-
 \end{center}
 
 
@@ -237,3 +225,4 @@ Figure 11. Comparing Off-Policy Monte Carlo for different values of $\gamma$, fo
 \section*{Conclusion}
 
 \end{document}
+
