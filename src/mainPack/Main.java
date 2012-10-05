@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import agentsPack.MCOnPredator;
+import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
@@ -387,7 +388,35 @@ public class Main {
 						policyPar);
 
 			} else if (choiceInt == 8) {
-				// MCOffPolicy
+
+				String numberStr = null;
+				int number = 999;
+				do {
+					System.out
+							.print("\nGive the number of episodes for the predator to learn its policy:");
+					try {
+						numberStr = reader.readLine();
+						number = Integer.parseInt(numberStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (number <= 0);
+
+				String gammaStr = null;
+				double gamma = 999;
+				do {
+					System.out
+							.print("\nGive a positive discount factor for < 1 :");
+					try {
+						gammaStr = reader.readLine();
+						gamma = Double.parseDouble(gammaStr);
+					} catch (Exception e) {
+						System.err.println("Oh no you broke the program!");
+					}
+				} while (gamma > 1 || gamma <= 0);
+
+				MCoffPredator.RunMonteCarloLearning(number, gamma, "e", 0.2);
+
 			} else if (choiceInt == 9) {
 
 				System.out.println("Oh whyy???!!! :(");

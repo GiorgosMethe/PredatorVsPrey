@@ -118,7 +118,6 @@ public class QPredator extends Predator {
 	public StateActionPair chooseEGreedyAction(double epsilon) {
 
 		Double r = Math.random();
-		StateActionPair maxAction = null;
 		Double maxValue = Double.NEGATIVE_INFINITY;
 		Vector<StateActionPair> tempMaxVector = new Vector<StateActionPair>();
 		int CountActions = 0;

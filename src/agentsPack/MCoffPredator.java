@@ -1,7 +1,9 @@
 package agentsPack;
 
+import java.io.IOException;
 import java.util.Map;
 
+import matPack.MatFileGenerator;
 import actionPack.RandomAction;
 import actionPack.SAPair;
 import actionPack.StateActionPair;
@@ -9,12 +11,9 @@ import environmentPack.Coordinate;
 
 public class MCoffPredator extends Predator {
 
-	public static void main(String[] args) {
-		MCoffPredator.RunMonteCarloLearning(1000, 0.5, "e", 0.5);
-	}
-
 	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
+	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTableOpt[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
 	private double gamma;
 
@@ -169,6 +168,21 @@ public class MCoffPredator extends Predator {
 		return tempMaxVector.elementAt(maxAct);
 	}
 
+	public StateActionPair chooseEGreedyActionOpt() {
+
+		Double maxValue = Double.NEGATIVE_INFINITY;
+		StateActionPair MaxAction = null;
+		for (StateActionPair e : this.qTableOpt[this.position.getX()][this.position
+				.getY()]) {
+			if (e.Value > maxValue) {
+				MaxAction = e;
+				maxValue = e.Value;
+			}
+		}
+		return MaxAction;
+
+	}
+
 	public static void RunMonteCarloLearning(int number, double gamma,
 			String policy, double policyParameter) {
 
@@ -179,7 +193,6 @@ public class MCoffPredator extends Predator {
 				5), null, gamma);
 		qP.initializeQTable();
 
-		double[] output = new double[number];
 		for (int i = 0; i < number; i++) {
 
 			Vector<SAPair> episode = new Vector<SAPair>();
@@ -190,8 +203,6 @@ public class MCoffPredator extends Predator {
 
 			worldState.add(qP);
 			worldState.add(prey);
-
-			int steps = 0;
 
 			do {
 
@@ -219,7 +230,6 @@ public class MCoffPredator extends Predator {
 
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 
-					output[i] = steps;
 					prey.kill();
 
 				} else {
@@ -262,7 +272,6 @@ public class MCoffPredator extends Predator {
 					qP.position.setY(NewPredPosYNor);
 
 				}
-				steps++;
 
 			} while (prey.lives);
 
@@ -300,9 +309,6 @@ public class MCoffPredator extends Predator {
 							policyParameter);
 				}
 
-				System.out.println("State: " + s.State + " r= "
-						+ (Math.abs(episode.size() - ii)) + "  w= " + w);
-
 				N[s.State.getX()][s.State.getY()][s.Action.id - 1] += w
 						* reward;
 				D[s.State.getX()][s.State.getY()][s.Action.id - 1] += w;
@@ -323,7 +329,103 @@ public class MCoffPredator extends Predator {
 			}
 			episode.clear();
 		}
+
 		qP.PrintQTable();
+
+		// testing our predator who just learnt
+
+		double[] output = new double[number];
+		for (int i = 0; i < 100; i++) {
+
+			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
+			Vector<Agent> worldState = new Vector<Agent>();
+			qP.position.setX(5);
+			qP.position.setY(5);
+
+			worldState.add(qP);
+			worldState.add(prey);
+
+			int steps = 0;
+
+			do {
+
+				StateActionPair action = null;
+
+				Double maxValue = Double.NEGATIVE_INFINITY;
+				StateActionPair MaxAction = null;
+				for (StateActionPair e : qP.qTableOpt[qP.position.getX()][qP.position
+						.getY()]) {
+					if (e.Value > maxValue) {
+						MaxAction = e;
+						maxValue = e.Value;
+					}
+				}
+				action = MaxAction;
+
+				// update the predator's position
+				qP.position.setX(action.Action.getX());
+				qP.position.setY(action.Action.getY());
+
+				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
+
+					System.out.println("Killed prey in: " + steps);
+					output[i] = steps;
+					prey.kill();
+
+				} else {
+
+					// Here, I am calculating the prey's possible actions
+					Coordinate preyAction = prey.doAction(worldState);
+
+					int x = preyAction.getX();
+					if (x == 10)
+						x = -1;
+					int y = preyAction.getY();
+					if (y == 10)
+						y = -1;
+
+					int NewPredPosX = qP.position.getX() - x;
+					int NewPredPosY = qP.position.getY() - y;
+
+					// some checks not to excede the limits of the
+					// space
+					if (NewPredPosX == 6)
+						NewPredPosX = 5;
+					if (NewPredPosX == -1)
+						NewPredPosX = 1;
+					if (NewPredPosY == 6)
+						NewPredPosY = 5;
+					if (NewPredPosY == -1)
+						NewPredPosY = 1;
+
+					int NewPredPosXNor = NewPredPosX;
+					int NewPredPosYNor = NewPredPosY;
+
+					if (NewPredPosY > NewPredPosX) {
+						NewPredPosXNor = NewPredPosY;
+						NewPredPosYNor = NewPredPosX;
+					}
+					qP.position.setX(NewPredPosXNor);
+					qP.position.setY(NewPredPosYNor);
+				}
+				steps++;
+
+			} while (prey.lives);
+		}
+
+		try {
+			MatFileGenerator.write(output,
+					"MCOffLineTesting" + "_" + String.valueOf(number) + "_"
+							+ String.valueOf(gamma));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.println("An output .mat file has generated with the name: "
+				+ "MCOffLineTesting" + "_" + String.valueOf(number) + "_"
+				+ String.valueOf(gamma) + ".mat");
+
 	}
 
 	private double probilityStateAction(SAPair s, String policy,
