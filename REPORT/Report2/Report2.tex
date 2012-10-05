@@ -156,7 +156,7 @@ Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for 
 
 
 
-We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action with the maximum value given the current state. Thus, the agent will converge to the optimal path really fast if the initial values of the state-action pairs are lower than any immediate reward, but it will become explorative if the state-action pair values are optimistically initialized.  This corresponds with a (``hard''/not-soft) greedy policy.
+We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action with the maximum value given the current state. Thus, the agent will converge to the optimal path really fast if the initial values of the state-action pairs are lower than any immediate reward, but it will become explorative if the state-action pair values are optimistically initialized.  This corresponds with a (deterministic) greedy policy.
 
 
 If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-table has the maximum value with a probability of $1-\epsilon = 0.9$. That means that our predator is trying to exploit more than it is trying to explore, and there is a small probability that it will not choose the action it considers optimal.
@@ -245,7 +245,8 @@ On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms
 
 
 
-\section*{On-policy Monte Carlo}
+\subsection*{On-policy Monte Carlo}
+Monte Carlo control methods come in on-policy and off-policy variants as well.  The
 ~
 \begin{figure}[t!]
   \centering
@@ -256,25 +257,30 @@ On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms
 \newpage
 
 
+\subsection*{Off-policy Monte Carlo}
+                                                                     
+                                                                     
+                                                                     
+                                             
 \section*{Off-policy Monte Carlo}
-The Off-policy Monte Carlo control method is divided in 2 parts; the behavior function and the estimation function. The behavior function (or behavior policy) is the one used for the agent's learning, generating learning episodes which provide "knowledge" for the estimation policy to use later. The behavior policy is arbitary, and the table it creates is updated each time an episode ends, according to the path the agent used to find the prey. Consequentively, the predator's knowledge and performance depends on the number of training episodes that the agent generates.
-
-The behavior policy's Q table is computed as follows: 
+The Off-policy Monte Carlo control method is divided in 2 parts; the behavior function and the estimation function. The behavior function (or behavior policy) is the one used for the agent's learning, generating learning episodes which provide "knowledge" for the estimation policy to use later. The behavior policy is arbitrary, and the table that it creates is updated at the end of each episode, updating pairs of states and actions that agent used to find the prey. Consequentially, the predator's knowledge and its performance depend on the number of training episodes that the agent generates. First, we make use of e-greedy action selection policy to generate episodes. These episodes start always with the predator at (5,5), and prey at (0,0), and they end when the predator catches the prey. The behavior policy's Q table is computed as follows: 
 \begin{enumerate}
-\item the behavior policy generates an episode.
+\item the behavior policy generates an episode making use of the $\epsilon$ -greedy action selection policy.
 
-\item we suppose $\tau \rightarrow$ the last time where $a_\tau \neq \pi(s_\tau)$ where $\pi$ represents the behavior policy.
+\item starting from the end of each episode, we are finding the state $\tau$ in which was the last time where $a_\tau \neq \pi(s_\tau)$ where $\pi$ represents the behavior policy.
 
-\item For each state-action pair appearing in the episode at time $\tau$ or later $t \rightarrow$ the first occurence of $(s,a)$ after timestep $\tau$
-$w \rightarrow \prod^{T-1}_{k=t+1}\frac{1}{\pi '(s_k,a_k)}$ where $w$ is called "weight" and is used for importance samlping, thus calculating how important the return of an action is.
+\item For each state-action pair appearing in the episode at time $\geq \tau$ from the first occurrence of $(s,a)$, $w \leftarrow \prod^{T-1}_{k=t+1}\frac{1}{\pi '(s_k,a_k)}$, where $w$ is called "weight" and is used for importance sampling, computing how important the return of an action is.
 
-\item $N(s,a) \rightarrow N(s,a) + wR_t$  where $R_t$ represents the return of action $a$ at time t, weighted by $w$.
+\item $N(s,a) \rightarrow N(s,a) + wR_t$,  where $R_t$ represents the return of action $a$ at time t, weighted by $w$.
 
 \item $D(s,a) \rightarrow D(s,a) + w$
 
 \item $Q(s,a) \rightarrow \frac{N(s,a)}{D(s,a)}$
 \end{enumerate}
-The estimation policy $\pi$ will use $argmax_aQ(s,a)$ to compute the next action from state $s$, which brings us to the conclusion that the estimation policy is always choosing the next action greedily. As shown clearly in figure 11, the more the training episodes the behavior policy generates, the better results we get from the estimation policy. Figures~\ref{offmc500},~\ref{offmc1000}, and~\ref{offmc10000}, present how the estimation policy behaves for different discount factor ($\gamma$) values while choosing the next action $\epsilon$ -greedily for 500, 1000, and 10000 episodes respectively. 
+
+Using e-greedy does not mean that the action selection policy selects more optimal actions than a random approach. This happens because behavior policy depends on the Q-Table  which was initialized with equivalent values for all state action pairs. This was the learning part of this algorithm. It is obvious that it depends a lot on the action selection policy to update the values of each state action pair that exists in the world-state. Throughout the learning process and for small number of episodes, might be non-visited state action pairs. For this reason, a good selection policy, as well as, a large number of episodes have to be exist in order for this learning algorithm to converge into an optimal policy.
+
+The estimation policy $\pi$ will use $argmax_aQ(s,a)$ to compute the next action from state $s$, which brings us to the conclusion that the estimation policy is always choosing the next action greedily. As shown clearly in figure 11, the more the training episodes the behavior policy generates, the better results we get from the estimation policy. Figures~\ref{offmc500},~\ref{offmc1000}, and~\ref{offmc10000}, present how the estimation policy behaves for different discount factor ($\gamma$) values while choosing the next action $\epsilon$ -greedily for 500, 1000, and 10000 episodes respectively. Looking at these Figures, we can realize that for a small discount factor and a large number of episodes this algorithm converges to the optimal policy. In contrary, even with a large number of episodes predator tends to need more steps in order to catch the prey. This happens due to the fact that using a large discount factor, we gave the chance to the predator wait further for its reward. Figure~\ref{offmc10000}, presents the computed policy that leads predator to catch prey in a very small number of steps, implied the functionality of the Monte Carlo off-line learning algorithm. 
 
 
 \begin{figure}[h!]
@@ -299,7 +305,6 @@ The estimation policy $\pi$ will use $argmax_aQ(s,a)$ to compute the next action
 \end{figure}
 
 \newpage
-
 
 \section*{Conclusion}
 
