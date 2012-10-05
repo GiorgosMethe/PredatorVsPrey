@@ -76,35 +76,25 @@
 
 \section*{Introduction}
 
-<<<<<<< HEAD
 In this assignment, we implement the learning scenario: the transition function is unknown to the agents, and so is the reward function. We have implemented several model-based algorithms, which give agents the ability to learn high-reward %maybe a bit inprecise? Patrick
 policies while ignoring the model.  
 
 Our code is based on the code handed in for the previous assignment, where we have solved the same problem in a planning setting.  Moreover, we have explicitly used the 21 statespace environment representation which reduced our algorithms' runtime on the previous assignment.
-=======
-In this assignment, we implement the learning scenario: the transition function is unknown to the agents, and so is the reward structure. We introduce model-based algorithms, which give agents the ability to learn high-reward policies while ignoring the model. Our code is based on the previous assignment, on which we added the classes necessary to implement learning algorithms. Moreover, we have explicitly used the 21 state-space environment representation which reduced our algorithms' run-time on the previous assignment.
->>>>>>> 454510ba31210cb9dbe5ab9fc67c059933d71636
 
 
 \section*{Exercise 1}
 
-<<<<<<< HEAD
 For this first exercise, we have implemented the Q-Learning algorithm with $\epsilon$-greedy action selection, as described in chapter 6, section 5 of the Sutton and Barto book.
 
-On each step of this algorithm, we chose an action $a$ of state $s$, and observed the next state and reward we got from it. Then, we updated the Q-learning table according to the following update rule:  
+On each iteration of this algorithm, we chose an action $a$ of state $s$, and observed the next state and reward we got from it. Then, we updated the Q-learning table according to the following update rule:  
 
 \begin{align*}
   Q(s,a) \leftarrow  Q(s,a) + \alpha \left[ r + \gamma  \max_{a'} Q(s',a') - Q(s,a)\right]
 \end{align*}
 
-In this update rule, $Q(s,a)$ represents the value of the Q-learning table based on the previous step, while $Q(s',a')$ represents the observed state and possible actions, after action a is chosen. $Q(s,a)$ could be written as $Q(s_t,a_t)$ and $Q(s',a')$ as $Q(s_{t+1}, a_{t+1})$.
+In this update rule, $Q(s,a)$ represents the value of the state-action pairs based on the previous iteration, while $Q(s',a')$ represents the observed state and possible actions, after action a is chosen. $Q(s,a)$ could be written as $Q(s_t,a_t)$ and $Q(s',a')$ as $Q(s_{t+1}, a_{t+1})$.
 
-$\alpha$ represents the algorithm's learning rate, whereas $\alpha =0$ means that the Q-learning table will not be updated (the agent is not learning anything at all), while $\alpha =1$ means that that the agent will base the updated value solely and completely on its obtained reward, discount factor and maximum value for the next state's action.  This is easy to see, as
-\begin{align*}
-  Q(s,a) &\leftarrow  Q(s,a) + 1 \left[ r + \gamma  \max_{a'} Q(s',a') - Q(s,a)\right]\\
-  Q(s,a) &\leftarrow  Q(s,a) - Q(s,a) + r + \gamma  \max_{a'} Q(s',a') \\
-  Q(s,a) &\leftarrow  r + \gamma  \max_{a'} Q(s',a') \\
-\end{align*}
+$\alpha$ represents the algorithm's learning rate, whereas $\alpha =0$ means that the Q-learning table will not be updated (the agent is not learning anything at all), while $\alpha =1$ means that that the agent will base the updated value solely and completely on its obtained reward, discount factor and maximum value for the next state's action.
 
 $\gamma$ represents the discount factor, in the same way as described for the Dynamic Programming algorithms.  $\max_{a'} Q(s', a')$ represents the action which is most likely to return the maximum reward among all the possible actions in state $s'$.
 
@@ -112,11 +102,7 @@ From $Q$, we derive a policy which is $\epsilon$-greedy.  We have tested this fo
 
 The figures below indicate the performance of the predator over time, given different values for $\alpha$ , and different values for $\gamma$.
 
-\begin{align*}
-Q(s,a) \leftarrow  Q(s,a) + \alpha \left[ r + \gamma  max_{a'} Q(s',a') - Q(s,a)\right]
-\end{align*}
-
-In this update rule, $Q(s,a)$ represents the value of the Q-learning table based on the previous step, while $Q(s',a')$ represents the observed state and possible actions, after action a is chosen. $Q(s,a)$ could be written as $Q(s_t,a_t)$ and $Q(s',a')$ as $Q(s_{t+1}, a_{t+1})$. $\alpha$ represents the algorithm's learning rate, whereas $\alpha =0$ means that the Q-learning table will not be updated (the agent is not learning anything at all), while $\alpha =1$ means that that the agent learns based only on its immediate past. $\gamma$ represents the discount factor, in the same way as described in DP algorithms, and $max_{a'}$ represents the action which is most likely to return the maximum reward among all the possible actions in state $s'$. $\epsilon$ was given the value of 0.1 and the Q-learning table was initialized with 15.0 being assigned to all values. The Figures below indicate the performance of the predator over time, given different values for $\alpha$ , and different values for $\gamma$.
+In this update rule, $Q(s,a)$ represents the value of the state-action pair on the previous iteration, while $Q(s',a')$ represents the observed state and possible actions, after action a is chosen. $Q(s,a)$ could be written as $Q(s_t,a_t)$ and $Q(s',a')$ as $Q(s_{t+1}, a_{t+1})$. $\alpha$ represents the algorithm's learning rate, whereas $\alpha =0$ means that the value of the state-action pair will not be updated (the agent is not learning anything at all), while $\alpha =1$ means that that the agent learns based only on its immediate past. $\gamma$ represents the discount factor, in the same way as described in DP algorithms, and $max_{a'}$ represents the action which is most likely to return the maximum reward among all the possible actions in state $s'$. $\epsilon$ was given the value of 0.1 and the value of each state-action pair was initialized with 15.0 being assigned to all values. The figures below indicate the performance of the predator over time, given different values for $\alpha$ , and different values for $\gamma$.
 \begin{figure}[h!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.75\textwidth]{figures/qla01.pdf}
@@ -144,17 +130,20 @@ In this update rule, $Q(s,a)$ represents the value of the Q-learning table based
     \caption{Q-learning results for different values of discount factor $\gamma$, having learning rate $\alpha = 0.5$.}
     \label{q05}
 \end{figure}
-<<<<<<< HEAD
 
-Figures 1-5 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure 1 shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal policy. However, while we increase alpha, the predator will need less episodes for its Q-learning table to converge. 
-Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions.  ======= Figures 1-4 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal policy. However, while we increase alpha, the predator will need less episodes for its Q-learning table to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions.  >>>>>>> 454510ba31210cb9dbe5ab9fc67c059933d71636
+Figures 1-4 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal ($\epsilon$-greedy) policy. However, while we increase alpha, the predator will need less episodes for the state-action pair values to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator will overwrite the current value of the state-action pair with the new value, as can be easily seen:
+\begin{align*}
+  Q(s,a) &\leftarrow  Q(s,a) + 1 \left[ r + \gamma  \max_{a'} Q(s',a') - Q(s,a)\right] & \Longleftrightarrow\\
+  Q(s,a) &\leftarrow  Q(s,a) - Q(s,a) + r + \gamma  \max_{a'} Q(s',a') & \Longleftrightarrow\\
+  Q(s,a) &\leftarrow  r + \gamma  \max_{a'} Q(s',a') \\
+\end{align*}
  
 \section*{Exercise 2}
 
-In this exercise we have implemented Q-learning with $\epsilon$ -greedy action decision for different values for $\epsilon$ , using different initial values for the Q-learning table each time. We have used 3 different values for the initialization of the Q-table, a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
+In this exercise we have implemented Q-learning with $\epsilon$ -greedy action decision for different values for $\epsilon$ , using different initial values for the state-action pairs each time. We have used 3 different values for the initialization of the values of the state-action pair: a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
 
 
-Figure~\ref{qcomp}, shows our tests with $\epsilon$ -greedy action selection for the optimistic, realistic and pessimistic initialization of the Q-learning table. As shown, the pessimistic value helps the agent converge to the optimal path faster than the other initializations of the Q-Table, while the optimistic value lets the agent explore a lot more before it converges. Using a pessimistic value to initialize the Q-Table could lead the agent's policy into a local optimal value. In cases that there are more than one states with different values for rewards, agent can only explore until it finds the local optimal path to the state with the least award. A higher value for the initialization would have lead this agent to explore the world better before its policy converge to a local optimal policy. 
+Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for the optimistic, realistic and pessimistic initialization of the values of the state-action pairs. As shown, the pessimistic value helps the agent converge to the optimal path faster than the other initializations of the state-action values, while the optimistic value lets the agent explore a lot more before it converges. Using a pessimistic value to initialize the state-action values could lead the agent's policy into a local optimal, but not necessarily into a global optimal. In cases that there are three or more different rewards (in our example, we only have $0$ and $10$), an agent can only explore until it finds the locally optimal path to the state with the submaximal award. A higher value for the initialization would have lead this agent to explore the world better before its policy converge to a locally optimal policy. 
 
 
 
@@ -167,7 +156,7 @@ Figure~\ref{qcomp}, shows our tests with $\epsilon$ -greedy action selection for
 
 
 
-We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action for which the Q-learning table has maximum value, thus, the agent will converge to the optimal path really fast if the initial values of the Q-table are lower than the immediate reward of the absorbing state, but it will become explorative if the Q-table values are optimistically initialized.
+We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action with the maximum value given the current state. Thus, the agent will converge to the optimal path really fast if the initial values of the state-action pairs are lower than any immediate reward, but it will become explorative if the state-action pair values are optimistically initialized.  This corresponds with a (``hard''/not-soft) greedy policy.
 
 
 If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-table has the maximum value with a probability of $1-\epsilon = 0.9$. That means that our predator is trying to exploit more than it is trying to explore, and there is a small probability that it will not choose the action it considers optimal.
@@ -187,13 +176,13 @@ If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-ta
     \label{egreedyextreme}
 \end{figure}
 
-We have used the value of 0.8 for $\epsilon$ aswell, because in this case, each possible action for the predator might have the same probability to be chosen. For example, if the predator has 5 possible actions, there will be $1-\epsilon = 0.2$ probability for the ``optimal'' action to be chosen, and each of the other possible states will also have $\epsilon /4 = 0.2$ probability to be chosen. As a consequence, in the best case scenario our agent will be moving randomly. If there are less than 5 possible moves, he will be most likely be choosing one of the ``non-optimal'' moves.
+We have used the value of 0.8 for $\epsilon$ as well, because in this case, each possible action for the predator has the same probability to be chosen. Because the predator has 5 possible actions, there will be $1-\epsilon = 0.2$ probability for the optimal action to be chosen, and each of the other possible states will also have $\epsilon /4 = 0.2$ probability to be chosen. As a consequence, in the average case scenario our agent will be moving randomly. If there are less than 5 possible moves, he will be most likely be choosing one of the non-optimal moves.
 
 
-Finally, we have also included $\epsilon = 0.99$ in our experimentation, for the reason that this value leaves almost zero probability for the agent to choose the optimal action. So, what happens in this case is that the predator learns not to use the optimal action each time he has to take a decision, so as we see in the graphs, the number of steps it takes him to find the prey is increased dramatically as time goes by.
+Finally, we have also included $\epsilon = 0.99$ in our experimentation, for the reason that this value leaves $0.01$ probability for the agent to choose the optimal action. So, what happens in this case is that the predator learns not to use the optimal action each time he has to take a decision. As we see in the graphs, the number of steps it takes him to find the prey is increased dramatically as time goes by.
 
 
-It should be pointed out that for $Q_{initial} = 10$ and $Q_{initial} = 15$ the graphs are quite similar, with the plot of $\epsilon = 0.99$ dominating the other values. We only included this graph to show how this particular value of $\epsilon$ affects the behavior of the agent.
+It should be pointed out that for initial values of the state-action pairs 10 and 15, the graphs are quite similar, with the plot of $\epsilon = 0.99$ dominating the other values. We only included this graph to show how this particular value of $\epsilon$ affects the behavior of the agent.
 
 
 
@@ -201,11 +190,12 @@ It should be pointed out that for $Q_{initial} = 10$ and $Q_{initial} = 15$ the 
 
 \section*{Exercise 3}
 
-In this exercise we implemented softmax action selection instead of $\epsilon$-greedy. 
-Softmax differs from $\epsilon$-greedy in one important detail: $\epsilon$-greedy divides probability equal to $\epsilon$ among all the ``non-optimal'' possible actions, while softmax distributes weighted probability analogically to the actions' values. This means, that in $\epsilon$-greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in softmax, the worst possible action will always have the lowest probability to be chosen.
+In this exercise we implemented softmax action selection besides $\epsilon$-greedy. 
+
+Softmax differs from $\epsilon$-greedy in one important detail: $\epsilon$-greedy gives each non-optimal action a probability of $\epsilon$ divided by the number of non-optimal actions.  Softmax distributes weighted probability corresponding to the actions' values. This means, that in $\epsilon$-greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in softmax, the worst possible action will typically have the lowest probability to be chosen.
 
 Softmax chooses each action with probability equal to $\frac{e^{Q_t(a)/ \tau}}{\sum^n_{b=1} e^{Q_t(b)/ \tau}}$
-where $\tau$ is a positive variable called ``temperature''. If $\tau >> 0$ the possible actions tend to be equiprobable, however, if $\tau \rightarrow 0$ softmax tends to choose the next action greedily.
+where $\tau$ is a positive variable called ``temperature''. If $\tau \rightarrow \infty$ the possible actions tend to be equiprobable and thus corresponds to the random policy. However, if $\tau \rightarrow 0$, softmax tends to choose the next action greedily.
 
 \begin{figure}[b!]
   \centering
@@ -214,9 +204,7 @@ where $\tau$ is a positive variable called ``temperature''. If $\tau >> 0$ the p
     \label{egresoftcomp}
 \end{figure}
 
-In our simulation, we found out that $\epsilon$ greedy and softmax action selection are very much alike, and do not show any important difference. In figure 9, we have plotted the behavior of the agent with $\epsilon$
-
--greedy and softmax implementation.
+In our simulation, we found that $\epsilon$-greedy and softmax action selection are very much alike, and do not show any important difference. In figure 9, we have plotted the behavior of the agent with $\epsilon$-greedy and softmax implementation.
 
 
 
@@ -231,9 +219,9 @@ In our simulation, we found out that $\epsilon$ greedy and softmax action select
 
 
 \section*{Exercise 4}
-In the last exercise we went past the Q-learning algorithm and implemented the Sarsa, On-policy Monte Carlo and Off-policy Monte Carlo algorithms. 	
+In the last exercise we went past the Q-learning algorithm and implemented the Sarsa, on-policy Monte Carlo and off-policy Monte Carlo algorithms. 	
 \subsection*{Sarsa}
-Sarsa is an on-policy temporal difference control method. On-policy TD methods use a certain policy ($\epsilon$ -greedy, softmax), which defines their future actions, and based on the reward they receive, they evaluate this policy.
+Sarsa is an on-policy temporal difference control method. On-policy TD methods use a certain policy (for example, $\epsilon$-greedy or softmax), which defines their future actions, and based on the reward they receive, they evaluate this policy.
 
 On the other hand, off-policy TD methods do not ``stick'' to one particular policy, but can learn different policies and use the one for which they receive the best results. Another difference between on-policy and off-policy TD methods is that the latter update their value functions based on hypothetical actions, which actually they do not take, while on-policy TD methods are strictly based on the experience they gain from performing those actions.
 
