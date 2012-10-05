@@ -146,13 +146,8 @@ In this update rule, $Q(s,a)$ represents the value of the Q-learning table based
 \end{figure}
 <<<<<<< HEAD
 
-
 Figures 1-5 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure 1 shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal policy. However, while we increase alpha, the predator will need less episodes for its Q-learning table to converge. 
-
-Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions. 
-=======
-Figures 1-4 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal policy. However, while we increase alpha, the predator will need less episodes for its Q-learning table to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions. 
->>>>>>> 454510ba31210cb9dbe5ab9fc67c059933d71636
+Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions.  ======= Figures 1-4 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal policy. However, while we increase alpha, the predator will need less episodes for its Q-learning table to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator only obtains information from its immediately previous actions.  >>>>>>> 454510ba31210cb9dbe5ab9fc67c059933d71636
  
 \section*{Exercise 2}
 
@@ -206,8 +201,8 @@ It should be pointed out that for $Q_{initial} = 10$ and $Q_{initial} = 15$ the 
 
 \section*{Exercise 3}
 
-In this exercise we implemented softmax action selection instead of $\epsilon$ -greedy. 
-Softmax differs from $\epsilon$ -greedy in one important detail: $\epsilon$ -greedy divides probability equal to $\epsilon$ among all the ``non-optimal'' possible actions, while softmax distributes weighted probability analogically to the actions' values. This means, that in $\epsilon$ -greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in softmax, the worst possible action will always have the lowest probability to be chosen.
+In this exercise we implemented softmax action selection instead of $\epsilon$-greedy. 
+Softmax differs from $\epsilon$-greedy in one important detail: $\epsilon$-greedy divides probability equal to $\epsilon$ among all the ``non-optimal'' possible actions, while softmax distributes weighted probability analogically to the actions' values. This means, that in $\epsilon$-greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in softmax, the worst possible action will always have the lowest probability to be chosen.
 
 Softmax chooses each action with probability equal to $\frac{e^{Q_t(a)/ \tau}}{\sum^n_{b=1} e^{Q_t(b)/ \tau}}$
 where $\tau$ is a positive variable called ``temperature''. If $\tau >> 0$ the possible actions tend to be equiprobable, however, if $\tau \rightarrow 0$ softmax tends to choose the next action greedily.
@@ -215,11 +210,13 @@ where $\tau$ is a positive variable called ``temperature''. If $\tau >> 0$ the p
 \begin{figure}[b!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.6\textwidth]{figures/egresoftcomp.pdf}
-    \caption{Comparing $\epsilon$ -greedy and softmax implementations in Q-learning for $\alpha = 0.1$ , $\gamma = 0.7$, $\tau = 0.1$, $\epsilon = 0.1$ and $Q_{initial} = 15$.}
+    \caption{Comparing $\epsilon$-greedy and softmax implementations in Q-learning for $\alpha = 0.1$ , $\gamma = 0.7$, $\tau = 0.1$, $\epsilon = 0.1$ and $Q_{initial} = 15$.}
     \label{egresoftcomp}
 \end{figure}
 
-In our simulation, we found out that $\epsilon$ -greedy and softmax action selection are very much alike, and do not show any important difference. In figure 9, we have plotted the behavior of the agent with $\epsilon$ -greedy and softmax implementation.
+In our simulation, we found out that $\epsilon$ greedy and softmax action selection are very much alike, and do not show any important difference. In figure 9, we have plotted the behavior of the agent with $\epsilon$
+
+-greedy and softmax implementation.
 
 
 
