@@ -230,10 +230,28 @@ On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms
     \caption{On-Policy Monte Carlo.}
      \label{onmc}
 \end{figure}
+\newpage
 
 
 \section*{Off-policy Monte Carlo}
+The Off-policy Monte Carlo control method is divided in 2 parts; the behavior function and the estimation function. The behavior function (or behavior policy) is the one used for the agent's learning, generating learning episodes which provide "knowledge" for the estimation policy to use later. The behavior policy is arbitary, and the table it creates is updated each time an episode ends, according to the path the agent used to find the prey. Consequentively, the predator's knowledge and performance depends on the number of training episodes that the agent generates.
 
+The behavior policy's Q table is computed as follows: 
+\begin{enumerate}
+\item the behavior policy generates an episode.
+
+\item we suppose $\tau \rightarrow$ the last time where $a_\tau \neq \pi(s_\tau)$ where $\pi$ represents the behavior policy.
+
+\item For each state-action pair appearing in the episode at time $\tau$ or later $t \rightarrow$ the first occurence of $(s,a)$ after timestep $\tau$
+$w \rightarrow \prod^{T-1}_{k=t+1}\frac{1}{\pi '(s_k,a_k)}$ where $w$ is called "weight" and is used for importance samlping, thus calculating how important the return of an action is.
+
+\item $N(s,a) \rightarrow N(s,a) + wR_t$  where $R_t$ represents the return of action $a$ at time t, weighted by $w$.
+
+\item $D(s,a) \rightarrow D(s,a) + w$
+
+\item $Q(s,a) \rightarrow \frac{N(s,a)}{D(s,a)}$
+\end{enumerate}
+The estimation policy $\pi$ will use $argmax_aQ(s,a)$ to compute the next action from state $s$, which brings us to the conclusion that the estimation policy is always choosing the next action greedily. As shown clearly in figure 11, the more the training episodes the behavior policy generates, the better results we get from the estimation policy. Figures~\ref{offmc500},~\ref{offmc1000}, and~\ref{offmc10000}, present how the estimation policy behaves for different discount factor ($\gamma$) values while choosing the next action $\epsilon$ -greedily for 500, 1000, and 10000 episodes respectively. 
 
 
 \begin{figure}[h!]
@@ -256,6 +274,9 @@ On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms
     \caption{Comparing Off-Policy Monte Carlo for different values of $\gamma$, for 10000 training episodes.}
     \label{offmc10000}
 \end{figure}
+
+\newpage
+
 
 \section*{Conclusion}
 
