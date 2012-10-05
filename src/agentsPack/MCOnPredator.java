@@ -58,8 +58,8 @@ public class MCOnPredator extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
-				MCOnPredator mcOnP = new MCOnPredator("",
-						new Coordinate(i, j), null, gamma);
+				MCOnPredator mcOnP = new MCOnPredator("", new Coordinate(i, j),
+						null, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
 				worldState.add(mcOnP);
 				worldState.add(prey);
@@ -207,8 +207,8 @@ public class MCOnPredator extends Predator {
 				mcOnP.position.setX(action.Action.getX());
 				mcOnP.position.setY(action.Action.getY());
 
-				if (Coordinate.compareCoordinates(mcOnP.position,
-						prey.position)) {
+				if (Coordinate
+						.compareCoordinates(mcOnP.position, prey.position)) {
 
 					System.out.println("killed in :" + steps);
 					output[i] = steps;
@@ -283,8 +283,8 @@ public class MCOnPredator extends Predator {
 								.size();
 
 				int actionID = -1;
-				for (int j = 0; j < mcOnP.qTable[s.State.getX()][s.State
-						.getY()].size(); j++) {
+				for (int j = 0; j < mcOnP.qTable[s.State.getX()][s.State.getY()]
+						.size(); j++) {
 					if (mcOnP.qTable[s.State.getX()][s.State.getY()]
 							.elementAt(j).id == s.Action.id) {
 						actionID = j;

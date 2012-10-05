@@ -1,16 +1,16 @@
 package agentsPack;
 
-import java.util.Collections;
 import java.util.Map;
+
 import actionPack.RandomAction;
 import actionPack.SAPair;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
-public class MCoffNew extends Predator {
+public class MCoffPredator extends Predator {
 
 	public static void main(String[] args) {
-		MCoffNew.RunMonteCarloLearning(2, 0.5, "e", 0.1);
+		MCoffPredator.RunMonteCarloLearning(1000, 0.5, "e", 0.5);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -18,7 +18,7 @@ public class MCoffNew extends Predator {
 	private Vector<StateActionPair> qTableOpt[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
 	private double gamma;
 
-	public MCoffNew(String name, Coordinate p, Policy pi, double gamma) {
+	public MCoffPredator(String name, Coordinate p, Policy pi, double gamma) {
 		super(name, p, pi);
 		this.gamma = gamma;
 		// TODO Auto-generated constructor stub
@@ -61,8 +61,8 @@ public class MCoffNew extends Predator {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
 				this.qTableOpt[i][j] = new Vector<StateActionPair>();
-				MCoffNew mcOffP = new MCoffNew("", new Coordinate(i, j), null,
-						gamma);
+				MCoffPredator mcOffP = new MCoffPredator("", new Coordinate(i,
+						j), null, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
 				worldState.add(mcOffP);
 				worldState.add(prey);
@@ -82,15 +82,6 @@ public class MCoffNew extends Predator {
 	}
 
 	public void PrintQTable() {
-//		for (int i = 0; i < 6; i++) {
-//			for (int j = 0; j <= i; j++) {
-//				System.out.println(new Coordinate(i, j));
-//				for (StateActionPair c : this.qTable[i][j]) {
-//					System.out.print(c.Action + " " + c.Value + "  ");
-//				}
-//				System.out.println("\n");
-//			}
-//		}
 
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j <= i; j++) {
@@ -178,27 +169,14 @@ public class MCoffNew extends Predator {
 		return tempMaxVector.elementAt(maxAct);
 	}
 
-	public void updateQTable() {
-
-	}
-
 	public static void RunMonteCarloLearning(int number, double gamma,
 			String policy, double policyParameter) {
 
-		@SuppressWarnings("unchecked")
 		double D[][][] = new double[6][6][5];
 		double N[][][] = new double[6][6][5];
-		// for (int j = 0; j < 6; j++) {
-		// for (int k = 0; k < 6; k++) {
-		// for (int l = 0; l < 5; l++) {
-		// D[j][k][l] = new Vector<Double>();
-		// N[j][k][l] = new Vector<Double>();
-		// }
-		// }
-		// }
 
-		MCoffNew qP = new MCoffNew("mcOffPredator", new Coordinate(5, 5), null,
-				gamma);
+		MCoffPredator qP = new MCoffPredator("mcOffPredator", new Coordinate(5,
+				5), null, gamma);
 		qP.initializeQTable();
 
 		double[] output = new double[number];
@@ -214,11 +192,8 @@ public class MCoffNew extends Predator {
 			worldState.add(prey);
 
 			int steps = 0;
-			boolean absorbingState = false;
 
 			do {
-
-				Double reward = 0.0;
 
 				// save the old position, we need it later.
 				Coordinate oldPosition = new Coordinate(qP.position.getX(),
@@ -245,9 +220,7 @@ public class MCoffNew extends Predator {
 				if (Coordinate.compareCoordinates(qP.position, prey.position)) {
 
 					output[i] = steps;
-					reward = 10.0;
 					prey.kill();
-					absorbingState = true;
 
 				} else {
 
@@ -289,12 +262,6 @@ public class MCoffNew extends Predator {
 					qP.position.setY(NewPredPosYNor);
 
 				}
-
-				// new value for this state according to the update function.
-				// remember, worldState is still the old one (before the Agents
-				// move)
-				qP.updateQTable();
-
 				steps++;
 
 			} while (prey.lives);
@@ -319,22 +286,23 @@ public class MCoffNew extends Predator {
 				}
 			}
 
-			//System.out.println("last time t= " + t);
-
 			for (int ii = t; ii < episode.size(); ii++) {
 
-				double reward = Math.pow(gamma,(Math.abs(episode.size()-ii) + 1)) * 10.0;
+				double reward = Math.pow(gamma,
+						(Math.abs(episode.size() - ii) - 1)) * 10.0;
 
 				SAPair s = episode.elementAt(ii);
-				
-				System.out.println("State: "+s.State+" r= "+reward);
-				
+
 				double w = 1.0;
-				for (int k = t + 1; k < episode.size(); k++) {
-					//SAPair wt = episode.elementAt(k);
-					w *= 1 / 0.2;
-					// System.out.println(""+s.State+"  -->"+s.Action.Action+" prob(t...T-1): "+w);
+				for (int k = t; k < episode.size(); k++) {
+					SAPair wt = episode.elementAt(k);
+					w *= 1 / qP.probilityStateAction(wt, policy,
+							policyParameter);
 				}
+
+				System.out.println("State: " + s.State + " r= "
+						+ (Math.abs(episode.size() - ii)) + "  w= " + w);
+
 				N[s.State.getX()][s.State.getY()][s.Action.id - 1] += w
 						* reward;
 				D[s.State.getX()][s.State.getY()][s.Action.id - 1] += w;
@@ -355,42 +323,27 @@ public class MCoffNew extends Predator {
 			}
 			episode.clear();
 		}
-
 		qP.PrintQTable();
-		//
-		// try {
-		// MatFileGenerator.write(output,
-		// "OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
-		// + policy + "_" + String.valueOf(policyParameter));
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
-		// System.out.println("An output .mat file has generated with the name: "
-		// + "OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
-		// + policy + "_" + String.valueOf(policyParameter) + ".mat");
-
 	}
 
 	private double probilityStateAction(SAPair s, String policy,
 			double policyParameter) {
-//		if (policy.equalsIgnoreCase("s")) {
-//			double sum = 0.0;
-//			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
-//					.getY()]) {
-//				sum += Math.exp(sa.Value / policyParameter);
-//			}
-//			return Math.exp(s.Action.Value / policyParameter) / sum;
-//		} else if (policy.equalsIgnoreCase("e")) {
-//			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
-//					.getY()]) {
-//				if (sa.Value > s.Action.Value) {
-//					return 0.25 * policyParameter;
-//				}
-//			}
-//			return 1 - policyParameter;
-//		}
+		if (policy.equalsIgnoreCase("s")) {
+			double sum = 0.0;
+			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
+					.getY()]) {
+				sum += Math.exp(sa.Value / policyParameter);
+			}
+			return Math.exp(s.Action.Value / policyParameter) / sum;
+		} else if (policy.equalsIgnoreCase("e")) {
+			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
+					.getY()]) {
+				if (sa.Value > s.Action.Value) {
+					return 0.25 * policyParameter;
+				}
+			}
+			return 1 - policyParameter;
+		}
 		return 0.2;
 	}
 
