@@ -76,8 +76,7 @@
 
 \section*{Introduction}
 
-In this assignment, we implement the learning scenario: the transition function is unknown to the agents, and so is the reward function. We have implemented several model-based algorithms, which give agents the ability to learn high-reward %maybe a bit inprecise? Patrick
-policies while ignoring the model.  
+In this assignment, we implement the learning scenario: the transition function is unknown to the agents, and so is the reward function. We have implemented several model-based algorithms, which give agents the ability to learn high-reward policies while ignoring the model.  
 
 Our code is based on the code handed in for the previous assignment, where we have solved the same problem in a planning setting.  Moreover, we have explicitly used the 21 statespace environment representation which reduced our algorithms' runtime on the previous assignment.
 
@@ -131,7 +130,7 @@ In this update rule, $Q(s,a)$ represents the value of the state-action pair on t
     \label{q05}
 \end{figure}
 
-Figures 1-4 clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal ($\epsilon$-greedy) policy. However, while we increase alpha, the predator will need less episodes for the state-action pair values to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator will overwrite the current value of the state-action pair with the new value, as can be easily seen:
+Figures~\ref{q01},~\ref{q02},~\ref{q03}, and~\ref{q05}, depict clearly indicate how the predator learns faster while we increment the value of $\alpha$. Figure~\ref{q01} shows us that for $\alpha = 0.1$ the predator needs about 150 episodes to converge to the optimal ($\epsilon$-greedy) policy. However, while we increase alpha, the predator will need less episodes for the state-action pair values to converge. Increasing the value of $\alpha$ means that we consider the most recent information we observe, more important. A value of $\alpha = 0$ would mean that the predator is not learning at all, while $\alpha = 1$ means that the predator will overwrite the current value of the state-action pair with the new value, as can be easily seen:
 \begin{align*}
   Q(s,a) &\leftarrow  Q(s,a) + 1 \left[ r + \gamma  \max_{a'} Q(s',a') - Q(s,a)\right] & \Longleftrightarrow\\
   Q(s,a) &\leftarrow  Q(s,a) - Q(s,a) + r + \gamma  \max_{a'} Q(s',a') & \Longleftrightarrow\\
@@ -140,10 +139,10 @@ Figures 1-4 clearly indicate how the predator learns faster while we increment t
  
 \section*{Exercise 2}
 
-In this exercise we have implemented Q-learning with $\epsilon$-greedy action decision for different values for $\epsilon$ , using different initial values for the state-action pairs each time. We have used 3 different values for the initialization of the values of the state-action pair: a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
+In this exercise we have implemented Q-learning with $\epsilon$-greedy action decision for different values for $\epsilon$ , using different initial values for the state-action pairs each time. We have used 3 different values for the initialization of the values of the state-action pair: a pessimistic one (0), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
 
 
-Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for the optimistic, realistic and pessimistic initialization of the values of the state-action pairs. As shown, the pessimistic value helps the agent converge to the optimal path faster than the other initializations of the state-action values, while the optimistic value lets the agent explore a lot more before it converges. Using a pessimistic value to initialize the state-action values could lead the agent's policy into a local optimal, but not necessarily into a global optimal. In cases that there are three or more different rewards (in our example, we only have $0$ and $10$), an agent can only explore until it finds the locally optimal path to the state with the submaximal award. A higher value for the initialization would have lead this agent to explore the world better before its policy converge to a locally optimal policy. 
+Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for the optimistic, realistic and pessimistic initialization of the values of the state-action pairs. As shown, the pessimistic value helps the agent converge to the optimal path faster than the other initializations of the state-action values, while the optimistic value lets the agent explore a lot more before it converges. Using a pessimistic value to initialize the state-action values could lead the agent's policy into a local optimal, but not necessarily into a global optimal. In cases that there are three or more different rewards (in our example, we only have $0$ and $10$), an agent can only explore until it finds the local optimal policy to the state with the sub-maximal award. A higher value for the initialization would have lead this agent to explore the world better before its policy converge to a locally optimal policy. 
 
 
 
@@ -156,10 +155,7 @@ Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for 
 
 
 
-We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action with the maximum value given the current state. Thus, the agent will converge to the optimal path really fast if the initial values of the state-action pairs are lower than any immediate reward, but it will become explorative if the state-action pair values are optimistically initialized.  This corresponds with a (deterministic) greedy policy.
-
-
-If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-table has the maximum value with a probability of $1-\epsilon = 0.9$. That means that our predator is trying to exploit more than it is trying to explore, and there is a small probability that it will not choose the action it considers optimal.
+We have chosen particular values for $\epsilon$ to test how, and what the predator will learn to do. For $\epsilon = 0$, the predator will always choose the action with the maximum value given the current state. Thus, the agent will converge to the optimal path really fast if the initial values of the state-action pairs are lower than any immediate reward, but it will become explorative if the state-action pair values are optimistically initialized.  This corresponds with a (deterministic) greedy policy. If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-table has the maximum value with a probability of $1-\epsilon = 0.9$. That means that our predator is trying to exploit more than it is trying to explore, and there is a small probability that it will not choose the action it considers optimal.
 
 
 \begin{figure}[t!]
@@ -296,10 +292,5 @@ The estimation policy $\pi$ will use $argmax_a Q(s,a)$ to compute the next actio
     \caption{Comparing Off-Policy Monte Carlo for different values of $\gamma$, for 10000 training episodes.}
     \label{offmc10000}
 \end{figure}
-
-\newpage
-
-\section*{Conclusion}
-
 \end{document}
 
