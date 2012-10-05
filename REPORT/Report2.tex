@@ -202,10 +202,26 @@ In our simulation, we found out that $\epsilon$ -greedy and softmax action selec
 Figure 9. Comparing $\epsilon$ -greedy and softmax implementations in Q-learning for $\alpha = 0.1$ , $\gamma = 0.7$, $\tau = 0.1$, $\epsilon = 0.1$ and $Q_{initial} = 15$.
 \end{center}
 \section*{Exercise 4}
+In the last exercise we went past the Q-learning algorithm and implemented the Sarsa, On-policy Monte Carlo and Off-policy Monte Carlo algorithms. 	
+\subsection*{Sarsa}
+Sarsa is an on-policy temporal difference control method. On-policy TD methods use a certain policy ($\epsilon$ -greedy, softmax), which defines their future actions, and based on the reward they receive, they evaluate this policy.
+
+On the other hand, off-policy TD methods do not "stick" to one particular policy, but can learn different policies and use the one for which they receive the best results. Another difference between on-policy and off-policy TD methods is that the latter update their value functions based on hypothetical actions, which actually they do not take, while on-policy TD methods are strictly based on the experience they gain from performing those actions.
+
+Sarsa and Q-learning have a lot in common, but there is an important difference that discriminates the two algorithms: When agent is at state $s$ and takes action $a$, Q-learning will update the Q table based on this action's reward. However, Sarsa will further observe the next state-action pair $(s',a')$ that derives from the next state $s'$ produced by action $a$. So, obviously, Sarsa needs two action selection steps, while Q-learning only needs one. Thus, Sarsa is considered an on-policy TD control method while Q-learning is considered to be off-policy.
+
+On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms' behavior. According to the graph, the two algorithms have quite similar results.
+
+\begin{center}
+\includegraphics[width=1.0\textwidth,height=0.4\textheight]{sarsaQ.png}
+\label{Figure 1}
+Figure 10. Comparing Sarsa and Q-learning algorithms for $\alpha = 0.3$, $\gamma = 0.7$ and $\epsilon = 0.2$.
+\end{center}
+
+\subsection*{On-policy Monte Carlo}
 
 
-
-
+\subsection*{Off-policy Monte Carlo}
 \section*{Conclusion}
 
 \end{document}
