@@ -140,7 +140,7 @@ Figures 1-4 clearly indicate how the predator learns faster while we increment t
  
 \section*{Exercise 2}
 
-In this exercise we have implemented Q-learning with $\epsilon$ -greedy action decision for different values for $\epsilon$ , using different initial values for the state-action pairs each time. We have used 3 different values for the initialization of the values of the state-action pair: a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
+In this exercise we have implemented Q-learning with $\epsilon$-greedy action decision for different values for $\epsilon$ , using different initial values for the state-action pairs each time. We have used 3 different values for the initialization of the values of the state-action pair: a pessimistic one (5), a realistic one (10) and an optimistic one (15), to see how the agent behaves for different values of $\epsilon$ in each case. On the pessimistic implementation, we expect the agent to converge to the optimal path really fast (given low values for $\epsilon$). On the other hand, the optimistic implementation will cause more of an exlporatory behavior.
 
 
 Figure~\ref{qcomp}, shows our tests with $\epsilon$-greedy action selection for the optimistic, realistic and pessimistic initialization of the values of the state-action pairs. As shown, the pessimistic value helps the agent converge to the optimal path faster than the other initializations of the state-action values, while the optimistic value lets the agent explore a lot more before it converges. Using a pessimistic value to initialize the state-action values could lead the agent's policy into a local optimal, but not necessarily into a global optimal. In cases that there are three or more different rewards (in our example, we only have $0$ and $10$), an agent can only explore until it finds the locally optimal path to the state with the submaximal award. A higher value for the initialization would have lead this agent to explore the world better before its policy converge to a locally optimal policy. 
@@ -165,7 +165,7 @@ If $\epsilon = 0.1$, the agent will try to exploit the action for which the Q-ta
 \begin{figure}[t!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.7\textwidth]{figures/egreedycomp.pdf}
-    \caption{Comparing different values of $\epsilon$ with $\epsilon$ -greedy action selection. For $\epsilon = 0.75$, the agent will be deciding its actions almost randomly.}
+    \caption{Comparing different values of $\epsilon$ with $\epsilon$-greedy action selection. For $\epsilon = 0.75$, the agent will be deciding its actions almost randomly.}
     \label{egreedycomp}
 \end{figure}
 ~
@@ -190,51 +190,41 @@ It should be pointed out that for initial values of the state-action pairs 10 an
 
 \section*{Exercise 3}
 
-In this exercise we implemented softmax action selection besides $\epsilon$-greedy. 
+In this exercise we implemented SoftMax action selection policy, besides $\epsilon$-greedy. 
 
-Softmax differs from $\epsilon$-greedy in one important detail: $\epsilon$-greedy gives each non-optimal action a probability of $\epsilon$ divided by the number of non-optimal actions.  Softmax distributes weighted probability corresponding to the actions' values. This means, that in $\epsilon$-greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in softmax, the worst possible action will typically have the lowest probability to be chosen.
-
-Softmax chooses each action with probability equal to $\frac{e^{Q_t(a)/ \tau}}{\sum^n_{b=1} e^{Q_t(b)/ \tau}}$
-where $\tau$ is a positive variable called ``temperature''. If $\tau \rightarrow \infty$ the possible actions tend to be equiprobable and thus corresponds to the random policy. However, if $\tau \rightarrow 0$, softmax tends to choose the next action greedily.
-
-\begin{figure}[b!]
+\begin{figure}[t!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.6\textwidth]{figures/egresoftcomp.pdf}
-    \caption{Comparing $\epsilon$-greedy and softmax implementations in Q-learning for $\alpha = 0.1$ , $\gamma = 0.7$, $\tau = 0.1$, $\epsilon = 0.1$ and $Q_{initial} = 15$.}
+    \caption{Comparing $\epsilon$-greedy and SoftMax implementations in Q-learning for $\alpha = 0.1$ , $\gamma = 0.7$, $\tau = 0.1$, $\epsilon = 0.1$ and $Q_{initial} = 15$.}
     \label{egresoftcomp}
 \end{figure}
 
-In our simulation, we found that $\epsilon$-greedy and softmax action selection are very much alike, and do not show any important difference. In figure 9, we have plotted the behavior of the agent with $\epsilon$-greedy and softmax implementation.
+SoftMax differs from $\epsilon$-greedy in one important detail: $\epsilon$-greedy gives each non-optimal action a probability of $\epsilon$ divided by the number of non-optimal actions.  SoftMax distributes weighted probability corresponding to the actions' values. This means, that in $\epsilon$-greedy the worst possible action has the same probability to be chosen as the second-to-best action, while in SoftMax, the worst possible action will typically have the lowest probability to be chosen.
 
+SoftMax chooses each action with probability equal to $\frac{e^{Q_t(a)/ \tau}}{\sum^n_{b=1} e^{Q_t(b)/ \tau}}$
+where $\tau$ is a positive variable called ``temperature''. If $\tau \rightarrow \infty$ the possible actions tend to be equally probable and thus corresponds to a random policy. However, if $\tau \rightarrow 0$, SoftMax tends to choose the next action greedily.
 
-
-
-
-
-
-
-
-
-
+In our simulation, we found that $\epsilon$-greedy and SoftMax action selection are very much alike, and do not show any important difference. In Figure~\ref{egresoftcomp}, we have plotted the behavior of the agent with $\epsilon$-greedy and SoftMax implementation.
 
 
 \section*{Exercise 4}
 In the last exercise we went past the Q-learning algorithm and implemented the Sarsa, on-policy Monte Carlo and off-policy Monte Carlo algorithms. 	
-\subsection*{Sarsa}
-Sarsa is an on-policy temporal difference control method. On-policy TD methods use a certain policy (for example, $\epsilon$-greedy or softmax), which defines their future actions, and based on the reward they receive, they evaluate this policy.
 
-On the other hand, off-policy TD methods do not ``stick'' to one particular policy, but can learn different policies and use the one for which they receive the best results. Another difference between on-policy and off-policy TD methods is that the latter update their value functions based on hypothetical actions, which actually they do not take, while on-policy TD methods are strictly based on the experience they gain from performing those actions.
+\subsection*{SARSA}
+SARSA is an on-policy temporal difference control method. On-policy TD methods use a certain policy (for example, $\epsilon$-greedy or softmax), which defines their future actions, and based on the reward they receive, they evaluate this policy.
+
+\subsubsection*{Differences from Q-Learning}
+SARSA and Q-learning have a lot in common, but there is an important difference that discriminates the two algorithms: When agent is at state $s$ and takes action $a$, Q-learning will update the Q table based on this action's reward. However, SARSA will further observe the next state-action pair $(s',a')$ that derives from the next state $s'$ produced by action $a$. So, obviously, SARSA needs two action selection steps, while Q-learning only needs one. For a greedy agent these two algorithms are identical. When exploration is happening, however, they differ significantly. Because Q-learning uses the best Q-value, it pays no attention to the actual policy being followed. It is better to learn a Q-function for what will actually happen rather than what the agent would like to happen. Thus, Sarsa is considered an on-policy TD control method while Q-learning is considered to be off-policy.
+
+\subsubsection*{Implementation}
+Figures~\ref{sarsaQcomp01}, and~\ref{sarsaQcomp03}, present the the performance of the two learning algorithms in our grid world problem, with different values of learning rate and based on the same $\epsilon $-greedy policy selection. There are not obvious differences and this may happen because of the nature of our problem. We saw in class, problems which had ``bad'' state-action pairs with negative reward, and in these problems SARSA performed better than Q-Learning. We can conclude that SARSA algorithm has the same performance in this type of problem but can be better or worst than Q-Learning in others.
 
 \begin{figure}[t!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.75\textwidth]{figures/sarsaQcomp01.pdf}
-    \caption{Comparing Sarsa and Q-learning algorithms for $\alpha = 0.1$, $\gamma = 0.7$ and $\epsilon = 0.1$.}
+    \caption{Comparing SARSA and Q-learning algorithms for $\alpha = 0.1$, $\gamma = 0.7$ and $\epsilon = 0.1$.}
     \label{sarsaQcomp01}
 \end{figure}
-
-Sarsa and Q-learning have a lot in common, but there is an important difference that discriminates the two algorithms: When agent is at state $s$ and takes action $a$, Q-learning will update the Q table based on this action's reward. However, Sarsa will further observe the next state-action pair $(s',a')$ that derives from the next state $s'$ produced by action $a$. So, obviously, Sarsa needs two action selection steps, while Q-learning only needs one. Thus, Sarsa is considered an on-policy TD control method while Q-learning is considered to be off-policy.
-
-On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms' behavior. According to the graph, the two algorithms have quite similar results.
 
 \begin{figure}[t!]
   \centering
@@ -244,14 +234,22 @@ On figure 10 we can look at a comparison between Q-learning and Sarsa algorithms
 \end{figure}
 
 
-
 \subsection*{On-policy Monte Carlo}
-Monte Carlo control methods come in on-policy and off-policy variants as well.  Where Sarsa can update its policy during an episode, Monte Carlo methods need to finish the whole episode
-~
+Monte Carlo control methods come in on-policy and off-policy variants as well.  Where Q-learning needs only the current state-action pair and the observed next state and reward, Monte Carlo methods needs to know the \emph{return} of a state-action pair.  The return $R_t$ of the $t$th state-action pair in the episode of $T$ state-action pairs is computed by equation 3.3 of the Sutton and Barto book:
+\begin{align*}
+  R_t &= \sum^T_{k=0} \gamma^k r_{t + k + 1}
+\end{align*}
+
+This means we need to finish the whole episode before we can update $Q$. Therefore, Monte Carlo control methods are unsuitable for continuing tasks.
+
+The idea behind Monte Carlo control methods is that they use the average return value for each state-action pair as the updated value for that state-action pair.  Off-policy Monte Carlo weights the average by the probability that the current action and each following action is chosen by its behaviour policy $\pi'$, and computes this average only once per episode for each state-action pair.  On-policy Monte Carlo does not computed a weighted average.  Instead, it averages over every occurrence of each state-action pair, even when a pair repeatedly occurs in one episode.
+
+Figure~\ref{onmc} shows the number of steps per episode while learning through on-policy Monte Carlo control, for different values of the discount factor $\gamma$.  For both $\gamma = 0.75$ as well as $\gamma = 0.25$ is a very high peak to be found early on in the training process.  This might be explained by it taking some exploratory actions, and then walking around almost randomly through the unexplored area, with higher values than the other state-action pairs have.  We see that for all three discount factors, the policy converges quite early.
+
 \begin{figure}[t!]
   \centering
     \includegraphics[trim=4cm 8.5cm 4cm 8.5cm,clip,width=0.75\textwidth]{figures/onmc.pdf}
-    \caption{On-Policy Monte Carlo.}
+    \caption{On-Policy Monte Carlo.  Each state-action pair has an associated value of $15$.}
      \label{onmc}
 \end{figure}
 \newpage
