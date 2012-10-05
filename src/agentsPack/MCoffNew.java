@@ -19,6 +19,7 @@ public class MCoffNew extends Predator {
 
 	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
+	private Vector<StateActionPair> qTableOpt[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
 	private double gamma;
 
 	public MCoffNew(String name, Coordinate p, Policy pi, double gamma) {
@@ -63,6 +64,7 @@ public class MCoffNew extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
+				this.qTableOpt[i][j] =  new Vector<StateActionPair>();
 				MCoffNew mcOffP = new MCoffNew("",
 						new Coordinate(i, j), null, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
@@ -73,7 +75,9 @@ public class MCoffNew extends Predator {
 				for (RandomAction c : mcOffP.ProbabilityActionsRSW(worldState)) {
 					id++;
 					this.qTable[i][j].add(new StateActionPair(new Coordinate(
-							c.coordinate.getX(), c.coordinate.getY()), -20, id));
+							c.coordinate.getX(), c.coordinate.getY()), 15, id));
+					this.qTableOpt[i][j].add(new StateActionPair(new Coordinate(
+							c.coordinate.getX(), c.coordinate.getY()), 15, id));
 
 				}
 			}
@@ -85,6 +89,16 @@ public class MCoffNew extends Predator {
 			for (int j = 0; j <= i; j++) {
 				System.out.println(new Coordinate(i, j));
 				for (StateActionPair c : this.qTable[i][j]) {
+					System.out.print(c.Action + " " + c.Value + "  ");
+				}
+				System.out.println("\n");
+			}
+		}
+		
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j <= i; j++) {
+				System.out.println(new Coordinate(i, j));
+				for (StateActionPair c : this.qTableOpt[i][j]) {
 					System.out.print(c.Action + " " + c.Value + "  ");
 				}
 				System.out.println("\n");
@@ -173,6 +187,19 @@ public class MCoffNew extends Predator {
 
 	public static void RunMonteCarloLearning(int number, double gamma,
 			String policy, double policyParameter) {
+		
+		
+		@SuppressWarnings("unchecked")
+		Vector<Double> D[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
+		Vector<Double> N[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
+		for (int j = 0; j < 6; j++) {
+			for (int k = 0; k < 6; k++) {
+				for (int l = 0; l < 5; l++) {
+					D[j][k][l] = new Vector<Double>();
+					N[j][k][l] = new Vector<Double>();
+				}
+			}
+		}
 
 		MCoffNew mcOffP = new MCoffNew("mcOffPredator", new Coordinate(
 				5, 5), null, gamma);
@@ -287,27 +314,16 @@ public class MCoffNew extends Predator {
 			}
 			
 			
-			@SuppressWarnings("unchecked")
-			Vector<Double> D[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
-			Vector<Double> N[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
-			for (int j = 0; j < 6; j++) {
-				for (int k = 0; k < 6; k++) {
-					for (int l = 0; l < 5; l++) {
-						D[j][k][l] = new Vector<Double>();
-						N[j][k][l] = new Vector<Double>();
-					}
-				}
-			}
 			double w = 1.0;
 			for(int ii=t;ii<episode.size();ii++){
 				
-				double reward = 0.0;
+				double reward = 0.1;
 				if(Coordinate.compareCoordinates(episode.elementAt(ii).Action.Action, prey.position)){
 					reward = 10.0;
 				}
 				
 				for(int k=t+1;k<episode.size()-1;k++){
-					w *= 1.0/mcOffP.probilityStateAction(episode.elementAt(k),policy,policyParameter);
+					w *= 1/mcOffP.probilityStateAction(episode.elementAt(k),policy,policyParameter);
 				}
 				D[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)].add((w*reward)); 
 				N[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)].add((w));
@@ -330,7 +346,7 @@ public class MCoffNew extends Predator {
 					SumN += g;
 				}
 				
-				mcOffP.qTable[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()].elementAt(actionPosId).Value = SumN/SumD;
+				mcOffP.qTableOpt[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()].elementAt(actionPosId).Value = SumN/SumD;
 				
 				
 				
