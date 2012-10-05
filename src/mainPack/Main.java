@@ -383,7 +383,7 @@ public class Main {
 					}
 				} while (policyPar > 1 || policyPar < 0);
 
-				MCOnPredator.RunMonteCarloLearning(number, gamma, policyParStr,
+				MCOnPredator.RunMonteCarloLearning(number, gamma, policy,
 						policyPar);
 
 			} else if (choiceInt == 8) {
@@ -398,7 +398,7 @@ public class Main {
 
 			}
 
-		} while (choiceInt != 7);
+		} while (choiceInt != 9);
 
 	}
 

@@ -10,13 +10,18 @@ import actionPack.SAPair;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
-public class MCOnPredator extends Predator {
+public class MCoffNew extends Predator {
+	
+	
+	public static void main(String[] args) {
+		MCoffNew.RunMonteCarloLearning(10000, 0.5, "e", 0.1);
+	}
 
 	@SuppressWarnings("unchecked")
 	private Vector<StateActionPair> qTable[][] = (Vector<StateActionPair>[][]) new Vector[6][6];
 	private double gamma;
 
-	public MCOnPredator(String name, Coordinate p, Policy pi, double gamma) {
+	public MCoffNew(String name, Coordinate p, Policy pi, double gamma) {
 		super(name, p, pi);
 		this.gamma = gamma;
 		// TODO Auto-generated constructor stub
@@ -58,17 +63,17 @@ public class MCOnPredator extends Predator {
 			for (int j = 0; j <= i; j++) {
 
 				this.qTable[i][j] = new Vector<StateActionPair>();
-				MCOnPredator mcOnP = new MCOnPredator("",
+				MCoffNew mcOffP = new MCoffNew("",
 						new Coordinate(i, j), null, gamma);
 				Vector<Agent> worldState = new Vector<Agent>();
-				worldState.add(mcOnP);
+				worldState.add(mcOffP);
 				worldState.add(prey);
 				int id = 0;
 
-				for (RandomAction c : mcOnP.ProbabilityActionsRSW(worldState)) {
+				for (RandomAction c : mcOffP.ProbabilityActionsRSW(worldState)) {
 					id++;
 					this.qTable[i][j].add(new StateActionPair(new Coordinate(
-							c.coordinate.getX(), c.coordinate.getY()), 15, id));
+							c.coordinate.getX(), c.coordinate.getY()), -20, id));
 
 				}
 			}
@@ -169,9 +174,9 @@ public class MCOnPredator extends Predator {
 	public static void RunMonteCarloLearning(int number, double gamma,
 			String policy, double policyParameter) {
 
-		MCOnPredator mcOnP = new MCOnPredator("mcOffPredator", new Coordinate(
+		MCoffNew mcOffP = new MCoffNew("mcOffPredator", new Coordinate(
 				5, 5), null, gamma);
-		mcOnP.initializeQTable();
+		mcOffP.initializeQTable();
 
 		double[] output = new double[number];
 		for (int i = 0; i < number; i++) {
@@ -179,35 +184,35 @@ public class MCOnPredator extends Predator {
 			Vector<SAPair> episode = new Vector<SAPair>();
 			Prey prey = new Prey("prey", new Coordinate(0, 0), null);
 			Vector<Agent> worldState = new Vector<Agent>();
-			mcOnP.position.setX(5);
-			mcOnP.position.setY(5);
+			mcOffP.position.setX(5);
+			mcOffP.position.setY(5);
 
-			worldState.add(mcOnP);
+			worldState.add(mcOffP);
 			worldState.add(prey);
 
 			int steps = 0;
 
 			do {
 
-				Coordinate oldposition = new Coordinate(mcOnP.position.getX(),
-						mcOnP.position.getY());
+				Coordinate oldposition = new Coordinate(mcOffP.position.getX(),
+						mcOffP.position.getY());
 				StateActionPair action = null;
 				if (policy.equalsIgnoreCase("e")) {
 					// e-Greedy action selection
-					action = mcOnP.chooseEGreedyAction(policyParameter);
+					action = mcOffP.chooseEGreedyAction(policyParameter);
 				} else if (policy.equalsIgnoreCase("s")) {
 					// SoftMax action selection
-					action = mcOnP.chooseSoftMaxAction(policyParameter);
+					action = mcOffP.chooseSoftMaxAction(policyParameter);
 				}
 
 				// SoftMax action selection
 				// StateActionPair action = mcOffP.chooseSoftMaxAction(0.1);
 
 				// update the predator's position
-				mcOnP.position.setX(action.Action.getX());
-				mcOnP.position.setY(action.Action.getY());
+				mcOffP.position.setX(action.Action.getX());
+				mcOffP.position.setY(action.Action.getY());
 
-				if (Coordinate.compareCoordinates(mcOnP.position,
+				if (Coordinate.compareCoordinates(mcOffP.position,
 						prey.position)) {
 
 					System.out.println("killed in :" + steps);
@@ -226,8 +231,8 @@ public class MCOnPredator extends Predator {
 					if (y == 10)
 						y = -1;
 
-					int NewPredPosX = mcOnP.position.getX() - x;
-					int NewPredPosY = mcOnP.position.getY() - y;
+					int NewPredPosX = mcOffP.position.getX() - x;
+					int NewPredPosY = mcOffP.position.getY() - y;
 
 					// some checks not to excede the limits of the
 					// space
@@ -250,72 +255,125 @@ public class MCOnPredator extends Predator {
 
 					}
 
-					mcOnP.position.setX(NewPredPosXNor);
-					mcOnP.position.setY(NewPredPosYNor);
+					mcOffP.position.setX(NewPredPosXNor);
+					mcOffP.position.setY(NewPredPosYNor);
 
 				}
 				episode.add(new SAPair(oldposition, action));
 				steps++;
 
 			} while (prey.lives);
+
+			
+			int t=-1;
+			for (int j = episode.size()-1; j>=0; j--) {
+				t = j;
+				SAPair s = episode.elementAt(j);
+				//System.out.println(s.State);
+				
+				Coordinate optimalAction = null;
+				double maxValue = Double.NEGATIVE_INFINITY;
+				for (StateActionPair sap : mcOffP.qTable[s.State.getX()][s.State
+						.getY()]) {
+					if (sap.Value > maxValue) {
+						maxValue = sap.Value;
+						optimalAction = sap.Action;
+					}
+				}
+				if (s.Action.Action.getX() != optimalAction.getX()
+						&& s.Action.Action.getY() != optimalAction.getY()) {	
+					break;		
+				}
+			}
+			
+			
 			@SuppressWarnings("unchecked")
-			Vector<Double> R[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
+			Vector<Double> D[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
+			Vector<Double> N[][][] = (Vector<Double>[][][]) new Vector[6][6][5];
 			for (int j = 0; j < 6; j++) {
 				for (int k = 0; k < 6; k++) {
 					for (int l = 0; l < 5; l++) {
-						R[j][k][l] = new Vector<Double>();
+						D[j][k][l] = new Vector<Double>();
+						N[j][k][l] = new Vector<Double>();
 					}
 				}
 			}
-			Collections.reverse(episode);
-			double Return = 10.0 / gamma;
-			for (SAPair s : episode) {
-				Return *= gamma;
-				R[s.State.getX()][s.State.getY()][s.Action.id - 1].add(Return);
-
-				double sum = 0.0;
-				for (Double r : R[s.State.getX()][s.State.getY()][s.Action.id - 1]) {
-					sum += r;
+			double w = 1.0;
+			for(int ii=t;ii<episode.size();ii++){
+				
+				double reward = 0.0;
+				if(Coordinate.compareCoordinates(episode.elementAt(ii).Action.Action, prey.position)){
+					reward = 10.0;
 				}
-
-				double average = sum
-						/ R[s.State.getX()][s.State.getY()][s.Action.id - 1]
-								.size();
-
-				int actionID = -1;
-				for (int j = 0; j < mcOnP.qTable[s.State.getX()][s.State
-						.getY()].size(); j++) {
-					if (mcOnP.qTable[s.State.getX()][s.State.getY()]
-							.elementAt(j).id == s.Action.id) {
-						actionID = j;
+				
+				for(int k=t+1;k<episode.size()-1;k++){
+					w *= 1.0/mcOffP.probilityStateAction(episode.elementAt(k),policy,policyParameter);
+				}
+				D[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)].add((w*reward)); 
+				N[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)].add((w));
+				
+				
+				int actionPosId = -1;
+				for (int iii = 0; iii < mcOffP.qTable[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()].size(); iii++) {
+					if (mcOffP.qTable[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()]
+							.elementAt(iii).id == episode.elementAt(ii).Action.id) {
+						actionPosId = iii;
 						break;
 					}
 				}
-
-				mcOnP.qTable[s.State.getX()][s.State.getY()]
-						.elementAt(actionID).Value = average;
-
+				
+				double SumN=0,SumD=0;
+				for(Double a : D[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)]){
+					SumD += a;
+				}
+				for(Double g : N[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()][(episode.elementAt(ii).Action.id-1)]){
+					SumN += g;
+				}
+				
+				mcOffP.qTable[episode.elementAt(ii).State.getX()][episode.elementAt(ii).State.getY()].elementAt(actionPosId).Value = SumN/SumD;
+				
+				
+				
 			}
-
 			episode.clear();
-
 		}
 
-		mcOnP.PrintQTable();
+		mcOffP.PrintQTable();
+//
+//		try {
+//			MatFileGenerator.write(output,
+//					"OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
+//							+ policy + "_" + String.valueOf(policyParameter));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
-		try {
-			MatFileGenerator.write(output,
-					"OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
-							+ policy + "_" + String.valueOf(policyParameter));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		System.out.println("An output .mat file has generated with the name: "
+//				+ "OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
+//				+ policy + "_" + String.valueOf(policyParameter) + ".mat");
+
+	}
+	
+	private double probilityStateAction(SAPair s, String policy,
+			double policyParameter) {
+		if (policy.equalsIgnoreCase("s")) {
+			double sum = 0.0;
+			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
+					.getY()]) {
+				sum += Math.exp(sa.Value / policyParameter);
+			}
+			return Math.exp(s.Action.Value / policyParameter) / sum;
+		} else if (policy.equalsIgnoreCase("e")) {
+			for (StateActionPair sa : this.qTable[s.State.getX()][s.State
+					.getY()]) {
+				if (sa.Value > s.Action.Value) {
+					return 0.25 * policyParameter;
+				}
+			}
+			return 1 - policyParameter;
 		}
-
-		System.out.println("An output .mat file has generated with the name: "
-				+ "OnLineMonteCarlo" + "_" + String.valueOf(gamma) + "_"
-				+ policy + "_" + String.valueOf(policyParameter) + ".mat");
-
+		return 1.0;
 	}
 
 }
