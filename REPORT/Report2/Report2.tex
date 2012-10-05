@@ -262,7 +262,7 @@ Monte Carlo control methods come in on-policy and off-policy variants as well.  
                                                                      
                                                                      
                                              
-\section*{Off-policy Monte Carlo}
+\subsection*{Off-policy Monte Carlo}
 The Off-policy Monte Carlo control method is divided in 2 parts; the behavior function and the estimation function. The behavior function (or behavior policy) is the one used for the agent's learning, generating learning episodes which provide "knowledge" for the estimation policy to use later. The behavior policy is arbitrary, and the table that it creates is updated at the end of each episode, updating pairs of states and actions that agent used to find the prey. Consequentially, the predator's knowledge and its performance depend on the number of training episodes that the agent generates. First, we make use of e-greedy action selection policy to generate episodes. These episodes start always with the predator at (5,5), and prey at (0,0), and they end when the predator catches the prey. The behavior policy's Q table is computed as follows: 
 \begin{enumerate}
 \item the behavior policy generates an episode making use of the $\epsilon$ -greedy action selection policy.
