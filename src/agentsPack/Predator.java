@@ -125,6 +125,35 @@ public class Predator extends Agent {
 		return p;
 	}
 
+	public Coordinate chooseRandomAction(){
+		
+
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+
+		
+		double prob = Math.random();
+		double step = 0.2;
+		Coordinate newPosition = null;
+		
+		for (int i=0; i<actions.size();i++){
+			
+			if(prob<=step){
+				newPosition=actions.get(i).getCoordinate();	
+				break;
+				}
+				else 
+				step += 0.2;
+			}
+		return newPosition;
+		
+	}
+	
+	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 
@@ -135,6 +164,7 @@ public class Predator extends Agent {
 		actions.addElement(new RandomAction(0.2, this.position.getWest()));
 		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
 		actions.addElement(new RandomAction(0.2, this.position));
+
 
 		double prob = Math.random();
 		double boundary = 0.0;
@@ -161,6 +191,9 @@ public class Predator extends Agent {
 		return NewPosition;
 	}
 
+	
+	
+	
 	/*
 	 * This function return all possible action that a prey or a predator can be
 	 * able to do in relation to the current worldstate. This function is used

@@ -12,6 +12,49 @@ public class Prey extends Agent {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	public Coordinate chooseRandomAction(){
+		
+		Vector<RandomAction> actions = new Vector<RandomAction>();
+		actions.addElement(new RandomAction(0.2, this.position.getNorth()));
+		actions.addElement(new RandomAction(0.2, this.position.getEast()));
+		actions.addElement(new RandomAction(0.2, this.position.getWest()));
+		actions.addElement(new RandomAction(0.2, this.position.getSouth()));
+		actions.addElement(new RandomAction(0.2, this.position));
+		
+		double prob= Math.random();
+		double step = 0.2;
+		Coordinate newPosition = this.position;
+		
+		for(int i=0;i<actions.size();i++){
+			
+			if(prob<=step){
+				
+				if(actions.get(i).coordinate != this.position){
+					
+					//Tripping probability (not for the STAY action)
+					
+					double prob2 = Math.random();
+					if (prob2<=0.2){
+						newPosition = this.position;
+						System.out.println("oops. i tripped god dammit");
+						break;
+						}
+					}
+				newPosition = actions.get(i).coordinate;
+				break;
+				}
+			
+			else 
+				step +=0.2;
+			
+			}
+		return newPosition;
+		
+	}
+	
+	
+	
 	@Override
 	public Coordinate doAction(Vector<Agent> worldState) {
 		if (this.isDead()) {
