@@ -100,7 +100,8 @@ public class Coordinate {
 		return new Coordinate(x, y - 1);
 
 	}
-
+	
+	
 	public int toIndex() {
 		return this.divisor * x + y;
 	}

@@ -8,6 +8,7 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
+import functionsPack.MultiAgentQLearning;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
@@ -41,18 +42,19 @@ public class Main {
 			System.out.println("7. On-policy Monte Carlo learning");
 			System.out.println("8. Off-policy Monte Carlo learning");
 			System.out.println("9. Multi Agent Random");
-			System.out.println("10. Exit");
+			System.out.println("10. Multi Agent Q-Learning");
+			System.out.println("11. Exit");
 
 			String choice = null;
 			do {
-				System.out.print("\nGive your choice (1-10):");
+				System.out.print("\nGive your choice (1-11):");
 				try {
 					choice = reader.readLine();
 					choiceInt = Integer.parseInt(choice);
 				} catch (Exception e) {
 
 				}
-			} while (choiceInt < 1 || choiceInt > 11);
+			} while (choiceInt < 1 || choiceInt > 12);
 
 			if (choiceInt == 1) {
 
@@ -424,8 +426,12 @@ public class Main {
 			else if (choiceInt ==9){
 				MultiAgentSimulation.runSimulation();
 			}
+			else if (choiceInt ==10){
+				MultiAgentQLearning mpe = new MultiAgentQLearning();
+				mpe.run();
+			}
 			
-			else if (choiceInt == 10) {
+			else if (choiceInt == 11) {
 
 				System.out.println("Oh whyy???!!! :(");
 
