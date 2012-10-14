@@ -44,7 +44,7 @@ public class QPredatorM extends Predator {
 			this.qTable[i].add(new StateActionPair(MyState, 15, 5));
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am agent "+mySelf+" it took me "+((end-start))+" ms to initialize my Qtable, Number of states: "+this.qTable.length);
+		System.out.println("I am predator "+mySelf+" it took me "+((end-start))+" ms to initialize my Qtable, Number of states: "+this.qTable.length);
 	}
 	public StateActionPair chooseEGreedyAction(double epsilon,Vector<Agent> worldstate) {
 		Double r = Math.random();
@@ -120,6 +120,42 @@ public class QPredatorM extends Predator {
 						((index % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
 								mySelf + 1)));
 		return MyState;
+	}
+	public void updateQTable(Coordinate oldPosition, StateActionPair Action,
+			double reward, boolean absorbing) {
+
+		int actionPosId = -1;
+		for (int i = 0; i < this.qTable[this.position.getX()].size(); i++) {
+			if (this.qTable[this.position.getX()]
+					.elementAt(i).id == Action.id) {
+				actionPosId = i;
+				break;
+			}
+		}
+
+		if (!absorbing) {
+
+			double actionMaxValue = Double.NEGATIVE_INFINITY;
+			for (StateActionPair e : this.qTable[this.position.getX()]) {
+				if (e.Value > actionMaxValue) {
+					actionMaxValue = e.Value;
+				}
+			}
+
+			this.qTable[oldPosition.getX()]
+					.elementAt(actionPosId).Value = this.qTable[oldPosition
+					.getX()].elementAt(actionPosId).Value
+					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
+							.getX()].elementAt(actionPosId).Value));
+
+		} else {
+
+			this.qTable[oldPosition.getX()].elementAt(actionPosId).Value = this.qTable[oldPosition
+					.getX()].elementAt(actionPosId).Value
+					+ alpha
+					* (reward - this.qTable[oldPosition.getX()].elementAt(actionPosId).Value);
+
+		}
 	}
 
 }

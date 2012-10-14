@@ -132,7 +132,14 @@ public class Environment {
 		return false;
 	}
 	
-	
+	public boolean checkCaughtStaticPrey(Vector<Agent> worldState, Coordinate PreyPos){
+		for(Agent a : worldState){
+			if(Coordinate.compareCoordinates(PreyPos, a.position)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public boolean checkCaught(Vector<Agent> worldState){
 		
