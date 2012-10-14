@@ -22,21 +22,26 @@ public class QPredatorM extends Predator {
 		this.gamma = gamma;
 		// TODO Auto-generated constructor stub
 	}
+	
 	public void initializeQtable(Vector<Agent> worldstate) {
 
-		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size()-1)));
+		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
 		this.qTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
+		System.out.println(this.qTable.length);
 		int mySelf = 0;
 		long start = System.currentTimeMillis();
+
+		//find my position on the world state vector
+		int jj=-1;
+		for (int j = 0; j < worldstate.size(); j++) {
+			if(worldstate.elementAt(j) instanceof QPredatorM)
+				jj++;
+			if(this == worldstate.elementAt(j)){
+				mySelf = jj;
+				break;			
+			}
+		}
 		for (int i = 0; i < this.qTable.length; i++) {
-			
-			//find my position on the world state vector
-			for (int j = 0; j < worldstate.size(); j++) {
-				if(this == worldstate.elementAt(j)){
-					mySelf = j;
-					break;
-				}
-			}		
 			//add my actions in this state
 			//my position is given through the following:
 			Coordinate MyState = new Coordinate(
@@ -44,6 +49,7 @@ public class QPredatorM extends Predator {
 							.pow(11, mySelf)),
 							((i % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
 									mySelf + 1)));
+
 			//given my position i know the coordinates of my actions
 			//every action initialized
 			this.qTable[i] = new Vector<StateActionPair>();
@@ -55,7 +61,7 @@ public class QPredatorM extends Predator {
 
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am agent "+mySelf+" it took me "+((end-start)/1000)+" sec to initialize my Qtable");
+		System.out.println("I am agent "+mySelf+" it took me "+((end-start))+" ms to initialize my Qtable");
 	}
 	public StateActionPair chooseEGreedyAction(double epsilon,Vector<Agent> worldstate) {
 
@@ -105,11 +111,11 @@ public class QPredatorM extends Predator {
 		return tempMaxVector.elementAt(maxAct);
 	}
 	public int StateToIndex(Vector<Agent> worldState){
-		int index = -1;
+		int index = 0;
+		int power = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			if(worldState.get(j) instanceof QPredatorM)
-				index += Math.pow(worldState.get(j).position.getX()+1,j) + 
-				Math.pow(worldState.get(j).position.getX()+1,j+1);
+			index += (worldState.get(j).position.getX())*Math.pow(11,power++) + 
+					(worldState.get(j).position.getY())*Math.pow(11,power++);
 		}
 		return index;
 	}

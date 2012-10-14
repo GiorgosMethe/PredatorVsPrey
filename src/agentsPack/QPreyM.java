@@ -89,10 +89,13 @@ public class QPreyM extends Prey {
 	}
 	public int StateToIndex(Vector<Agent> worldState){
 		int index = -1;
+		int jj=-1;
 		for (int j = 0; j < worldState.size(); j++) {
-			if(worldState.get(j) instanceof QPredatorM)
-				index += Math.pow(worldState.get(j).position.getX()+1,j) + 
-				Math.pow(worldState.get(j).position.getX()+1,j+1);
+			if(worldState.get(j) instanceof QPredatorM){
+				jj++;
+				index += (worldState.get(j).position.getX())*Math.pow(11,jj) + 
+				(worldState.get(j).position.getY())*Math.pow(11,jj+1)+1;
+			}
 		}
 		return index;
 	}
