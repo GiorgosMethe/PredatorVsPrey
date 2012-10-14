@@ -37,7 +37,6 @@ public class Prey extends Agent {
 					double prob2 = Math.random();
 					if (prob2<=0.2){
 						newPosition = this.position;
-						System.out.println("oops. i tripped god dammit");
 						break;
 						}
 					}

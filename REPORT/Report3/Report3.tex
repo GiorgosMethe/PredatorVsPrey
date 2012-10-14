@@ -1,0 +1,121 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{fullpage}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{layouts}
+\usepackage{array}
+\usepackage{pgf}
+\usepackage{tikz}
+
+\usepackage{amssymb}
+\usepackage{graphics}
+\usepackage{fancyhdr}
+\usepackage{eucal}
+\usepackage{ifthen}
+\usepackage{ifpdf}
+\usepackage{lmodern}
+\usepackage{amsthm}
+\usepackage{catoptions} % For \Autoref
+
+
+\usetikzlibrary{positioning}
+
+\hypersetup{
+  colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=mygreylink     % can put red here to visualize the links
+}
+
+\definecolor{hlcolor}{rgb}{1, 0, 0}
+\definecolor{mygrey}{gray}{.85}
+\definecolor{mygreylink}{gray}{.30}
+\textheight=8.6in
+\raggedbottom
+\addtolength{\oddsidemargin}{-0.375in}
+\addtolength{\evensidemargin}{0.375in}
+\addtolength{\textwidth}{0.5in}
+\addtolength{\topmargin}{-.375in}
+\addtolength{\textheight}{0.75in}
+
+
+\newcommand{\resheading}[1]{{\large \colorbox{mygrey}{\begin{minipage}{\textwidth}{\textbf{#1 \vphantom{p\^{E}}}}\end{minipage}}}}
+
+\newcommand{\mywebheader}{
+  \begin{tabular}{@{}p{5in}p{4in}}
+  {\resheading{Assignment 3: Multi Agent Planning and Learning}} & {\Large 19 October, 2012}\\\vspace{0.2cm}
+  \end{tabular}}
+
+\begin{document}
+
+
+\begin{center}
+{\LARGE \textbf{Autonomous Agents}}\\ [1em]
+\end{center}
+\mywebheader
+
+\begin{center}
+{\Large By:} \\ \vspace{0.1cm}
+{\Large Paris Mavromoustakos} \\  \vspace{0.1cm}
+{\Large Georgios Methenitis} \\ \vspace{0.1cm}
+{\Large Patrick de Kok} \\ \vspace{0.1cm}
+{\Large Marios Tzakris}
+\end{center}
+
+
+
+
+\section*{Introduction}
+
+In this last assignment, we added multiple predators to the environment, while making the prey intelligent, thus harder to catch. Our previous implementations already considered the prey to be an agent, for that reason we only added minor changes to our prey's functions, allowing it to use learning methods. The prey will now move equiprobably towards all directions, with a chance to trip (stay in the previous position), otherwise one predator would never be able to catch it.
+
+What we also changed is that the prey and predator(s) move simultaneously, in a single timestep. That means, the agents can be next to eachother and swap positions, without considering their next move to be "safe" or not.
+
+Lastly, we now consider this implementation to be a zero-sum markov game, because the predators will receive a -10 reward if they crash into eachother, while the prey will be receiving a +10 reward. Beside that, the predators will receive +10 for catching the prey which gets -10 for getting caught.
+
+
+
+\section*{Exercise 1}
+
+In the first excercise, we use the 11x11 grid where we add one prey and multiple predators. The program requests the number of predators as input from the user, initializes the prey at position (5,5) and puts the predators in random positions. 
+
+The agents then move randomly on the grid until two predators move into the same position (Collision) or a predator catches the prey (Catch). Those are the two possible and unique absorbing states. We should note that, if two predators collide and the prey is caught in the same timestep, the predators' collision is more "important" and defines the reward distribution.
+
+
+
+\begin{table}[h]
+\begin{center}
+\caption{Multiple Agents' Random Implementation}
+\begin{tabular}{c c c c} 
+\hline\hline               
+Number of Predators & Total No of Collisions & Total No of Catches & Average Step No until Catch \\  
+\hline
+1 & 0 & 500 & 185\\ 
+2 & 175 & 325  & 59\\
+3 & 255 & 245   & 27\\
+4 & 292 & 208 & 15 \\ 
+\end{tabular}
+\label{table:multirandom} 
+\end{center} 
+\end{table} 
+\begin{center}
+Table 1: Comparing total number of collisions and catches, for 1,2,3 and 4 predators (for 500 episodes).
+\end{center}
+
+As we can see in the table above, adding more predators to this particular implementation does reduce the number of stapes needed to catch the prey but dramatically increases the number of collisions between predators.
+ 
+
+\section*{Exercise 2}
+
+
+
+\end{document}

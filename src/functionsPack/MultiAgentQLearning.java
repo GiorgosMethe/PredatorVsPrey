@@ -16,7 +16,9 @@ public class MultiAgentQLearning {
 	private Environment env = new Environment();
 	Vector<Agent> worldState = new Vector<Agent>();
 
-
+	
+	
+	
 	public MultiAgentQLearning() {
 
 		
