@@ -28,28 +28,14 @@ public class QPredatorM extends Predator {
 		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
 		this.qTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
 		System.out.println(this.qTable.length);
-		int mySelf = 0;
 		long start = System.currentTimeMillis();
-
+		
 		//find my position on the world state vector
-		int jj=-1;
-		for (int j = 0; j < worldstate.size(); j++) {
-			if(worldstate.elementAt(j) instanceof QPredatorM)
-				jj++;
-			if(this == worldstate.elementAt(j)){
-				mySelf = jj;
-				break;			
-			}
-		}
+		int mySelf = WhoAmI(worldstate);
 		for (int i = 0; i < this.qTable.length; i++) {
 			//add my actions in this state
 			//my position is given through the following:
-			Coordinate MyState = new Coordinate(
-					((i % (int) Math.pow(11, mySelf + 1)) / (int) Math
-							.pow(11, mySelf)),
-							((i % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
-									mySelf + 1)));
-
+			Coordinate MyState = IndexToMyPos(i, mySelf);
 			//given my position i know the coordinates of my actions
 			//every action initialized
 			this.qTable[i] = new Vector<StateActionPair>();
@@ -118,6 +104,27 @@ public class QPredatorM extends Predator {
 					(worldState.get(j).position.getY())*Math.pow(11,power++);
 		}
 		return index;
+	}
+	public int WhoAmI(Vector<Agent> worldState){
+		int jj=-1;
+		int mySelf = 0;
+		for (int j = 0; j < worldState.size(); j++) {
+			if(worldState.elementAt(j) instanceof QPredatorM)
+				jj++;
+			if(this == worldState.elementAt(j)){
+				mySelf = jj;
+				break;			
+			}
+		}
+		return mySelf;
+	}
+	public Coordinate IndexToMyPos(int index, int mySelf){
+		Coordinate MyState = new Coordinate(
+				((index % (int) Math.pow(11, mySelf + 1)) / (int) Math
+						.pow(11, mySelf)),
+						((index % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
+								mySelf + 1)));
+		return MyState;
 	}
 
 }
