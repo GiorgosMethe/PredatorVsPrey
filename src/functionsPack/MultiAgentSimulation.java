@@ -11,7 +11,7 @@ import agentsPack.Vector;
 public class MultiAgentSimulation {
 
 	public static void main(String[] args) {
-		MultiRun(2);
+		MultiRun(3);
 	}
 
 	public static void MultiRun(int num) {
@@ -32,17 +32,32 @@ public class MultiAgentSimulation {
 		for (Agent a : env.worldState) {
 			if (a instanceof QPredatorM)
 				((QPredatorM) a).initializeQtable(env.worldState);
-//			if (a instanceof QPreyM)
-//				((QPreyM) a).initializeQtable(env.worldState);
+			//			if (a instanceof QPreyM)
+			//				((QPreyM) a).initializeQtable(env.worldState);
 		}
-		
-		for (Agent a : env.worldState) {
-			if (a instanceof QPredatorM)
-				((QPredatorM) a).chooseEGreedyAction(0.1, env.worldState);
-			
+		for(int episode = 0 ; episode < 20 ; episode ++){
+			System.out.println("\nepisode "+episode);
+			boolean flag = false;
+			int j=0;
+			for (Agent a : env.worldState) {
+				a.position.setX(PredatorPos[j].getX());
+				a.position.setY(PredatorPos[j].getY());
+				j++;
+			}
+			do{
+				for (Agent a : env.worldState){
+					if (a instanceof QPredatorM){
+						StateActionPair PredAction = ((QPredatorM) a).chooseEGreedyAction(0.1, env.worldState);
+						a.position.setX(PredAction.Action.getX());
+						a.position.setY(PredAction.Action.getY());
+						System.out.print(".");
+					}
+				}
+				flag = env.checkCollision(env.worldState);
+			}while(!flag);
 		}
 
 	}
-	
+
 
 }

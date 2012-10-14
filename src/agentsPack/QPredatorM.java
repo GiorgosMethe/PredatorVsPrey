@@ -27,9 +27,7 @@ public class QPredatorM extends Predator {
 
 		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
 		this.qTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
-		System.out.println(this.qTable.length);
 		long start = System.currentTimeMillis();
-		
 		//find my position on the world state vector
 		int mySelf = WhoAmI(worldstate);
 		for (int i = 0; i < this.qTable.length; i++) {
@@ -44,13 +42,11 @@ public class QPredatorM extends Predator {
 			this.qTable[i].add(new StateActionPair(MyState.getSouth(), 15, 3));
 			this.qTable[i].add(new StateActionPair(MyState.getWest(), 15, 4));
 			this.qTable[i].add(new StateActionPair(MyState, 15, 5));
-
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am agent "+mySelf+" it took me "+((end-start))+" ms to initialize my Qtable");
+		System.out.println("I am agent "+mySelf+" it took me "+((end-start))+" ms to initialize my Qtable, Number of states: "+this.qTable.length);
 	}
 	public StateActionPair chooseEGreedyAction(double epsilon,Vector<Agent> worldstate) {
-
 		Double r = Math.random();
 		Double maxValue = Double.NEGATIVE_INFINITY;
 		Vector<StateActionPair> tempMaxVector = new Vector<StateActionPair>();
@@ -67,7 +63,6 @@ public class QPredatorM extends Predator {
 			}
 			CountActions++;
 		}
-
 		double rand = Math.random();
 		double step = 1 / tempMaxVector.size();
 		double counter = step;
