@@ -14,12 +14,15 @@ public class QPredatorM extends Predator {
 	private Vector<StateActionPair> qTable[];
 	private double alpha;
 	private double gamma;
+	public Coordinate old;
 
-	public QPredatorM(String name, Coordinate p, Policy pi, double alpha,
+	public QPredatorM(String name, Coordinate p,Coordinate old, Policy pi, double alpha,
 			double gamma) {
 		super(name, p, pi);
 		this.alpha = alpha;
 		this.gamma = gamma;
+		this.old = old;
+		
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -100,6 +103,15 @@ public class QPredatorM extends Predator {
 		}
 		return index;
 	}
+	public int OldStateToIndex(Vector<Agent> worldState){
+		int index = 0;
+		int power = 0;
+		for (int j = 0; j < worldState.size(); j++) {
+			index += (((QPredatorM) worldState.get(j)).old.getX())*Math.pow(11,power++) + 
+					(((QPredatorM) worldState.get(j)).old.getY())*Math.pow(11,power++);
+		}
+		return index;
+	}
 	public int WhoAmI(Vector<Agent> worldState){
 		int jj=-1;
 		int mySelf = 0;
@@ -121,13 +133,16 @@ public class QPredatorM extends Predator {
 								mySelf + 1)));
 		return MyState;
 	}
-	public void updateQTable(Coordinate oldPosition, StateActionPair Action,
-			double reward, boolean absorbing) {
-
+	public void updateQTable(Vector<Agent> worldState, StateActionPair[] actions, double reward, boolean absorbing) {
+		
+		int mySelf = WhoAmI(worldState);
+		int OldStateIndex = OldStateToIndex(worldState);
+		int NewStateIndex = StateToIndex(worldState);
+		
 		int actionPosId = -1;
-		for (int i = 0; i < this.qTable[this.position.getX()].size(); i++) {
-			if (this.qTable[this.position.getX()]
-					.elementAt(i).id == Action.id) {
+		for (int i = 0; i < this.qTable[OldStateIndex].size(); i++) {
+			if (this.qTable[OldStateIndex]
+					.elementAt(i).id == actions[mySelf].id) {
 				actionPosId = i;
 				break;
 			}
@@ -136,24 +151,21 @@ public class QPredatorM extends Predator {
 		if (!absorbing) {
 
 			double actionMaxValue = Double.NEGATIVE_INFINITY;
-			for (StateActionPair e : this.qTable[this.position.getX()]) {
+			for (StateActionPair e : this.qTable[NewStateIndex]) {
 				if (e.Value > actionMaxValue) {
 					actionMaxValue = e.Value;
 				}
 			}
 
-			this.qTable[oldPosition.getX()]
-					.elementAt(actionPosId).Value = this.qTable[oldPosition
-					.getX()].elementAt(actionPosId).Value
-					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[oldPosition
-							.getX()].elementAt(actionPosId).Value));
+			this.qTable[OldStateIndex]
+					.elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
+					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[OldStateIndex].elementAt(actionPosId).Value));
 
 		} else {
 
-			this.qTable[oldPosition.getX()].elementAt(actionPosId).Value = this.qTable[oldPosition
-					.getX()].elementAt(actionPosId).Value
+			this.qTable[OldStateIndex].elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
 					+ alpha
-					* (reward - this.qTable[oldPosition.getX()].elementAt(actionPosId).Value);
+					* (reward - this.qTable[OldStateIndex].elementAt(actionPosId).Value);
 
 		}
 	}

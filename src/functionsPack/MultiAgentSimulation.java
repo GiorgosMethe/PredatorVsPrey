@@ -1,30 +1,38 @@
 package functionsPack;
 
+import java.util.Collections;
+
 import environmentPack.Coordinate;
 import environmentPack.Environment;
 import actionPack.StateActionPair;
 import agentsPack.Agent;
 import agentsPack.QPreyM;
 import agentsPack.QPredatorM;
+import agentsPack.Vector;
 
 public class MultiAgentSimulation {
+	final private static Coordinate[] PredatorPos = { new Coordinate(0, 0),
+			new Coordinate(0, 10), new Coordinate(10, 0),
+			new Coordinate(10, 10) };
 
 	public static void main(String[] args) {
 		MultiRun(2);
 	}
 
 	public static void MultiRun(int num) {
-		Coordinate PreyPos = new Coordinate(5, 5);
-		Coordinate[] PredatorPos = { new Coordinate(0, 0),
-				new Coordinate(0, 10), new Coordinate(10, 0),
-				new Coordinate(10, 10) };
+		
+		boolean flag = false;
+		boolean preyTrap = false;
+		boolean absorbing = false;
+		double reward = 0.0;
+		Coordinate PreyPos = new Coordinate(5, 5);		
 		// Table initialization
 		Environment env = new Environment();
 		QPreyM p = new QPreyM("prey", PreyPos, null, 0.5, 0.7);
 		// env.worldState.add(p);
 		for (int i = 0; i < num; i++) {
 			QPredatorM q = new QPredatorM("Predator" + String.valueOf(i),
-					PredatorPos[i], null, 0.5, 0.7);
+					PredatorPos[i],PredatorPos[i], null, 0.5, 0.7);
 			env.worldState.add(q);
 		}
 		// Table initialization
@@ -34,35 +42,43 @@ public class MultiAgentSimulation {
 		}
 		// for the prey
 		p.initializeQtable(env.worldState);
-		Coordinate[] oldPosition = new Coordinate[num];
+		Vector<Agent> oldState = new Vector<Agent>();
 		StateActionPair[] Actions = new StateActionPair[num];
-		int j=0;
-		for (int episode = 0; episode < 20; episode++) {
+		
+		for (int episode = 0; episode < 10000; episode++) {
+			int j=0;
+			for (Agent a : env.worldState) {
+				if(j == 0){
+					((QPredatorM) a).position.setX(0);
+					((QPredatorM) a).position.setY(0);
+					((QPredatorM) a).old.setX(0);
+					((QPredatorM) a).old.setY(0);
+				}
+				if(j == 1){
+					((QPredatorM) a).position.setX(10);
+					((QPredatorM) a).position.setY(10);
+					((QPredatorM) a).old.setX(10);
+					((QPredatorM) a).old.setY(10);
+				}
+				j++;
+			}
 			System.out.println("\nepisode " + episode);
-			boolean flag = false;
-//			for (int i=0;i<env.worldState.size();i++) {
-//				env.worldState.get(i).position.setX(PredatorPos[i].getX());
-//				env.worldState.get(i).position.setY(PredatorPos[i].getY());
-//				System.out.println("#"+env.worldState.get(i).position+" %"+PredatorPos[i]);
-//				oldPosition[i] = env.worldState.get(i).position;
-//				
-//			}
-			env.worldState.get(0).position.setX(0);
-			env.worldState.get(0).position.setX(0);
-			env.worldState.get(1).position.setY(10);
-			env.worldState.get(1).position.setY(10);
+			int steps = 0;
+			flag = false;
 			do {
+				steps++;
+				for(Agent a : env.worldState){
+					((QPredatorM) a).old = new Coordinate(a.position.getX(), a.position.getY());	
+				}
 				System.out.print(".");
-				// prey's action
 				StateActionPair PreyAction = p.chooseEGreedyAction(0.1, env.worldState);
-				System.out.print("prey:"+PreyAction.Action);
-				boolean preyTrap = (Math.random() < 0.2);
-				// predators' actions
+				preyTrap = (Math.random() < 0.2);
+				j=0;
 				for (Agent a : env.worldState) {
 					StateActionPair PredAction = ((QPredatorM) a)
 							.chooseEGreedyAction(0.1, env.worldState);
-					// positions are not the same as the action
-					// prey action change them
+					Actions[j] = PredAction;
+					j++;
 					if(!preyTrap){
 						a.position.setX(PredAction.Action.getX()-(PreyAction.Action.getX()-PreyPos.getX()));
 						a.position.setY(PredAction.Action.getY()-(PreyAction.Action.getY()-PreyPos.getY()));
@@ -70,30 +86,26 @@ public class MultiAgentSimulation {
 						a.position.setX(PredAction.Action.getX());
 						a.position.setY(PredAction.Action.getY());
 					}
-					System.out.print("pred:"+PredAction.Action);
 				}
-				System.out.println("");
+				absorbing = false;
+				reward = 0.0;
 				if(env.checkCollision(env.worldState)){
-					j=0;
-					for(Agent a : env.worldState){
-						//((QPredatorM) a).updateQTable(oldPosition, Action, reward, absorbing)
-					}
 					System.out.println("collision");
+					reward = -10.0;
+					absorbing = true;
 					flag = true;
 				}
 				if(!flag && env.checkCaughtStaticPrey(env.worldState, PreyPos)){
 					System.out.println("caught");
+					reward = 10.0;
+					absorbing = true;
 					flag = true;
 				}
-				
-				
-				
-				j = 0;
-				for (Agent a : env.worldState) {
-					oldPosition[j] = a.position;
-					j++;
+				for(Agent a : env.worldState){
+					((QPredatorM) a).updateQTable(env.worldState, Actions, reward, absorbing);
 				}
 			} while (!flag);
+			System.out.println("steps = "+steps);
 		}
 
 	}
