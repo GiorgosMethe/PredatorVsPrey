@@ -424,7 +424,19 @@ public class Main {
 				
 			} 
 			else if (choiceInt ==9){
-				MultiAgentSimulation.runSimulation();
+				int no = 999;
+				String noStr = null;
+				do{
+					System.out.println("Please enter the number of predators (1,2,3 or 4)");
+					try{
+					noStr = reader.readLine();
+					no = Integer.parseInt(noStr);
+					}catch(Exception e){
+						System.err.println("1,2,3 or 4");
+					}
+					
+				}while(no<1 || no>=5);
+				MultiAgentSimulation.runSimulation(no);
 			}
 			else if (choiceInt ==10){
 				MultiAgentQLearning mpe = new MultiAgentQLearning();

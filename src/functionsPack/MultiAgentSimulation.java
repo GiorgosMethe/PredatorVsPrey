@@ -11,28 +11,28 @@ public class MultiAgentSimulation {
 
 
 	
-	public static void runSimulation() {
+	public static void runSimulation(int no) {
 		
 
 		
 	
+
 		
 		for (int i = 0; i < 5; i++) {
 			
-			Predator pred1 = new Predator("pred1", new Coordinate(0,0), null);
-			Predator pred2 = new Predator("pred2", new Coordinate(10,0), null);
-			Predator pred3 = new Predator("pred3", new Coordinate(0,10), null);
-			Predator pred4 = new Predator("pred4", new Coordinate(10,10), null);
 			Prey prey = new Prey("prey", new Coordinate(5,5), null);
-			
-			
+
 			Vector<Agent> worldState = new Vector<Agent>();
 			worldState.add(prey);
-			worldState.add(pred1);
-			worldState.add(pred2);
-			worldState.add(pred3);
-			worldState.add(pred4);
 			
+			for(int j =0;j<no;j++){
+			Predator pred = new Predator("pred", new Coordinate((int)Math.abs(10*Math.random()),(int)Math.abs(10*Math.random())), null);
+
+			worldState.add(pred);
+			}
+			
+			
+			System.out.println("Number of preds  :" +no+"   number of agents"+worldState.size());
 			Environment env = new Environment();
 			
 			
