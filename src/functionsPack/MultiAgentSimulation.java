@@ -1,70 +1,74 @@
 package functionsPack;
 
-import agentsPack.Predator;
-import agentsPack.Agent;
-import agentsPack.Prey;
-import agentsPack.Vector;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
+import actionPack.StateActionPair;
+import agentsPack.Agent;
+import agentsPack.QPreyM;
+import agentsPack.QPredatorM;
+import agentsPack.Vector;
 
 public class MultiAgentSimulation {
-
-
 	
-	public static void runSimulation() {
-		
-
-		
+	public static void main(String[] args) {
+		MultiRun(2);
+	}
 	
+	public static void MultiRun(int num){
 		
-		for (int i = 0; i < 5; i++) {
-			
-			Predator pred1 = new Predator("pred1", new Coordinate(0,0), null);
-			Predator pred2 = new Predator("pred2", new Coordinate(10,0), null);
-			Predator pred3 = new Predator("pred3", new Coordinate(0,10), null);
-			Predator pred4 = new Predator("pred4", new Coordinate(10,10), null);
-			Prey prey = new Prey("prey", new Coordinate(5,5), null);
-			
-			
-			Vector<Agent> worldState = new Vector<Agent>();
-			worldState.add(prey);
-			worldState.add(pred1);
-			worldState.add(pred2);
-			worldState.add(pred3);
-			worldState.add(pred4);
-			
-			Environment env = new Environment();
-			
-			
-			
-			System.out.println("Episode No "+i+" has begun bitch.");
-			boolean flag = false;
-			do{
-			
-			for (Agent p : worldState){
-				if(p instanceof Predator){
-					p.position=((Predator) p).chooseRandomAction();
-					System.out.println("Next position of "+ p.name +"   :    "+ p.position);
-					}
-				else {
-					((Prey) p).position = ((Prey) p).chooseRandomAction();
-					System.out.println("Next  position of prey    :     " + p.position);
-
-					
-					}
-			}
-			System.out.println(" ");
- 
-			if(env.checkCollision(worldState)){
-				System.out.println("COLLISION!!");
-				flag=true;
-				}
-			if(env.checkCaught(worldState)){
-				System.out.println("YEAH ITS CAUGHT BITCH!");
-				flag=true;
-				}
-			}while(!flag);
+		 Coordinate PreyPos = new Coordinate(5, 5);
+		 Coordinate[] PredatorPos = {
+				 new Coordinate(0, 0), 
+				 new Coordinate(0, 10), 
+				 new Coordinate(10, 0),
+				 new Coordinate(10, 10)
+				 };	
+		
+		//Table initialization
+		Environment env = new Environment();
+		QPreyM p =new QPreyM("prey", PreyPos, null, 0.5, 0.7);
+		env.worldState.add(p);
+		for(int i =0 ; i < num ; i++){
+			QPredatorM q = new QPredatorM("Predator"+String.valueOf(i), PredatorPos[i], null, 0.5, 0.7);
+			env.worldState.add(q);			
 		}
-
-}
+		//Table initialization
+		for(Agent a : env.worldState){
+			if(a instanceof QPredatorM)
+				((QPredatorM) a).initializeQtable(env.worldState);
+			if(a instanceof QPreyM)
+				((QPreyM) a).initializeQtable(env.worldState);
+		}
+		for(int iter=0;iter<10;iter++){
+		boolean flag = false;
+		int k=0;
+		for(Agent a : env.worldState){
+			if(a instanceof QPredatorM){
+				a.position.setX(PredatorPos[k].getX());
+				a.position.setY(PredatorPos[k].getY());
+				k++;
+			}
+		}
+		do{
+			StateActionPair predA = null;
+			StateActionPair preyA = null;
+			for(Agent a : env.worldState){
+				if(a instanceof QPredatorM){
+					if(a.position.getX() == 5 && a.position.getY() == 5){
+						flag = true;
+					}
+					predA = ((QPredatorM) a).chooseEGreedyAction(0.1, env.worldState);
+					a.position.setX(predA.Action.getX());
+					a.position.setY(predA.Action.getY());
+				}
+				if(a instanceof QPreyM){
+					preyA = ((QPreyM) a).chooseEGreedyAction(0.1, env.worldState);
+				}					
+			}
+			System.out.print("+");
+		}while(!flag);
+		System.out.print("\n");
+		}
+		
+	}
 }

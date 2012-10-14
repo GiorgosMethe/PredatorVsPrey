@@ -8,12 +8,11 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
-import functionsPack.MultiAgentQLearning;
+import functionsPack.MultiAgentSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
 import functionsPack.ValueIteration;
-import functionsPack.MultiAgentSimulation;
 
 public class Main {
 
@@ -41,9 +40,8 @@ public class Main {
 			System.out.println("6. Sarsa-Learning");
 			System.out.println("7. On-policy Monte Carlo learning");
 			System.out.println("8. Off-policy Monte Carlo learning");
-			System.out.println("9. Multi Agent Random");
-			System.out.println("10. Multi Agent Q-Learning");
-			System.out.println("11. Exit");
+			System.out.println("9. Multi Agent Q-Learning");
+			System.out.println("10. Exit");
 
 			String choice = null;
 			do {
@@ -424,14 +422,11 @@ public class Main {
 				
 			} 
 			else if (choiceInt ==9){
-				MultiAgentSimulation.runSimulation();
-			}
-			else if (choiceInt ==10){
-				MultiAgentQLearning mpe = new MultiAgentQLearning();
-				mpe.run();
-			}
+				
+				MultiAgentSimulation.MultiRun(2);
+				
 			
-			else if (choiceInt == 11) {
+			}else if (choiceInt == 10) {
 
 				System.out.println("Oh whyy???!!! :(");
 
@@ -441,7 +436,7 @@ public class Main {
 
 			}
 
-		} while (choiceInt != 9);
+		} while (choiceInt != 10);
 
 	}
 
