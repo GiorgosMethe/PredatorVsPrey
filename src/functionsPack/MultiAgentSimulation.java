@@ -104,6 +104,7 @@ public class MultiAgentSimulation {
 				for(Agent a : env.worldState){
 					((QPredatorM) a).updateQTable(env.worldState, Actions, reward, absorbing);
 				}
+				p.updateQTable(env.worldState, PreyAction, (-1)*reward, absorbing);
 			} while (!flag);
 			System.out.println("steps = "+steps);
 		}

@@ -91,4 +91,48 @@ public class QPreyM extends Prey {
 		}
 		return index;
 	}
+	public int OldStateToIndex(Vector<Agent> worldState){
+		int index = 0;
+		int power = 0;
+		for (int j = 0; j < worldState.size(); j++) {
+			index += (((QPredatorM) worldState.get(j)).old.getX())*Math.pow(11,power++) + 
+					(((QPredatorM) worldState.get(j)).old.getY())*Math.pow(11,power++);
+		}
+		return index;
+	}
+	public void updateQTable(Vector<Agent> worldState, StateActionPair action, double reward, boolean absorbing) {
+		
+		int OldStateIndex = OldStateToIndex(worldState);
+		int NewStateIndex = StateToIndex(worldState);
+		
+		int actionPosId = -1;
+		for (int i = 0; i < this.qTable[OldStateIndex].size(); i++) {
+			if (this.qTable[OldStateIndex]
+					.elementAt(i).id == action.id) {
+				actionPosId = i;
+				break;
+			}
+		}
+
+		if (!absorbing) {
+
+			double actionMaxValue = Double.NEGATIVE_INFINITY;
+			for (StateActionPair e : this.qTable[NewStateIndex]) {
+				if (e.Value > actionMaxValue) {
+					actionMaxValue = e.Value;
+				}
+			}
+
+			this.qTable[OldStateIndex]
+					.elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
+					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[OldStateIndex].elementAt(actionPosId).Value));
+
+		} else {
+
+			this.qTable[OldStateIndex].elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
+					+ alpha
+					* (reward - this.qTable[OldStateIndex].elementAt(actionPosId).Value);
+
+		}
+	}
 }
