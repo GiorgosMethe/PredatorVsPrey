@@ -94,7 +94,6 @@ public class MQPredator extends Predator {
 		}
 		return tempMaxVector.elementAt(maxAct);
 	}
-
 	public int StateToIndex(Vector<Agent> worldState) {
 		int index = 0;
 		int power = 0;
@@ -106,7 +105,6 @@ public class MQPredator extends Predator {
 		}
 		return index;
 	}
-
 	public int OldStateToIndex(Vector<Agent> worldState) {
 		int index = 0;
 		int power = 0;
@@ -118,7 +116,6 @@ public class MQPredator extends Predator {
 		}
 		return index;
 	}
-
 	public int WhoAmI(Vector<Agent> worldState) {
 		int jj = -1;
 		int mySelf = 0;

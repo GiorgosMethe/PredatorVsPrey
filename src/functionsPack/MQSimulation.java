@@ -59,7 +59,7 @@ public class MQSimulation {
 							a.position.getY());
 				}
 				// double nonFixedE = (1-(100000/(episode+1)));
-				StateActionPair PreyAction = p.chooseEGreedyAction(0.9,
+				StateActionPair PreyAction = p.chooseEGreedyAction(0.1,
 						env.worldState);
 				preyTrap = (Math.random() < 0.2);
 				j = 0;
