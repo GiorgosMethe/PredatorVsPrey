@@ -8,7 +8,7 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
-import functionsPack.MultiAgentSimulation;
+import functionsPack.MQSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
@@ -418,15 +418,12 @@ public class Main {
 				} while (gamma > 1 || gamma <= 0);
 
 				MCoffPredator.RunMonteCarloLearning(number, gamma, "e", 0.2);
-				
-				
-			} 
-			else if (choiceInt ==9){
-				
-				MultiAgentSimulation.MultiRun(2);
-				
-			
-			}else if (choiceInt == 10) {
+
+			} else if (choiceInt == 9) {
+
+				MQSimulation.MultiRun(2);
+
+			} else if (choiceInt == 10) {
 
 				System.out.println("Oh whyy???!!! :(");
 

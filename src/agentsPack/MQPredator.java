@@ -3,29 +3,37 @@ package agentsPack;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
-public class QPreyM extends Prey {
+public class MQPredator extends Predator {
 
 	private Vector<StateActionPair> qTable[];
 	private double alpha;
 	private double gamma;
+	public Coordinate old;
 
-	public QPreyM(String name, Coordinate p, Policy pi, double alpha,
-			double gamma) {
+	public MQPredator(String name, Coordinate p, Coordinate old, Policy pi,
+			double alpha, double gamma) {
 		super(name, p, pi);
 		this.alpha = alpha;
 		this.gamma = gamma;
+		this.old = old;
+
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void initializeQtable(Vector<Agent> worldstate) {
 
 		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
 		this.qTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
 		long start = System.currentTimeMillis();
-		int mySelf = 0;
+		// find my position on the world state vector
+		int mySelf = WhoAmI(worldstate);
 		for (int i = 0; i < this.qTable.length; i++) {
-			Coordinate MyState = new Coordinate(5, 5);
+			// add my actions in this state
+			// my position is given through the following:
+			Coordinate MyState = IndexToMyPos(i, mySelf);
+			// given my position i know the coordinates of my actions
+			// every action initialized
 			this.qTable[i] = new Vector<StateActionPair>();
 			this.qTable[i].add(new StateActionPair(MyState.getEast(), 15, 1));
 			this.qTable[i].add(new StateActionPair(MyState.getNorth(), 15, 2));
@@ -34,9 +42,14 @@ public class QPreyM extends Prey {
 			this.qTable[i].add(new StateActionPair(MyState, 15, 5));
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am prey it took me "+((end-start))+" ms to initialize my Qtable, Number of states: "+this.qTable.length);
+		System.out.println("I am predator " + mySelf + " it took me "
+				+ ((end - start))
+				+ " ms to initialize my Qtable, Number of states: "
+				+ this.qTable.length);
 	}
-	public StateActionPair chooseEGreedyAction(double epsilon,Vector<Agent> worldstate) {
+
+	public StateActionPair chooseEGreedyAction(double epsilon,
+			Vector<Agent> worldstate) {
 		Double r = Math.random();
 		Double maxValue = Double.NEGATIVE_INFINITY;
 		Vector<StateActionPair> tempMaxVector = new Vector<StateActionPair>();
@@ -53,7 +66,6 @@ public class QPreyM extends Prey {
 			}
 			CountActions++;
 		}
-
 		double rand = Math.random();
 		double step = 1 / tempMaxVector.size();
 		double counter = step;
@@ -82,33 +94,64 @@ public class QPreyM extends Prey {
 		}
 		return tempMaxVector.elementAt(maxAct);
 	}
-	public int StateToIndex(Vector<Agent> worldState){
+
+	public int StateToIndex(Vector<Agent> worldState) {
 		int index = 0;
 		int power = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			index += (worldState.get(j).position.getX())*Math.pow(11,power++) + 
-					(worldState.get(j).position.getY())*Math.pow(11,power++);
+			index += (worldState.get(j).position.getX())
+					* Math.pow(11, power++)
+					+ (worldState.get(j).position.getY())
+					* Math.pow(11, power++);
 		}
 		return index;
 	}
-	public int OldStateToIndex(Vector<Agent> worldState){
+
+	public int OldStateToIndex(Vector<Agent> worldState) {
 		int index = 0;
 		int power = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			index += (((QPredatorM) worldState.get(j)).old.getX())*Math.pow(11,power++) + 
-					(((QPredatorM) worldState.get(j)).old.getY())*Math.pow(11,power++);
+			index += (((MQPredator) worldState.get(j)).old.getX())
+					* Math.pow(11, power++)
+					+ (((MQPredator) worldState.get(j)).old.getY())
+					* Math.pow(11, power++);
 		}
 		return index;
 	}
-	public void updateQTable(Vector<Agent> worldState, StateActionPair action, double reward, boolean absorbing) {
-		
+
+	public int WhoAmI(Vector<Agent> worldState) {
+		int jj = -1;
+		int mySelf = 0;
+		for (int j = 0; j < worldState.size(); j++) {
+			if (worldState.elementAt(j) instanceof MQPredator)
+				jj++;
+			if (this == worldState.elementAt(j)) {
+				mySelf = jj;
+				break;
+			}
+		}
+		return mySelf;
+	}
+
+	public Coordinate IndexToMyPos(int index, int mySelf) {
+		mySelf *= 2;
+		Coordinate MyState = new Coordinate(((index % (int) Math.pow(11,
+				mySelf + 1)) / (int) Math.pow(11, mySelf)),
+				((index % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
+						mySelf + 1)));
+		return MyState;
+	}
+
+	public void updateQTable(Vector<Agent> worldState,
+			StateActionPair[] actions, double reward, boolean absorbing) {
+
+		int mySelf = WhoAmI(worldState);
 		int OldStateIndex = OldStateToIndex(worldState);
 		int NewStateIndex = StateToIndex(worldState);
-		
+
 		int actionPosId = -1;
 		for (int i = 0; i < this.qTable[OldStateIndex].size(); i++) {
-			if (this.qTable[OldStateIndex]
-					.elementAt(i).id == action.id) {
+			if (this.qTable[OldStateIndex].elementAt(i).id == actions[mySelf].id) {
 				actionPosId = i;
 				break;
 			}
@@ -123,16 +166,29 @@ public class QPreyM extends Prey {
 				}
 			}
 
-			this.qTable[OldStateIndex]
-					.elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
-					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[OldStateIndex].elementAt(actionPosId).Value));
+			this.qTable[OldStateIndex].elementAt(actionPosId).Value = this.qTable[OldStateIndex]
+					.elementAt(actionPosId).Value
+					+ (alpha * (reward + (gamma * actionMaxValue) - this.qTable[OldStateIndex]
+							.elementAt(actionPosId).Value));
 
 		} else {
 
-			this.qTable[OldStateIndex].elementAt(actionPosId).Value = this.qTable[OldStateIndex].elementAt(actionPosId).Value
+			this.qTable[OldStateIndex].elementAt(actionPosId).Value = this.qTable[OldStateIndex]
+					.elementAt(actionPosId).Value
 					+ alpha
-					* (reward - this.qTable[OldStateIndex].elementAt(actionPosId).Value);
+					* (reward - this.qTable[OldStateIndex]
+							.elementAt(actionPosId).Value);
 
 		}
+	}
+
+	public int UnvisitedStateActions() {
+		int counter = 0;
+		for (int i = 0; i < this.qTable.length; i++) {
+			for (StateActionPair a : this.qTable[i])
+				if (a.Value == 15.0)
+					counter++;
+		}
+		return counter;
 	}
 }
