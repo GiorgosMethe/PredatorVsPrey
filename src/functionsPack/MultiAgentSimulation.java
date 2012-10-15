@@ -16,7 +16,7 @@ public class MultiAgentSimulation {
 			new Coordinate(10, 10) };
 
 	public static void main(String[] args) {
-		MultiRun(2);
+		MultiRun(3);
 	}
 
 	public static void MultiRun(int num) {
@@ -25,6 +25,9 @@ public class MultiAgentSimulation {
 		boolean preyTrap = false;
 		boolean absorbing = false;
 		double reward = 0.0;
+		int caught = 0;
+		int collision = 0;
+		int steps = 0; 
 		Coordinate PreyPos = new Coordinate(5, 5);		
 		// Table initialization
 		Environment env = new Environment();
@@ -44,8 +47,7 @@ public class MultiAgentSimulation {
 		p.initializeQtable(env.worldState);
 		Vector<Agent> oldState = new Vector<Agent>();
 		StateActionPair[] Actions = new StateActionPair[num];
-		
-		for (int episode = 0; episode < 10000; episode++) {
+		for (int episode = 0; episode < 100000; episode++) {
 			int j=0;
 			for (Agent a : env.worldState) {
 				if(j == 0){
@@ -62,15 +64,12 @@ public class MultiAgentSimulation {
 				}
 				j++;
 			}
-			System.out.println("\nepisode " + episode);
-			int steps = 0;
 			flag = false;
 			do {
 				steps++;
 				for(Agent a : env.worldState){
 					((QPredatorM) a).old = new Coordinate(a.position.getX(), a.position.getY());	
 				}
-				System.out.print(".");
 				StateActionPair PreyAction = p.chooseEGreedyAction(0.1, env.worldState);
 				preyTrap = (Math.random() < 0.2);
 				j=0;
@@ -90,13 +89,13 @@ public class MultiAgentSimulation {
 				absorbing = false;
 				reward = 0.0;
 				if(env.checkCollision(env.worldState)){
-					System.out.println("collision");
 					reward = -10.0;
+					collision++;
 					absorbing = true;
 					flag = true;
 				}
 				if(!flag && env.checkCaughtStaticPrey(env.worldState, PreyPos)){
-					System.out.println("caught");
+					caught++;
 					reward = 10.0;
 					absorbing = true;
 					flag = true;
@@ -104,10 +103,13 @@ public class MultiAgentSimulation {
 				for(Agent a : env.worldState){
 					((QPredatorM) a).updateQTable(env.worldState, Actions, reward, absorbing);
 				}
-				p.updateQTable(env.worldState, PreyAction, (-1)*reward, absorbing);
+				//p.updateQTable(env.worldState, PreyAction, (-1)*reward, absorbing);
 			} while (!flag);
-			System.out.println("steps = "+steps);
+			//System.out.println("steps = "+steps);
 		}
+		System.out.println("collisions:"+collision);
+		System.out.println("caught:"+caught);
+		System.out.println("avg steps:"+(steps/100000));
 
 	}
 }
