@@ -8,12 +8,11 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
-import functionsPack.MultiAgentQLearning;
+import functionsPack.MultiAgentSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
 import functionsPack.ValueIteration;
-import functionsPack.MultiAgentSimulation;
 
 public class Main {
 
@@ -420,29 +419,27 @@ public class Main {
 				} while (gamma > 1 || gamma <= 0);
 
 				MCoffPredator.RunMonteCarloLearning(number, gamma, "e", 0.2);
-				
-				
-			} 
-			else if (choiceInt ==9){
+
+			} else if (choiceInt == 9) {
 				int no = 999;
 				String noStr = null;
-				do{
-					System.out.println("Please enter the number of predators (1,2,3 or 4)");
-					try{
-					noStr = reader.readLine();
-					no = Integer.parseInt(noStr);
-					}catch(Exception e){
+				do {
+					System.out
+							.println("Please enter the number of predators (1,2,3 or 4)");
+					try {
+						noStr = reader.readLine();
+						no = Integer.parseInt(noStr);
+					} catch (Exception e) {
 						System.err.println("1,2,3 or 4");
 					}
-					
-				}while(no<1 || no>=5);
+
+				} while (no < 1 || no >= 5);
 				MultiAgentSimulation.runSimulation(no);
+
+			} else if (choiceInt == 10) {
+
 			}
-			else if (choiceInt ==10){
-				MultiAgentQLearning mpe = new MultiAgentQLearning();
-				mpe.run();
-			}
-			
+
 			else if (choiceInt == 11) {
 
 				System.out.println("Oh whyy???!!! :(");

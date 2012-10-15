@@ -108,57 +108,59 @@ public class Environment {
 		return this.worldState.toString();
 	}
 
-	
-	public boolean checkCollision(Vector<Agent> worldState){
-		
-		for(int i=0; i<worldState.size();i++){
-			
-			
-			if(worldState.get(i) instanceof Predator) {
-				
-				for (int j = i+1; j<worldState.size();j++){
-				
-					if(worldState.get(j) instanceof Predator && worldState.get(i).position.
-				equals(worldState.get(j).position))
-				return true;
-				
+	public boolean checkCollision(Vector<Agent> worldState) {
+
+		for (int i = 0; i < worldState.size(); i++) {
+
+			if (worldState.get(i) instanceof Predator) {
+
+				for (int j = i + 1; j < worldState.size(); j++) {
+
+					if (worldState.get(j) instanceof Predator
+							&& worldState.get(i).position.equals(worldState
+									.get(j).position))
+						return true;
+
 				}
-				
+
 			}
-			
-			
+
 		}
-		
+
 		return false;
 	}
-	
-	
-	
-	public boolean checkCaught(Vector<Agent> worldState){
-		
-		for(int i=0;i<worldState.size();i++){
-			
-			if (worldState.get(i) instanceof Prey){
-				
-				for(int j=0;j<worldState.size();j++){
-					
-					if(worldState.get(i).position.equals(worldState.get(j).position) 
+
+	public boolean checkCaughtStaticPrey(Vector<Agent> worldState,
+			Coordinate PreyPos) {
+		for (Agent a : worldState) {
+			if (Coordinate.compareCoordinates(PreyPos, a.position)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean checkCaught(Vector<Agent> worldState) {
+
+		for (int i = 0; i < worldState.size(); i++) {
+
+			if (worldState.get(i) instanceof Prey) {
+
+				for (int j = 0; j < worldState.size(); j++) {
+
+					if (worldState.get(i).position
+							.equals(worldState.get(j).position)
 							&& worldState.get(j) instanceof Predator)
 						return true;
-					
+
 				}
-				
-				
+
 			}
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
-	
-	
-	
-	
+
 }
