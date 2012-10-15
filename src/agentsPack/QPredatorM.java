@@ -126,6 +126,7 @@ public class QPredatorM extends Predator {
 		return mySelf;
 	}
 	public Coordinate IndexToMyPos(int index, int mySelf){
+		mySelf *= 2;
 		Coordinate MyState = new Coordinate(
 				((index % (int) Math.pow(11, mySelf + 1)) / (int) Math
 						.pow(11, mySelf)),
@@ -169,5 +170,13 @@ public class QPredatorM extends Predator {
 
 		}
 	}
-
+	public int UnvisitedStateActions(){
+		int counter = 0;
+		for(int i=0;i<this.qTable.length;i++){
+			for(StateActionPair a:this.qTable[i])
+				if(a.Value == 15.0)
+					counter ++;
+		}	
+		return counter;
+	}
 }

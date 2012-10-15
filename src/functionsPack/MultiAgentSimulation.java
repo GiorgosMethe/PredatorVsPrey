@@ -11,9 +11,7 @@ import agentsPack.QPredatorM;
 import agentsPack.Vector;
 
 public class MultiAgentSimulation {
-	final private static Coordinate[] PredatorPos = { new Coordinate(0, 0),
-			new Coordinate(0, 10), new Coordinate(10, 0),
-			new Coordinate(10, 10) };
+	final private static int[] PredatorPos = { 0, 0, 10, 10, 10, 0, 0, 10 };
 
 	public static void main(String[] args) {
 		MultiRun(3);
@@ -35,7 +33,8 @@ public class MultiAgentSimulation {
 		// env.worldState.add(p);
 		for (int i = 0; i < num; i++) {
 			QPredatorM q = new QPredatorM("Predator" + String.valueOf(i),
-					PredatorPos[i],PredatorPos[i], null, 0.5, 0.7);
+					new Coordinate(0, 0),
+					new Coordinate(0, 0), null, 0.5, 0.7);
 			env.worldState.add(q);
 		}
 		// Table initialization
@@ -47,30 +46,24 @@ public class MultiAgentSimulation {
 		p.initializeQtable(env.worldState);
 		Vector<Agent> oldState = new Vector<Agent>();
 		StateActionPair[] Actions = new StateActionPair[num];
-		for (int episode = 0; episode < 100000; episode++) {
+		for (int episode = 0; episode < 1000000; episode++) {
+			//System.out.println("------------");
 			int j=0;
 			for (Agent a : env.worldState) {
-				if(j == 0){
-					((QPredatorM) a).position.setX(0);
-					((QPredatorM) a).position.setY(0);
-					((QPredatorM) a).old.setX(0);
-					((QPredatorM) a).old.setY(0);
-				}
-				if(j == 1){
-					((QPredatorM) a).position.setX(10);
-					((QPredatorM) a).position.setY(10);
-					((QPredatorM) a).old.setX(10);
-					((QPredatorM) a).old.setY(10);
-				}
-				j++;
+					((QPredatorM) a).position.setX(PredatorPos[j]);
+					((QPredatorM) a).position.setY(PredatorPos[j+1]);
+					((QPredatorM) a).old.setX(PredatorPos[j]);
+					((QPredatorM) a).old.setY(PredatorPos[j+1]);
+				j += 2;
 			}
 			flag = false;
 			do {
 				steps++;
 				for(Agent a : env.worldState){
-					((QPredatorM) a).old = new Coordinate(a.position.getX(), a.position.getY());	
+					((QPredatorM) a).old = new Coordinate(a.position.getX(), a.position.getY());
 				}
-				StateActionPair PreyAction = p.chooseEGreedyAction(0.1, env.worldState);
+				double et = (1-(100000/(episode+1)));
+				StateActionPair PreyAction = p.chooseEGreedyAction(0.9, env.worldState);
 				preyTrap = (Math.random() < 0.2);
 				j=0;
 				for (Agent a : env.worldState) {
@@ -103,9 +96,11 @@ public class MultiAgentSimulation {
 				for(Agent a : env.worldState){
 					((QPredatorM) a).updateQTable(env.worldState, Actions, reward, absorbing);
 				}
-				//p.updateQTable(env.worldState, PreyAction, (-1)*reward, absorbing);
+				p.updateQTable(env.worldState, PreyAction, (-1)*reward, absorbing);
 			} while (!flag);
-			//System.out.println("steps = "+steps);
+		}
+		for (Agent a : env.worldState) {
+			System.out.println("agent"+a.name+" univisited state action pairs:"+((QPredatorM) a).UnvisitedStateActions());
 		}
 		System.out.println("collisions:"+collision);
 		System.out.println("caught:"+caught);
