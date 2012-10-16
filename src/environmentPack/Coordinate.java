@@ -1,6 +1,6 @@
 package environmentPack;
 
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate> {
 
 	protected int divisor, x, y;
 
@@ -118,4 +118,20 @@ public class Coordinate {
 		return "<" + this.x + "," + this.y + ">";
 	}
 
+	@Override
+	public int compareTo(Coordinate that) {
+		if (this.getX() > that.getX()) {
+			return 1;
+		}
+		else if (this.getX() < that.getX()) {
+			return -1;
+		}
+		else if (this.getY() > that.getY()) {
+			return 1;
+		}
+		else if (this.getY() < that.getY()) {
+			return -1;
+		}
+		return 0;
+	}
 }
