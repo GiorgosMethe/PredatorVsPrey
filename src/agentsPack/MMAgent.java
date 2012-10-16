@@ -1,10 +1,15 @@
 package agentsPack;
 
+import java.util.Map;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
 import actionPack.MMStateActionPair;
+import actionPack.RandomAction;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
-public class MMPredator extends Predator {
+public class MMAgent extends Agent {
 
 	private Vector<MMStateActionPair> qTable[];
 	private Vector<StateActionPair> piTable[];
@@ -13,7 +18,7 @@ public class MMPredator extends Predator {
 	private double gamma;
 	public Coordinate old;
 
-	public MMPredator(String name, Coordinate p, Coordinate old, Policy pi,
+	public MMAgent(String name, Coordinate p, Coordinate old, Policy pi,
 			double alpha, double gamma) {
 		super(name, p, pi);
 		this.alpha = alpha;
@@ -21,6 +26,61 @@ public class MMPredator extends Predator {
 		this.old = old;
 
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public Integer stateIndex(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector<Agent> typicalState(int stateIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double reward(Vector<Agent> currState, Vector<Agent> nextState,
+			Coordinate action) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Coordinate doAction(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -32,6 +92,7 @@ public class MMPredator extends Predator {
 		this.vTable = new double[QtableSize];
 		// find my position on the world state vector
 		int mySelf = WhoAmI(worldstate);
+		System.out.println("eimai to pred "+mySelf);
 		for (int i = 0; i < this.qTable.length; i++) {
 			// add my actions in this state
 			// my position is given through the following:
@@ -63,7 +124,7 @@ public class MMPredator extends Predator {
 			this.qTable[i] = new Vector<MMStateActionPair>();
 			for(StateActionPair Aa : this.piTable[i]){
 				for(StateActionPair oAa : TempOtherAgentActions){
-					this.qTable[i].add(new MMStateActionPair(Aa.Action, oAa.Action, 1.0, j++));
+					this.qTable[i].add(new MMStateActionPair(Aa, oAa, 1.0, j++));
 				}
 			}	
 		}
@@ -110,22 +171,19 @@ public class MMPredator extends Predator {
 		int index = 0;
 		int power = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			index += (((MMPredator) worldState.get(j)).old.getX())
+			index += (((MMAgent) worldState.get(j)).old.getX())
 					* Math.pow(11, power++)
-					+ (((MMPredator) worldState.get(j)).old.getY())
+					+ (((MMAgent) worldState.get(j)).old.getY())
 					* Math.pow(11, power++);
 		}
 		return index;
 	}
 	
 	public int WhoAmI(Vector<Agent> worldState) {
-		int jj = -1;
 		int mySelf = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			if (worldState.elementAt(j) instanceof MMPredator)
-				jj++;
 			if (this == worldState.elementAt(j)) {
-				mySelf = jj;
+				mySelf = j;
 				break;
 			}
 		}
@@ -139,5 +197,17 @@ public class MMPredator extends Predator {
 				((index % (int) Math.pow(11, mySelf + 2)) / (int) Math.pow(11,
 						mySelf + 1)));
 		return MyState;
+	}
+	
+	public void UpdateMiniMax(Vector<Agent> worldState, StateActionPair myAction, StateActionPair otherAgentAction, double reward){
+		
+		int oldIndex = OldStateToIndex(worldState);
+		for(int i=0;i<this.qTable[oldIndex].size();i++){
+			if(this.qTable[oldIndex].elementAt(i).myAction.id == myAction.id){
+				if(this.qTable[oldIndex].elementAt(i).otherAction.id == otherAgentAction.id){
+					
+				}
+			}
+		}
 	}
 }

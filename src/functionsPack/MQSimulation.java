@@ -44,12 +44,8 @@ public class MQSimulation {
 		p.initializeQtable(env.worldState);
 		StateActionPair[] Actions = new StateActionPair[num];
 		for (int episode = 0; episode < 1000000; episode++) {
-			
-			System.out.println(episode);
-			
+					
 			int steps =0;
-			
-			
 			// System.out.println("------------");
 			int j = 0;
 			for (Agent a : env.worldState) {
