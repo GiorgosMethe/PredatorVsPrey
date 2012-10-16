@@ -8,6 +8,8 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
+import functionsPack.MQSimulation;
+import functionsPack.MultiAgentSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
@@ -39,18 +41,20 @@ public class Main {
 			System.out.println("6. Sarsa-Learning");
 			System.out.println("7. On-policy Monte Carlo learning");
 			System.out.println("8. Off-policy Monte Carlo learning");
-			System.out.println("9. Exit");
+			System.out.println("9. Multi Agent Random");
+			System.out.println("10. Multi Agent Q-Learning");
+			System.out.println("11. Exit");
 
 			String choice = null;
 			do {
-				System.out.print("\nGive your choice (1-9):");
+				System.out.print("\nGive your choice (1-11):");
 				try {
 					choice = reader.readLine();
 					choiceInt = Integer.parseInt(choice);
 				} catch (Exception e) {
 
 				}
-			} while (choiceInt < 1 || choiceInt > 10);
+			} while (choiceInt < 1 || choiceInt > 12);
 
 			if (choiceInt == 1) {
 
@@ -418,6 +422,43 @@ public class Main {
 				MCoffPredator.RunMonteCarloLearning(number, gamma, "e", 0.2);
 
 			} else if (choiceInt == 9) {
+				int no = 999;
+				String noStr = null;
+				do {
+					System.out
+							.println("Please enter the number of predators (1,2,3 or 4)");
+					try {
+						noStr = reader.readLine();
+						no = Integer.parseInt(noStr);
+					} catch (Exception e) {
+						System.err.println("1,2,3 or 4");
+					}
+
+				} while (no < 1 || no >= 5);
+				MultiAgentSimulation.runSimulation(no);
+
+			} else if (choiceInt == 10) {
+				int no = 999;
+			String noStr = null;
+			do {
+				System.out
+						.println("Please enter the number of predators (1,2 or 3)");
+				try {
+					noStr = reader.readLine();
+					no = Integer.parseInt(noStr);
+				} catch (Exception e) {
+					System.err.println("1,2 or 3");
+				}
+
+			} while (no < 1 || no >= 4);
+				
+				MQSimulation mq = new MQSimulation();
+				
+				mq.MultiRun(no);
+				
+			}
+
+			else if (choiceInt == 11) {
 
 				System.out.println("Oh whyy???!!! :(");
 
