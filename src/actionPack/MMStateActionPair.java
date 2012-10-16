@@ -1,6 +1,5 @@
 package actionPack;
 
-import environmentPack.Coordinate;
 
 public class MMStateActionPair {
 

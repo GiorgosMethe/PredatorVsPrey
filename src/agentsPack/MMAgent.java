@@ -1,8 +1,16 @@
 package agentsPack;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+import org.apache.commons.math.optimization.GoalType;
+import org.apache.commons.math.optimization.OptimizationException;
+import org.apache.commons.math.optimization.RealPointValuePair;
+import org.apache.commons.math.optimization.linear.LinearConstraint;
+import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
+import org.apache.commons.math.optimization.linear.Relationship;
+import org.apache.commons.math.optimization.linear.SimplexSolver;
 
 import actionPack.MMStateActionPair;
 import actionPack.RandomAction;
@@ -214,6 +222,7 @@ public class MMAgent extends Agent {
 			StateActionPair myAction, StateActionPair otherAgentAction,
 			double reward) {
 
+
 		int oldStateIndex = OldStateToIndex(worldState);
 		int newStateIndex = StateToIndex(worldState);
 		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
@@ -227,5 +236,40 @@ public class MMAgent extends Agent {
 				}
 			}
 		}
+		
+		double[] min = new double[] { 1.2, 0.4, 1.7, 0.2, 0.7 };
+		for (int i = 0; i < this.qTable[newStateIndex].size(); i++) {
+			
+		}
+
+		LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] { min[0], min[1], min[2], min[3], min[4] }, 0);
+		Collection<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
+		constraints.add(new LinearConstraint(new double[] { 1, 1, 1, 1, 1 }, Relationship.LEQ, 1));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 1 }, Relationship.GEQ, 0.0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 1, 0 }, Relationship.GEQ, 0.0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 0, 0 }, Relationship.GEQ, 0.0));
+		constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 0, 0 }, Relationship.GEQ, 0.0));
+		constraints.add(new LinearConstraint(new double[] { 1, 0, 0, 0, 0 }, Relationship.GEQ, 0.0));
+		
+		LinearObjectiveFunction f1 = new LinearObjectiveFunction(new double[] { 1, 1, 1, 1, 1 }, 0);
+		// create and run the solver
+		RealPointValuePair solution = null;
+		try {
+			solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, false);
+		} catch (OptimizationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// get the solution
+		double[] max1 = solution.getPoint();
+		double max = solution.getValue();
+		System.out.println(max1[0]);
+		System.out.println(max1[1]);
+		System.out.println(max1[2]);
+		System.out.println(max1[3]);
+		System.out.println(max1[4]);
+		
+		
+		
 	}
 }

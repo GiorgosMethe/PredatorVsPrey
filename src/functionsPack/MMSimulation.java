@@ -1,20 +1,26 @@
 package functionsPack;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+
+import org.apache.commons.math.optimization.GoalType;
+import org.apache.commons.math.optimization.OptimizationException;
+import org.apache.commons.math.optimization.RealPointValuePair;
+import org.apache.commons.math.optimization.linear.LinearConstraint;
+import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
+import org.apache.commons.math.optimization.linear.Relationship;
+import org.apache.commons.math.optimization.linear.SimplexSolver;
+import actionPack.StateActionPair;
+import agentsPack.MMAgent;
 import environmentPack.Coordinate;
 import environmentPack.Environment;
-import actionPack.StateActionPair;
-import agentsPack.Agent;
-import agentsPack.MMAgent;
-import agentsPack.MQPredator;
-import agentsPack.MQPrey;
-import agentsPack.Vector;
 
 public class MMSimulation {
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] Args) {
-
 		RunMiniMaxQlearning();
-
 	}
 
 	public static void RunMiniMaxQlearning() {
