@@ -19,8 +19,28 @@ import environmentPack.Environment;
 public class MMSimulation {
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static void main(String[] Args) {
-		RunMiniMaxQlearning();
+	public static void main(String[] Args) throws OptimizationException {
+		
+		
+		double[] min =new double[3];
+		
+		
+		LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] {1, 1, 1}, 0);
+		Collection<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
+		constraints.add(new LinearConstraint(new double[] { 1, 1, 1}, Relationship.EQ, 1));
+		constraints.add(new LinearConstraint(new double[] { 1, 0, 0}, Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 1, 0}, Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 1}, Relationship.GEQ, 0));
+
+		// create and run the solver
+		RealPointValuePair solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, false);
+		// get the solution
+		double[] max1 = solution.getPoint();
+		double max = solution.getValue();
+		System.out.println(max1[0]);
+		System.out.println(max1[1]);
+		System.out.println(max1[2]);
+
 	}
 
 	public static void RunMiniMaxQlearning() {
