@@ -116,6 +116,9 @@ As we can see in the table above, adding more predators to this particular imple
 
 \section*{Exercise 2}
 
+In the second exercise, we made both prey and predators "smarter" by implementing the Q-Learning algorithm on both agent types. That means that all the agents save and use a Q(s,a) table, from which they choose the next action using $\epsilon$-greedy action selection.
+
+The predators will now learn to move towards the prey but the prey will also learn to avoid getting close to where the predators are. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a chance to catch it. If this probability was not taken into consideration, the prey would always run away from the predators.
 
 
 \end{document}

@@ -8,6 +8,7 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
+import functionsPack.MQSimulation;
 import functionsPack.MultiAgentSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
@@ -437,7 +438,24 @@ public class Main {
 				MultiAgentSimulation.runSimulation(no);
 
 			} else if (choiceInt == 10) {
+				int no = 999;
+			String noStr = null;
+			do {
+				System.out
+						.println("Please enter the number of predators (1,2 or 3)");
+				try {
+					noStr = reader.readLine();
+					no = Integer.parseInt(noStr);
+				} catch (Exception e) {
+					System.err.println("1,2 or 3");
+				}
 
+			} while (no < 1 || no >= 4);
+				
+				MQSimulation mq = new MQSimulation();
+				
+				mq.MultiRun(no);
+				
 			}
 
 			else if (choiceInt == 11) {

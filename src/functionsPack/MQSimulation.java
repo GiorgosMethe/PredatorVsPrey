@@ -1,5 +1,8 @@
 package functionsPack;
 
+import java.io.IOException;
+
+import matPack.MatFileGenerator;
 import actionPack.StateActionPair;
 import agentsPack.Agent;
 import agentsPack.MQPredator;
@@ -10,19 +13,18 @@ import environmentPack.Environment;
 public class MQSimulation {
 	final private static int[] PredatorPos = { 0, 0, 10, 10, 10, 0, 0, 10 };
 
-	public static void main(String[] args) {
-		MultiRun(2);
-	}
-
+	
 	public static void MultiRun(int num) {
 
+		double[] output = new double[1000000];
+		
 		boolean flag = false;
 		boolean preyTrap = false;
 		boolean absorbing = false;
 		double reward = 0.0;
 		int caught = 0;
 		int collision = 0;
-		int steps = 0;
+		int sumsteps = 0;
 		Coordinate PreyPos = new Coordinate(5, 5);
 		// Table initialization
 		Environment env = new Environment();
@@ -41,7 +43,13 @@ public class MQSimulation {
 		// for the prey
 		p.initializeQtable(env.worldState);
 		StateActionPair[] Actions = new StateActionPair[num];
-		for (int episode = 0; episode < 100000; episode++) {
+		for (int episode = 0; episode < 1000000; episode++) {
+			
+			System.out.println(episode);
+			
+			int steps =0;
+			
+			
 			// System.out.println("------------");
 			int j = 0;
 			for (Agent a : env.worldState) {
@@ -54,6 +62,7 @@ public class MQSimulation {
 			flag = false;
 			do {
 				steps++;
+			
 				for (Agent a : env.worldState) {
 					((MQPredator) a).old = new Coordinate(a.position.getX(),
 							a.position.getY());
@@ -83,11 +92,13 @@ public class MQSimulation {
 				if (env.checkCollision(env.worldState)) {
 					reward = -10.0;
 					collision++;
+					output[episode] = -steps;
 					absorbing = true;
 					flag = true;
 				}
 				if (!flag && env.checkCaughtStaticPrey(env.worldState, PreyPos)) {
 					caught++;
+					output[episode] = steps;
 					reward = 10.0;
 					absorbing = true;
 					flag = true;
@@ -98,7 +109,11 @@ public class MQSimulation {
 				}
 				p.updateQTable(env.worldState, PreyAction, (-1) * reward,
 						absorbing);
+				
+				
+
 			} while (!flag);
+			sumsteps +=steps;
 		}
 		for (Agent a : env.worldState) {
 			System.out.println("agent" + a.name
@@ -107,7 +122,16 @@ public class MQSimulation {
 		}
 		System.out.println("collisions:" + collision);
 		System.out.println("caught:" + caught);
-		System.out.println("avg steps:" + (steps / 100000));
+		System.out.println("avg steps:" + (sumsteps / 1000000));
 
+		
+		
+		try {
+			MatFileGenerator.write(output,"MultiAgentQ"+ "_"+ String.valueOf(num));
+			System.out.println("Mat file created");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
