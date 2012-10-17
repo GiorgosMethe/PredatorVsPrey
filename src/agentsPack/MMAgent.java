@@ -235,36 +235,33 @@ public class MMAgent extends Agent {
 				}
 			}
 		}
-
-		double[] min = new double[] { Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
-				Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY };
-		for (int i = 0; i < this.qTable[newStateIndex].size(); i++) {
-			if(this.qTable[newStateIndex].elementAt(i).myAction.Value < min[this.qTable[newStateIndex].elementAt(i).myAction.id]){
-				
-			}
-
-		}
-
 		LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] {
-				min[0], min[1], min[2], min[3], min[4] }, 0);
+				1, 0, 0, 0, 0, 0 }, 0);
 		Collection<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
-		constraints.add(new LinearConstraint(new double[] { 1, 1, 1, 1, 1 },
-				Relationship.LEQ, 1));
-		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 1 },
-				Relationship.GEQ, 0.0));
-		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 1, 0 },
-				Relationship.GEQ, 0.0));
-		constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 0, 0 },
-				Relationship.GEQ, 0.0));
-		constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 0, 0 },
-				Relationship.GEQ, 0.0));
-		constraints.add(new LinearConstraint(new double[] { 1, 0, 0, 0, 0 },
-				Relationship.GEQ, 0.0));
-
-		LinearObjectiveFunction f1 = new LinearObjectiveFunction(new double[] {
-				1, 1, 1, 1, 1 }, 0);
-		// create and run the solver
+		constraints.add(new LinearConstraint(new double[] { 0, 1, 1, 1, 1, 1 },
+				Relationship.EQ, 1));
+		constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 0, 0, 0 },
+				Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 0, 0, 0 },
+				Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 1, 0, 0 },
+				Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 1, 0 },
+				Relationship.GEQ, 0));
+		constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 0, 1 },
+				Relationship.GEQ, 0));
+		// Action
+		double[][] AV = new double[5][5];
+		for (int i = 0; i < this.qTable[newStateIndex].size(); i++) {
+			AV[this.qTable[newStateIndex].elementAt(i).myAction.id - 1][this.qTable[newStateIndex]
+					.elementAt(i).otherAction.id - 1] = this.qTable[newStateIndex]
+					.elementAt(i).Value;
+		}
+		for(int j = 0; j< 5; j++){
+			constraints.add(new LinearConstraint(new double[] { 1, -1*AV[0][j], -1*AV[1][j], -1*AV[2][j], -1*AV[3][j],
+					-1*AV[4][j] }, Relationship.LEQ, 0));
+		}
+		
 		RealPointValuePair solution = null;
 		try {
 			solution = new SimplexSolver().optimize(f, constraints,
@@ -274,7 +271,11 @@ public class MMAgent extends Agent {
 			e.printStackTrace();
 		}
 		// get the solution
-		double[] max1 = solution.getPoint();
+		double[] max = solution.getPoint();
+		for(int i=0;i<this.piTable[newStateIndex].size();i++){
+			this.piTable[newStateIndex].elementAt(i).Value = max[this.piTable[newStateIndex].elementAt(i).id];
+		}
+
 
 	}
 }
