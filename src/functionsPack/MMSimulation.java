@@ -8,7 +8,6 @@ import environmentPack.Environment;
 public class MMSimulation {
 
 	public static void main(String[] Args) {
-
 		RunMiniMaxQlearning();
 	}
 
@@ -23,7 +22,7 @@ public class MMSimulation {
 		Predator.initializeQtable(env.worldState);
 		Prey.initializeQtable(env.worldState);
 		int steps = 0;
-		int numiter = 100000;
+		int numiter = 1000;
 		for (int episode = 0; episode < numiter; episode++) {
 			Prey.old.setX(5);
 			Prey.old.setY(5);
@@ -61,8 +60,8 @@ public class MMSimulation {
 				}
 				Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction,
 						reward);
-				Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -1
-						* reward);
+//				Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -1
+//						* reward);
 
 			} while (!Flag);
 

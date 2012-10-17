@@ -279,19 +279,7 @@ public class MMAgent extends Agent {
 					.elementAt(i).id];
 		}
 
-		double min = Double.POSITIVE_INFINITY;
-		for (int j = 1; j < 6; j++) {
-			double sum = 0;
-			for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
-				if (this.qTable[oldStateIndex].elementAt(i).otherAction.id == j) {
-					sum += this.qTable[oldStateIndex].elementAt(i).Value;
-				}
-			}
-			if (sum < min) {
-				min = sum;
-			}
-		}
-		this.vTable[oldStateIndex] = min;
+		this.vTable[oldStateIndex] = max[0];
 
 		this.alpha = alpha * 0.99;
 
