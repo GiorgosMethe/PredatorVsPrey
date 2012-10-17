@@ -1,16 +1,5 @@
 package functionsPack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-
-import org.apache.commons.math.optimization.GoalType;
-import org.apache.commons.math.optimization.OptimizationException;
-import org.apache.commons.math.optimization.RealPointValuePair;
-import org.apache.commons.math.optimization.linear.LinearConstraint;
-import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
-import org.apache.commons.math.optimization.linear.Relationship;
-import org.apache.commons.math.optimization.linear.SimplexSolver;
 import actionPack.StateActionPair;
 import agentsPack.MMAgent;
 import environmentPack.Coordinate;
@@ -18,8 +7,7 @@ import environmentPack.Environment;
 
 public class MMSimulation {
 
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static void main(String[] Args) throws OptimizationException {
+	public static void main(String[] Args) {
 
 		RunMiniMaxQlearning();
 	}
@@ -28,14 +16,15 @@ public class MMSimulation {
 		Environment env = new Environment();
 		MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
 				new Coordinate(0, 0), null, 0.5, 0.7);
-		MMAgent Prey = new MMAgent("", new Coordinate(5, 5),
-				new Coordinate(5, 5), null, 0.5, 0.7);
+		MMAgent Prey = new MMAgent("", new Coordinate(5, 5), new Coordinate(5,
+				5), null, 0.5, 0.7);
 		env.worldState.add(Predator);
 		env.worldState.add(Prey);
 		Predator.initializeQtable(env.worldState);
 		Prey.initializeQtable(env.worldState);
-
-		for (int episode = 0; episode < 100; episode++) {
+		int steps = 0;
+		int numiter = 100000;
+		for (int episode = 0; episode < numiter; episode++) {
 			Prey.old.setX(5);
 			Prey.old.setY(5);
 			Prey.position.setX(5);
@@ -44,11 +33,10 @@ public class MMSimulation {
 			Predator.old.setY(0);
 			Predator.position.setX(0);
 			Predator.position.setY(0);
-			
-			int steps=0;
+
 			double reward = 0.0;
 			boolean Flag = false;
-			do{
+			do {
 				steps++;
 				StateActionPair PreyAction = Prey.ChooseAction(env.worldState,
 						0.1);
@@ -67,18 +55,19 @@ public class MMSimulation {
 
 				if (Coordinate.compareCoordinates(Prey.position,
 						Predator.position)) {
-					System.out.println(steps);
+					// System.out.println(steps);
 					reward = 10.0;
 					Flag = true;
 				}
-				Predator.UpdateMiniMax(env.worldState,PredAction,PreyAction,reward);
-				
-				
-				
-				
-			}while(!Flag);
+				Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction,
+						reward);
+				Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -1
+						* reward);
+
+			} while (!Flag);
 
 		}
+		System.out.println(steps / numiter);
 	}
 
 }

@@ -27,15 +27,16 @@ public class Vector<T> extends java.util.Vector<T> {
 	public Vector(int initialCapacity, int capacityIncrement) {
 		super(initialCapacity, capacityIncrement);
 	}
-	
+
 	public int stateIndex(int observerIndex) {
 		if (!(this.get(0) instanceof Agent)) {
-			throw new RuntimeException("This method only works on vectors of agents. Sorry for the bad place.");
+			throw new RuntimeException(
+					"This method only works on vectors of agents. Sorry for the bad place.");
 		}
 		int preyIndex = -1;
 		Vector<Coordinate> reordered = new Vector<Coordinate>(this.size());
 		for (int i = 0; i < this.size(); i++) {
-			if (this.get(i) instanceof Prey) { 
+			if (this.get(i) instanceof Prey) {
 				preyIndex = i;
 				break;
 			}
@@ -51,9 +52,10 @@ public class Vector<T> extends java.util.Vector<T> {
 			reordered.add(((Agent) this.get(observerIndex)).position);
 		}
 		reordered.add(((Agent) this.get(preyIndex)).position);
-		//Collections.reverse(reordered);
-		// we actually should do this (this is how we at first describe this state space), but that requires more runtime...
-		return reordered.hashCode(); 
+		// Collections.reverse(reordered);
+		// we actually should do this (this is how we at first describe this
+		// state space), but that requires more runtime...
+		return reordered.hashCode();
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package actionPack;
 
-
 public class MMStateActionPair {
 
 	public StateActionPair myAction;

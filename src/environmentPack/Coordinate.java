@@ -122,14 +122,11 @@ public class Coordinate implements Comparable<Coordinate> {
 	public int compareTo(Coordinate that) {
 		if (this.getX() > that.getX()) {
 			return 1;
-		}
-		else if (this.getX() < that.getX()) {
+		} else if (this.getX() < that.getX()) {
 			return -1;
-		}
-		else if (this.getY() > that.getY()) {
+		} else if (this.getY() > that.getY()) {
 			return 1;
-		}
-		else if (this.getY() < that.getY()) {
+		} else if (this.getY() < that.getY()) {
 			return -1;
 		}
 		return 0;

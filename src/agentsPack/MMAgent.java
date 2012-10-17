@@ -17,6 +17,7 @@ import actionPack.RandomAction;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
+@SuppressWarnings("deprecation")
 public class MMAgent extends Agent {
 
 	private Vector<MMStateActionPair> qTable[];
@@ -252,16 +253,17 @@ public class MMAgent extends Agent {
 				Relationship.GEQ, 0));
 		// Action
 		double[][] AV = new double[5][5];
-		for (int i = 0; i < this.qTable[newStateIndex].size(); i++) {
-			AV[this.qTable[newStateIndex].elementAt(i).myAction.id - 1][this.qTable[newStateIndex]
-					.elementAt(i).otherAction.id - 1] = this.qTable[newStateIndex]
+		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
+			AV[this.qTable[oldStateIndex].elementAt(i).myAction.id - 1][this.qTable[oldStateIndex]
+					.elementAt(i).otherAction.id - 1] = this.qTable[oldStateIndex]
 					.elementAt(i).Value;
 		}
-		for(int j = 0; j< 5; j++){
-			constraints.add(new LinearConstraint(new double[] { 1, -1*AV[0][j], -1*AV[1][j], -1*AV[2][j], -1*AV[3][j],
-					-1*AV[4][j] }, Relationship.LEQ, 0));
+		for (int j = 0; j < 5; j++) {
+			constraints.add(new LinearConstraint(new double[] { 1,
+					-1 * AV[0][j], -1 * AV[1][j], -1 * AV[2][j], -1 * AV[3][j],
+					-1 * AV[4][j] }, Relationship.LEQ, 0));
 		}
-		
+
 		RealPointValuePair solution = null;
 		try {
 			solution = new SimplexSolver().optimize(f, constraints,
@@ -272,10 +274,26 @@ public class MMAgent extends Agent {
 		}
 		// get the solution
 		double[] max = solution.getPoint();
-		for(int i=0;i<this.piTable[newStateIndex].size();i++){
-			this.piTable[newStateIndex].elementAt(i).Value = max[this.piTable[newStateIndex].elementAt(i).id];
+		for (int i = 0; i < this.piTable[oldStateIndex].size(); i++) {
+			this.piTable[oldStateIndex].elementAt(i).Value = max[this.piTable[oldStateIndex]
+					.elementAt(i).id];
 		}
 
+		double min = Double.POSITIVE_INFINITY;
+		for (int j = 1; j < 6; j++) {
+			double sum = 0;
+			for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
+				if (this.qTable[oldStateIndex].elementAt(i).otherAction.id == j) {
+					sum += this.qTable[oldStateIndex].elementAt(i).Value;
+				}
+			}
+			if (sum < min) {
+				min = sum;
+			}
+		}
+		this.vTable[oldStateIndex] = min;
+
+		this.alpha = alpha * 0.99;
 
 	}
 }

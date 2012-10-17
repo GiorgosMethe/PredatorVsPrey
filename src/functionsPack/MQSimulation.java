@@ -13,11 +13,10 @@ import environmentPack.Environment;
 public class MQSimulation {
 	final private static int[] PredatorPos = { 0, 0, 10, 10, 10, 0, 0, 10 };
 
-	
 	public static void MultiRun(int num) {
 
 		double[] output = new double[1000000];
-		
+
 		boolean flag = false;
 		boolean preyTrap = false;
 		boolean absorbing = false;
@@ -44,8 +43,8 @@ public class MQSimulation {
 		p.initializeQtable(env.worldState);
 		StateActionPair[] Actions = new StateActionPair[num];
 		for (int episode = 0; episode < 1000000; episode++) {
-					
-			int steps =0;
+
+			int steps = 0;
 			// System.out.println("------------");
 			int j = 0;
 			for (Agent a : env.worldState) {
@@ -58,7 +57,7 @@ public class MQSimulation {
 			flag = false;
 			do {
 				steps++;
-			
+
 				for (Agent a : env.worldState) {
 					((MQPredator) a).old = new Coordinate(a.position.getX(),
 							a.position.getY());
@@ -105,11 +104,9 @@ public class MQSimulation {
 				}
 				p.updateQTable(env.worldState, PreyAction, (-1) * reward,
 						absorbing);
-				
-				
 
 			} while (!flag);
-			sumsteps +=steps;
+			sumsteps += steps;
 		}
 		for (Agent a : env.worldState) {
 			System.out.println("agent" + a.name
@@ -120,10 +117,9 @@ public class MQSimulation {
 		System.out.println("caught:" + caught);
 		System.out.println("avg steps:" + (sumsteps / 1000000));
 
-		
-		
 		try {
-			MatFileGenerator.write(output,"MultiAgentQ"+ "_"+ String.valueOf(num));
+			MatFileGenerator.write(output,
+					"MultiAgentQ" + "_" + String.valueOf(num));
 			System.out.println("Mat file created");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
