@@ -1,16 +1,6 @@
 package functionsPack;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.apache.commons.math.optimization.GoalType;
-import org.apache.commons.math.optimization.OptimizationException;
-import org.apache.commons.math.optimization.RealPointValuePair;
-import org.apache.commons.math.optimization.linear.LinearConstraint;
-import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
-import org.apache.commons.math.optimization.linear.Relationship;
-import org.apache.commons.math.optimization.linear.SimplexSolver;
 
 import matPack.MatFileGenerator;
 import actionPack.StateActionPair;
@@ -27,21 +17,20 @@ public class MMSimulation {
 
 	public static void RunMiniMaxQlearning() {
 
-		
-		int numiter = 15000;
-		double[][] output = new double[numiter][50];
-		for(int iterA=0;iterA<50;iterA++){
-		Environment env = new Environment();
-		MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
-				new Coordinate(0, 0), null, 0.5, 0.7);
-		MMAgent Prey = new MMAgent("", new Coordinate(5, 5), new Coordinate(5,
-				5), null, 0.5, 0.7);
-		env.worldState.add(Predator);
-		env.worldState.add(Prey);
-
-
+		int numKati = 3;
+		int numiter = 1000;
+		double[][] output = new double[numiter][numKati];
+		for(int iterA=0;iterA<numKati;iterA++){
+			Environment env = new Environment();
+			MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
+					new Coordinate(0, 0), null, 0.5, 0.7);
+			MMAgent Prey = new MMAgent("", new Coordinate(5, 5), new Coordinate(5,
+					5), null, 0.5, 0.7);
+			env.worldState.add(Predator);
+			env.worldState.add(Prey);
 			Predator.initializeQtable(env.worldState);
 			Prey.initializeQtable(env.worldState);
+
 			int steps = 0;
 			for (int episode = 0; episode < numiter; episode++) {
 				Prey.old.setX(5);
@@ -63,7 +52,7 @@ public class MMSimulation {
 							env.worldState, 0.1);
 					Prey.old.setX(Prey.position.getX());
 					Prey.old.setY(Prey.position.getY());	
-					if (Math.random() < 0.2) {
+					if (Math.random() < 0.5) {
 						Prey.position.setX(PreyAction.Action.getX());
 						Prey.position.setY(PreyAction.Action.getY());
 					}
@@ -82,29 +71,31 @@ public class MMSimulation {
 
 					Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction,
 							reward,false );
-					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, reward,false);
+					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -1*reward,false);
 
+					
+					
 				} while (!Flag);
 
 			}
 
 		}
-		double[] kati = new double[numiter];
-		for(int i=0;i<numiter;i++){
-			int sum=0;
-			for(int j=0;j<50;j++){
-				sum+=output[i][j];
-			}
-			kati[i] = sum/50;
-		}
-		try {
-			MatFileGenerator.write(kati,
-					"MultiAgentMiniMaxQ");
-			System.out.println("Mat file created");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				double[] kati = new double[numiter];
+				for(int i=0;i<numiter;i++){
+					int sum=0;
+					for(int j=0;j<numKati;j++){
+						sum+=output[i][j];
+					}
+					kati[i] = sum/numKati;
+				}
+				try {
+					MatFileGenerator.write(kati,
+							"MultiAgentMiniMaxQ");
+					System.out.println("Mat file created");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	}
 
 }
