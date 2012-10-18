@@ -23,23 +23,32 @@ public class WolfSimulation {
 		WolfAgent Predator = new WolfAgent("", new Coordinate(0, 0),
 				new Coordinate(0, 0), null, 0.5, 0.7, 0.1, 0.2);
 		WolfAgent Prey = new WolfAgent("", new Coordinate(5, 5), new Coordinate(5,
-				5), null, 0.5, 0.7, 0.1, 0.2);
+				5), null, 0.5, 0.7, 0.5, 0.1);
 		env.worldState.add(Predator);
 		env.worldState.add(Prey);
 		Predator.initialize(env.worldState);
 		Prey.initialize(env.worldState);
 
-
+		for(int iteration=0;iteration<10000;iteration++){
+			Prey.old.setX(5);
+			Prey.old.setY(5);
+			Prey.position.setX(5);
+			Prey.position.setY(5);
+			Predator.old.setX(0);
+			Predator.old.setY(0);
+			Predator.position.setX(0);
+			Predator.position.setY(0);
 		double reward = 0.0;
 		boolean Flag = false;
 		int steps = 0;
 		do {
+
 			steps++;
 			StateActionPair PreyAction = Prey.chooseAction(env.worldState);
 			StateActionPair PredAction = Predator.chooseAction(env.worldState);
 			Prey.old.setX(Prey.position.getX());
 			Prey.old.setY(Prey.position.getY());	
-			if (Math.random() < 0.2) {
+			if (Math.random() < 0.8) {
 				Prey.position.setX(PreyAction.Action.getX());
 				Prey.position.setY(PreyAction.Action.getY());
 			}
@@ -56,10 +65,12 @@ public class WolfSimulation {
 			}
 
 			Predator.updateWolf(env.worldState, PredAction, reward, Flag );
+			//Prey.updateWolf(env.worldState, PredAction, -reward, Flag );
 
 
 		} while (!Flag);
 
+		}
 	}
 
 }

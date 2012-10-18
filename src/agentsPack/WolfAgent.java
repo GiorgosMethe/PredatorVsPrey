@@ -14,17 +14,17 @@ public class WolfAgent extends Agent {
 	private Vector<StateActionPair> piaTable[];
 	private double alpha;
 	private double gamma;
-	private double deltaSmall, deltaLarge;
+	private double deltaLose, deltaWin, delta;
 	public Coordinate old;
 
 	public WolfAgent(String name, Coordinate p, Coordinate old, Policy pi,
-			double alpha, double gamma, double deltaSmall, double deltaLarge) {
+			double alpha, double gamma, double deltaLose, double deltaWin) {
 		super(name, p, pi);
 		this.alpha = alpha;
 		this.gamma = gamma;
 		this.old = old;
-		this.deltaLarge = deltaLarge;
-		this.deltaSmall = deltaSmall;
+		this.deltaWin = deltaWin;
+		this.deltaLose = deltaLose;
 
 		// TODO Auto-generated constructor stub
 	}
@@ -32,6 +32,7 @@ public class WolfAgent extends Agent {
 	@SuppressWarnings("unchecked")
 	public void initialize(Vector<Agent> worldstate) {
 
+		this.delta = this.deltaLose;
 		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
 		this.qTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
 		this.cTable = (long[]) new long[QtableSize];
@@ -77,12 +78,17 @@ public class WolfAgent extends Agent {
 	public StateActionPair chooseAction(Vector<Agent> worldstate) {
 		double rand = Math.random();
 		double counter = new Double(
-				piTable[StateToIndex(worldstate)].elementAt(0).Value);
-		for (int ii = 0; ii < piTable[StateToIndex(worldstate)].size(); ii++) {
+				this.piTable[StateToIndex(worldstate)].elementAt(0).Value);
+		for (int ii = 0; ii < this.piTable[StateToIndex(worldstate)].size(); ii++) {
 			if (counter >= rand) {
-				return piTable[StateToIndex(worldstate)].elementAt(ii);
+				return this.piTable[StateToIndex(worldstate)].elementAt(ii);
 			}
-			counter += piTable[StateToIndex(worldstate)].elementAt(ii + 1).Value;
+			if(ii > 3){
+				for (int jj = 0; jj < this.piTable[StateToIndex(worldstate)].size(); jj++) {
+					System.out.println("fuck" + this.piTable[StateToIndex(worldstate)].elementAt(jj).Value);
+				}
+			}
+			counter += this.piTable[StateToIndex(worldstate)].elementAt(ii + 1).Value;
 		}
 		return null;
 	}
@@ -103,9 +109,9 @@ public class WolfAgent extends Agent {
 		int index = 0;
 		int power = 0;
 		for (int j = 0; j < worldState.size(); j++) {
-			index += (((MQPredator) worldState.get(j)).old.getX())
+			index += (((WolfAgent) worldState.get(j)).old.getX())
 					* Math.pow(11, power++)
-					+ (((MQPredator) worldState.get(j)).old.getY())
+					+ (((WolfAgent) worldState.get(j)).old.getY())
 					* Math.pow(11, power++);
 		}
 		return index;
@@ -116,7 +122,6 @@ public class WolfAgent extends Agent {
 		int mySelf = 0;
 		for (int j = 0; j < worldState.size(); j++) {
 			if (this == worldState.elementAt(j)) {
-				System.out.println("dgrege");
 				mySelf = j;
 				break;
 			}
@@ -135,7 +140,88 @@ public class WolfAgent extends Agent {
 
 	public void updateWolf(Vector<Agent> worldState,
 			StateActionPair predAction, double reward, boolean absorbing) {
+
+		// index for last state
+		int oldState = OldStateToIndex(worldState);
+		// index for current state
+		int newState = StateToIndex(worldState);
+		// find the max value over all action to the current state
+		int ActID = -1;
+		for (int i = 0; i < this.qTable[oldState].size(); i++) {
+			if (this.qTable[oldState].elementAt(i).id == predAction.id) {
+				ActID = i;
+				break;
+			}
+		}
+		// find the max value over all action to the current state
+		int maxActID = -1;
+		double maxValue = Double.NEGATIVE_INFINITY;
+		for (int i = 0; i < this.qTable[newState].size(); i++) {
+			if (this.qTable[newState].elementAt(i).Value > maxValue) {
+				maxValue = this.qTable[newState].elementAt(i).Value;
+				maxActID = i;
+			}
+		}
+		// update value for the q table
+		if (!absorbing) {
+			this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
+					* this.qTable[oldState].elementAt(ActID).Value
+					+ this.alpha
+					* (reward + this.gamma
+							* this.qTable[newState].elementAt(maxActID).Value);
+		} else {
+			this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
+					* this.qTable[oldState].elementAt(ActID).Value + this.alpha
+					* reward;
+		}
+		// update estimate of avg. policy
+		this.cTable[oldState]++;
+		for (int i = 0; i < this.piaTable[oldState].size(); i++) {
+			this.piaTable[oldState].elementAt(i).Value = this.piaTable[oldState]
+					.elementAt(i).Value
+					+ 1
+					/ this.cTable[oldState]
+					* (this.piTable[oldState].elementAt(i).Value - this.piaTable[oldState]
+							.elementAt(i).Value);
+		}
+		// update policy
+		boolean optAction = true;
+		for (StateActionPair a : this.qTable[oldState]) {
+			if (this.qTable[oldState].elementAt(ActID).Value < a.Value) {
+				optAction = false;
+				break;
+			}
+		}
+		if (optAction) {
+			this.piTable[oldState].elementAt(ActID).Value += this.delta;
+		} else {
+			this.piTable[oldState].elementAt(ActID).Value -= this.delta
+					/ (this.piTable[oldState].size() - 1);
+		}
+		if(this.piTable[oldState].elementAt(ActID).Value < 0.0){
+			this.piTable[oldState].elementAt(ActID).Value = 0;
+		}
 		
+		// sum of the probabilities must sum up to one
+		double sum = 0.0;
+		for (StateActionPair a : this.piTable[oldState]) {
+			sum += a.Value;
+		}
+		for (StateActionPair a : this.piTable[oldState]) {
+			a.Value /= sum;
+		}
+		// which delta should i use in the next step?
+		double sumAvg = 0.0;
+		double sumCur = 0.0;
+		for(int i=0;i<this.qTable[oldState].size();i++){
+			sumAvg += this.piaTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
+			sumCur += this.piTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
+		}
+		if(sumCur > sumAvg){
+			this.delta = this.deltaWin;
+		}else{
+			this.delta = this.deltaLose;
+		}
 		
 
 	}
