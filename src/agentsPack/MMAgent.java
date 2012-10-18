@@ -18,7 +18,7 @@ import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
 @SuppressWarnings("deprecation")
-public class MMAgent extends Agent {
+public class MMAgent extends Predator {
 
 	private Vector<MMStateActionPair> qTable[];
 	private Vector<StateActionPair> piTable[];
@@ -35,61 +35,6 @@ public class MMAgent extends Agent {
 		this.old = old;
 
 		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public Integer stateIndex(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Vector<Agent> typicalState(int stateIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double reward(Vector<Agent> currState, Vector<Agent> nextState,
-			Coordinate action) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<Integer, Double> functionP(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Coordinate doAction(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean safePosition(Coordinate c, Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Vector<RandomAction> ProbabilityActions(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Vector<RandomAction> ProbabilityActionsSW(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Vector<RandomAction> ProbabilityActionsRSW(Vector<Agent> worldState) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,8 +92,7 @@ public class MMAgent extends Agent {
 		boolean random = (Math.random() < epsilon);
 		if (random) {
 			double rand = Math.random();
-			double step = 1 / new Double(
-					piTable[StateToIndex(worldState)].size());
+			double step = 0.2;
 			double counter = step;
 			for (int ii = 0; ii < piTable[StateToIndex(worldState)].size(); ii++) {
 				if (counter >= rand) {

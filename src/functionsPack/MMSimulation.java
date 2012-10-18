@@ -17,8 +17,8 @@ public class MMSimulation {
 
 	public static void RunMiniMaxQlearning() {
 
-		int numKati = 3;
-		int numiter = 1000;
+		int numKati = 1;
+		int numiter = 100000;
 		double[][] output = new double[numiter][numKati];
 		for(int iterA=0;iterA<numKati;iterA++){
 			Environment env = new Environment();
@@ -52,7 +52,7 @@ public class MMSimulation {
 							env.worldState, 0.1);
 					Prey.old.setX(Prey.position.getX());
 					Prey.old.setY(Prey.position.getY());	
-					if (Math.random() < 0.5) {
+					if (Math.random() < 0.2) {
 						Prey.position.setX(PreyAction.Action.getX());
 						Prey.position.setY(PreyAction.Action.getY());
 					}
@@ -71,10 +71,8 @@ public class MMSimulation {
 
 					Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction,
 							reward,false );
-					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -1*reward,false);
+					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -reward,false);
 
-					
-					
 				} while (!Flag);
 
 			}
