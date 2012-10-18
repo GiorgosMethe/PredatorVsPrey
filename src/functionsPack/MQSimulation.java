@@ -16,7 +16,6 @@ public class MQSimulation {
 	public static void MultiRun(int num) {
 
 		double[] output = new double[1000000];
-
 		boolean flag = false;
 		boolean preyTrap = false;
 		boolean absorbing = false;

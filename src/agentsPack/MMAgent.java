@@ -221,17 +221,19 @@ public class MMAgent extends Agent {
 
 	public void UpdateMiniMax(Vector<Agent> worldState,
 			StateActionPair myAction, StateActionPair otherAgentAction,
-			double reward) {
+			double reward, boolean b) {
 
 		int oldStateIndex = OldStateToIndex(worldState);
 		int newStateIndex = StateToIndex(worldState);
+		//		System.out.println("phga sthn "+IndexToMyPos(newStateIndex, WhoAmI(worldState)));
+		//		System.out.println("phge sthn "+IndexToMyPos(newStateIndex, 1));
 		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
 			if (this.qTable[oldStateIndex].elementAt(i).myAction.id == myAction.id) {
-				if (this.qTable[oldStateIndex].elementAt(i).otherAction.id == otherAgentAction.id) {
+				if (this.qTable[oldStateIndex].elementAt(i).otherAction.id == otherAgentAction.id) { 
 					this.qTable[oldStateIndex].elementAt(i).Value = (1 - alpha)
 							* this.qTable[oldStateIndex].elementAt(i).Value
 							+ alpha
-							* (reward + gamma + this.vTable[newStateIndex]);
+							* (reward + gamma  * this.vTable[newStateIndex]);
 					break;
 				}
 			}
@@ -256,32 +258,48 @@ public class MMAgent extends Agent {
 		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
 			AV[this.qTable[oldStateIndex].elementAt(i).myAction.id - 1][this.qTable[oldStateIndex]
 					.elementAt(i).otherAction.id - 1] = this.qTable[oldStateIndex]
-					.elementAt(i).Value;
+							.elementAt(i).Value;
+
 		}
+		//		System.out.println("-------------------------");
+		//		for (int j = 0; j < 5; j++) {
+		//			for (int i = 0; i < 5; i++) {
+		//				System.out.print(AV[j][i]+ "  ");
+		//			}
+		//			System.out.println();
+		//		}
+
+
 		for (int j = 0; j < 5; j++) {
 			constraints.add(new LinearConstraint(new double[] { 1,
 					-1 * AV[0][j], -1 * AV[1][j], -1 * AV[2][j], -1 * AV[3][j],
 					-1 * AV[4][j] }, Relationship.LEQ, 0));
 		}
 
+		boolean flag = false;
 		RealPointValuePair solution = null;
 		try {
 			solution = new SimplexSolver().optimize(f, constraints,
 					GoalType.MAXIMIZE, false);
 		} catch (OptimizationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			flag = true;
 		}
 		// get the solution
-		double[] max = solution.getPoint();
-		for (int i = 0; i < this.piTable[oldStateIndex].size(); i++) {
-			this.piTable[oldStateIndex].elementAt(i).Value = max[this.piTable[oldStateIndex]
-					.elementAt(i).id];
+		if(!flag){
+			double[] max = solution.getPoint();
+			for (int i = 1; i < 6; i++) {
+				for(int j=0;j<this.piTable[oldStateIndex].size();j++){
+					if(this.piTable[oldStateIndex].elementAt(j).id == i){
+						this.piTable[oldStateIndex].elementAt(j).Value = max[i];
+					}
+				}
+			}
+
+			this.vTable[oldStateIndex] = max[0];
+
 		}
-
-		this.vTable[oldStateIndex] = max[0];
-
-		this.alpha = alpha * 0.99;
+		this.alpha = alpha * 0.999996;
 
 	}
 }
