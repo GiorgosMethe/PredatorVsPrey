@@ -46,13 +46,12 @@ public class MMSimulation {
 				boolean Flag = false;
 				do {
 					steps++;
-					StateActionPair PreyAction = Prey.ChooseAction(env.worldState,
-							0.1);
-					StateActionPair PredAction = Predator.ChooseAction(
-							env.worldState, 0.1);
+					StateActionPair PreyAction = Prey.ChooseAction(env.worldState, 0.1);
+					StateActionPair PredAction = Predator.ChooseAction(env.worldState, 0.1);
 					Prey.old.setX(Prey.position.getX());
 					Prey.old.setY(Prey.position.getY());	
-					if (Math.random() < 0.2) {
+
+					if (Math.random() > 0.2) { // tripping probability
 						Prey.position.setX(PreyAction.Action.getX());
 						Prey.position.setY(PreyAction.Action.getY());
 					}
@@ -61,39 +60,34 @@ public class MMSimulation {
 					Predator.position.setX(PredAction.Action.getX());
 					Predator.position.setY(PredAction.Action.getY());
 
-					if (Coordinate.compareCoordinates(Prey.position,
-							Predator.position)) {
+					if (Coordinate.compareCoordinates(Prey.position, Predator.position)) {
 						output[episode][iterA] = steps;
 						System.out.println(episode+":"+steps);
 						reward = 10.0;
 						Flag = true;
 					}
 
-					Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction,
-							reward,false );
-					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -reward,false);
-
+					Predator.UpdateMiniMax(env.worldState, PredAction, PreyAction, reward, false);
+					Prey.UpdateMiniMax(env.worldState, PreyAction, PredAction, -reward, false);
 				} while (!Flag);
-
 			}
-
 		}
-				double[] kati = new double[numiter];
-				for(int i=0;i<numiter;i++){
-					int sum=0;
-					for(int j=0;j<numKati;j++){
-						sum+=output[i][j];
-					}
-					kati[i] = sum/numKati;
-				}
-				try {
-					MatFileGenerator.write(kati,
-							"MultiAgentMiniMaxQ");
-					System.out.println("Mat file created");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		double[] kati = new double[numiter];
+		for(int i=0;i<numiter;i++){
+			int sum=0;
+			for(int j=0;j<numKati;j++){
+				sum+=output[i][j];
+			}
+			kati[i] = sum/numKati;
+		}
+		try {
+			MatFileGenerator.write(kati,
+					"MultiAgentMiniMaxQ");
+			System.out.println("Mat file created");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
