@@ -29,7 +29,7 @@ public class WolfSimulation {
 		Predator.initialize(env.worldState);
 		Prey.initialize(env.worldState);
 
-		for(int iteration=0;iteration<10000;iteration++){
+		for(int iteration=0;iteration<100000;iteration++){
 			Prey.old.setX(5);
 			Prey.old.setY(5);
 			Prey.position.setX(5);
@@ -48,7 +48,7 @@ public class WolfSimulation {
 			StateActionPair PredAction = Predator.chooseAction(env.worldState);
 			Prey.old.setX(Prey.position.getX());
 			Prey.old.setY(Prey.position.getY());	
-			if (Math.random() < 0.8) {
+			if (Math.random() > 0.2) {
 				Prey.position.setX(PreyAction.Action.getX());
 				Prey.position.setY(PreyAction.Action.getY());
 			}
@@ -59,13 +59,13 @@ public class WolfSimulation {
 
 			if (Coordinate.compareCoordinates(Prey.position,
 					Predator.position)) {
-				System.out.println(steps);
+				System.out.println(iteration+":"+steps);
 				reward = 10.0;
 				Flag = true;
 			}
 
 			Predator.updateWolf(env.worldState, PredAction, reward, Flag );
-			//Prey.updateWolf(env.worldState, PredAction, -reward, Flag );
+			Prey.updateWolf(env.worldState, PreyAction, -reward, Flag );
 
 
 		} while (!Flag);

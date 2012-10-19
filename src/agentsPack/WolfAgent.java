@@ -77,16 +77,12 @@ public class WolfAgent extends Agent {
 
 	public StateActionPair chooseAction(Vector<Agent> worldstate) {
 		double rand = Math.random();
+
 		double counter = new Double(
 				this.piTable[StateToIndex(worldstate)].elementAt(0).Value);
 		for (int ii = 0; ii < this.piTable[StateToIndex(worldstate)].size(); ii++) {
 			if (counter >= rand) {
 				return this.piTable[StateToIndex(worldstate)].elementAt(ii);
-			}
-			if(ii > 3){
-				for (int jj = 0; jj < this.piTable[StateToIndex(worldstate)].size(); jj++) {
-					System.out.println("fuck" + this.piTable[StateToIndex(worldstate)].elementAt(jj).Value);
-				}
 			}
 			counter += this.piTable[StateToIndex(worldstate)].elementAt(ii + 1).Value;
 		}
@@ -142,88 +138,86 @@ public class WolfAgent extends Agent {
 			StateActionPair predAction, double reward, boolean absorbing) {
 
 		// index for last state
-		int oldState = OldStateToIndex(worldState);
-		// index for current state
-		int newState = StateToIndex(worldState);
-		// find the max value over all action to the current state
-		int ActID = -1;
-		for (int i = 0; i < this.qTable[oldState].size(); i++) {
-			if (this.qTable[oldState].elementAt(i).id == predAction.id) {
-				ActID = i;
-				break;
-			}
-		}
-		// find the max value over all action to the current state
-		int maxActID = -1;
-		double maxValue = Double.NEGATIVE_INFINITY;
-		for (int i = 0; i < this.qTable[newState].size(); i++) {
-			if (this.qTable[newState].elementAt(i).Value > maxValue) {
-				maxValue = this.qTable[newState].elementAt(i).Value;
-				maxActID = i;
-			}
-		}
-		// update value for the q table
-		if (!absorbing) {
-			this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
-					* this.qTable[oldState].elementAt(ActID).Value
-					+ this.alpha
-					* (reward + this.gamma
-							* this.qTable[newState].elementAt(maxActID).Value);
-		} else {
-			this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
-					* this.qTable[oldState].elementAt(ActID).Value + this.alpha
-					* reward;
-		}
-		// update estimate of avg. policy
-		this.cTable[oldState]++;
-		for (int i = 0; i < this.piaTable[oldState].size(); i++) {
-			this.piaTable[oldState].elementAt(i).Value = this.piaTable[oldState]
-					.elementAt(i).Value
-					+ 1
-					/ this.cTable[oldState]
-					* (this.piTable[oldState].elementAt(i).Value - this.piaTable[oldState]
-							.elementAt(i).Value);
-		}
-		// update policy
-		boolean optAction = true;
-		for (StateActionPair a : this.qTable[oldState]) {
-			if (this.qTable[oldState].elementAt(ActID).Value < a.Value) {
-				optAction = false;
-				break;
-			}
-		}
-		if (optAction) {
-			this.piTable[oldState].elementAt(ActID).Value += this.delta;
-		} else {
-			this.piTable[oldState].elementAt(ActID).Value -= this.delta
-					/ (this.piTable[oldState].size() - 1);
-		}
-		if(this.piTable[oldState].elementAt(ActID).Value < 0.0){
-			this.piTable[oldState].elementAt(ActID).Value = 0;
-		}
-		
-		// sum of the probabilities must sum up to one
-		double sum = 0.0;
-		for (StateActionPair a : this.piTable[oldState]) {
-			sum += a.Value;
-		}
-		for (StateActionPair a : this.piTable[oldState]) {
-			a.Value /= sum;
-		}
-		// which delta should i use in the next step?
-		double sumAvg = 0.0;
-		double sumCur = 0.0;
-		for(int i=0;i<this.qTable[oldState].size();i++){
-			sumAvg += this.piaTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
-			sumCur += this.piTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
-		}
-		if(sumCur > sumAvg){
-			this.delta = this.deltaWin;
-		}else{
-			this.delta = this.deltaLose;
-		}
-		
+				int oldState = OldStateToIndex(worldState);
+				// index for current state
+				int newState = StateToIndex(worldState);
+				// find the max value over all action to the current state
+				int ActID = -1;
+				for (int i = 0; i < this.qTable[oldState].size(); i++) {
+					if (this.qTable[oldState].elementAt(i).id == predAction.id) {
+						ActID = i;
+						break;
+					}
+				}
+				// find the max value over all action to the current state
+				int maxActID = -1;
+				double maxValue = Double.NEGATIVE_INFINITY;
+				for (int i = 0; i < this.qTable[newState].size(); i++) {
+					if (this.qTable[newState].elementAt(i).Value > maxValue) {
+						maxValue = this.qTable[newState].elementAt(i).Value;
+						maxActID = i;
+					}
+				}
+				// update value for the q table
+				if (!absorbing) {
+					this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
+							* this.qTable[oldState].elementAt(ActID).Value
+							+ this.alpha
+							* (reward + this.gamma
+									* this.qTable[newState].elementAt(maxActID).Value);
+				} else {
+					this.qTable[oldState].elementAt(ActID).Value = (1 - this.alpha)
+							* this.qTable[oldState].elementAt(ActID).Value + this.alpha
+							* reward;
+				}
+				// update estimate of avg. policy
+				this.cTable[oldState]++;
+				for (int i = 0; i < this.piaTable[oldState].size(); i++) {
+					this.piaTable[oldState].elementAt(i).Value = this.piaTable[oldState]
+							.elementAt(i).Value
+							+ 1
+							/ this.cTable[oldState]
+							* (this.piTable[oldState].elementAt(i).Value - this.piaTable[oldState]
+									.elementAt(i).Value);
+				}
+				// update policy
+				boolean optAction = true;
+				for (StateActionPair a : this.qTable[oldState]) {
+					if (this.qTable[oldState].elementAt(ActID).Value < a.Value) {
+						optAction = false;
+						break;
+					}
+				}
+				if (optAction) {
+					this.piTable[oldState].elementAt(ActID).Value += this.delta;
+				} else {
+					this.piTable[oldState].elementAt(ActID).Value -= this.delta
+							/ (this.piTable[oldState].size() - 1);
+				}
+				if(this.piTable[oldState].elementAt(ActID).Value <= 0.0){
+					this.piTable[oldState].elementAt(ActID).Value = 0.0000000000000000000001;
+				}
 
+				// sum of the probabilities must sum up to one
+				double sum = 0.0;
+				for (StateActionPair a : this.piTable[oldState]) {
+					sum += a.Value;
+				}
+				for (StateActionPair a : this.piTable[oldState]) {
+					a.Value /= sum;
+				}
+				// which delta should i use in the next step?
+				double sumAvg = 0.0;
+				double sumCur = 0.0;
+				for(int i=0;i<this.qTable[oldState].size();i++){
+					sumAvg += this.piaTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
+					sumCur += this.piTable[oldState].elementAt(i).Value * this.qTable[oldState].elementAt(i).Value;
+				}
+				if(sumCur > sumAvg){
+					this.delta = this.deltaWin;
+				}else{
+					this.delta = this.deltaLose;
+				}
 	}
 
 	public int UnvisitedStateActions() {
