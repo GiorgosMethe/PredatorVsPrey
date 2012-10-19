@@ -115,9 +115,10 @@ In the first part of the second exercise, we made both prey and predators "intel
 
 All predator now, have their own learning algorithm which will lead them to choose worthy actions for their own success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in cases that a predator manage to catch the prey. For the prey, we only expect to be smart enough and to avoid being caught. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes only with one predator.
 
+At this point we should note that we were only able to run this simulation for 1,2 and 3 predators (2,3 and 4 agents). Trying to run for 4 predators and one prey would require a huge amount of memory space, because of the billions of possible states of the world. There are $11^{10}$ (5 different pairs of $(x,y)$ coordinates) different states for which we need to calculate the Q table and each agent has 5 possible actions in each one of these states. So, initializing $5 \times 11^{10}$ action - value pairs would need $5 \times 11^{10} \times 16$ bytes, which is, $\approx 415$ Gigabytes of memory.
 \begin{itemize}
 \item 1,2,3 predators
-\item why doesnt work for more predators
+
 \item different values for alpha
 \end{itemize}
 

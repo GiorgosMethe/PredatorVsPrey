@@ -17,9 +17,11 @@ public class MMSimulation {
 
 	public static void RunMiniMaxQlearning() {
 
-		int numKati = 1;
-		int numiter = 100000;
+		int numKati = 10;
+		int numiter = 3000;
 		double[][] output = new double[numiter][numKati];
+		
+		
 		for(int iterA=0;iterA<numKati;iterA++){
 			Environment env = new Environment();
 			MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
@@ -82,7 +84,7 @@ public class MMSimulation {
 		}
 		try {
 			MatFileGenerator.write(kati,
-					"MultiAgentMiniMaxQ");
+					"MultiAgentMiniMaxQdecay");
 			System.out.println("Mat file created");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
