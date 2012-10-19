@@ -116,9 +116,60 @@ As we can see in the table above, adding more predators to this particular imple
 
 \section*{Exercise 2}
 
-In the second exercise, we made both prey and predators "smarter" by implementing the Q-Learning algorithm on both agent types. That means that all the agents save and use a Q(s,a) table, from which they choose the next action using $\epsilon$-greedy action selection.
+\subsection*{Independent Q learning}
+In the first part of the second exercise, we made both prey and predators "smarter" by implementing the Q-Learning algorithm on both agent types. That means that all the agents save and use a Q(s,a) table, from which they choose the next action using $\epsilon$-greedy action selection.
 
 The predators will now learn to move towards the prey but the prey will also learn to avoid getting close to where the predators are. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a chance to catch it. If this probability was not taken into consideration, the prey would always run away from the predators.
 
+\subsection*{Minimax-Q Algorithm}
 
+In this section, we have implemented the minimax-Q algorithm, as described in the paper "Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994.
+
+\subsubsection*{Description of the algorithm}
+
+First of all, the algorithm discussed in that paper is only described in a zero-sum two player markov game. The obvious goal of both agents is to maximize their expected sum of discounted rewards, just like in an MDP.
+
+However, this algorithm discriminates the two agents by introducing a single reward function $R(s,a,o)$ which one agent tries to maximize and its "opponent" tries to minimize. So, for example, when the game is in state $s$, the predator will consider the prey picking the next possible action $o$ that is optimal for itself, thus worst for its opponent. As a consequence, the predator will choose the next possible action $s$ that maximizes its reward, always considering the worst case scenario. But on the other hand, the prey will consider the predator picking the next possible action that is optimal. Generally, it is a fact that in the minimax-Q algorithm each agent considers its opponent to be optimal (picking the optimal actions each time), and defines its next action according to that.
+
+\subsubsection*{Implementation of the algorithm}
+
+The algorithm implementation consists of three parts: 	Initialisation, choosing the next action and learning. 
+
+Minimax-Q learning initializes a $Q[s,a,o]$ table for each agent, with initial value = 1. For each possible state s, it also initialises a $V[s]$ table with initial value = 1 aswell. The probability between all the possible actions $a\in A$ deriving from each state $s$ is distributed equally, with $P(a|s) = 1/|A|$, and is also saved in a probabilities table, $pi[s,a]$. Also, learning rate $\alpha$ is also initialised = 1 and will descend as time goes by. That means, the agents will learn based on their immediate past in the beginning of the algorithm, but will consider their past to become more important in the next stages.
+
+After the initialization of the data, each agent will have to choose its next action. That depends on a variable $\epsilon$, so as, the agent will choose the action with maximum probability in the $pi[s,a]$ table with probability $1-\epsilon$, but will choose a random action among the possible ones with probability $\epsilon$. This is very similar to $\epsilon$-greedy action selection, but this time, the action is chosen based on its probability of being chosen and not its expected reward.
+
+The learning (and last) part of the algorithm will be described in pseudocode, as written in the paper:
+
+\begin{itemize}
+\item After receiving reward $rew$ for moving from state $s$ to $s'$ , via action $a$ and opponent's action $o$,
+
+\item Let $Q[s,a,o] = (1-\alpha)\times Q[s,a,o] + \alpha \times (rew+ \gamma \times V[s'])$
+
+\item Use linear programming to find $pi[s,.]$ such that $pi[s,.] = argmax { (pi'[s,.], min (o', \sum{a', pi[s,a'] \times Q[s,a',o']}))}$ 
+
+\item Let $V[s] = min( o', \sum{a', pi[s,a'] \times Q[s,a',o']})$
+
+\item Let $\alpha = \alpha \times decay$
+
+Note that $decay \in (0,1)$ is the variable we use to reduce the value of $\alpha$. 
+
+\end{itemize}
+
+
+\subsubsection*{Linear Programming}
+
+
+
+
+
+
+
+
+
+
+\section*{WOLF}
+
+
+\section{Conclusion}
 \end{document}
