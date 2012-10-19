@@ -17,13 +17,11 @@
 
 \usepackage{amssymb}
 \usepackage{graphics}
-\usepackage{fancyhdr}
 \usepackage{eucal}
 \usepackage{ifthen}
 \usepackage{ifpdf}
 \usepackage{lmodern}
 \usepackage{amsthm}
-\usepackage{catoptions} % For \Autoref
 
 
 \usetikzlibrary{positioning}
@@ -121,6 +119,13 @@ In the first part of the second exercise, we made both prey and predators "smart
 
 The predators will now learn to move towards the prey but the prey will also learn to avoid getting close to where the predators are. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a chance to catch it. If this probability was not taken into consideration, the prey would always run away from the predators.
 
+\begin{itemize}
+\item 1,2,3 predators
+\item why doesnt work for more predators
+\item different values for alpha
+\end{itemize}
+
+
 \subsection*{Minimax-Q Algorithm}
 
 In this section, we have implemented the minimax-Q algorithm, as described in the paper "Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994.
@@ -154,21 +159,20 @@ The learning (and last) part of the algorithm will be described in pseudocode, a
 
 Note that $decay \in (0,1)$ is the variable we use to reduce the value of $\alpha$. 
 
+
+\item !!!!!! linear programming equations
+\item figures for diff vales of alpha and decay
+\item different values of e
+
 \end{itemize}
 
 
-\subsubsection*{Linear Programming}
+\section*{WoLF}
+\begin{itemize}
+\item for 1,2  predators
+\item 
+\end{itemize}
 
-
-
-
-
-
-
-
-
-
-\section*{WOLF}
 
 
 \section{Conclusion}
