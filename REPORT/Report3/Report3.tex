@@ -81,11 +81,13 @@ Last, we now consider this implementation to be a zero-sum Markov game, because 
 
 \section{Exercise 1}
 
-In the first exercise, we use the $11 \times 11$ grid where we add a prey and more than one predators. Our implementation requests the number of predators as input from the user, initializes the prey at position $<5,5>$ and puts the predators in random positions mainly in the limits of the grid world (e.g $<0,0>$,$<10,10>$,\ldots). 
+In the first exercise, we use the $11 \times 11$ grid where we add a prey and more than one predators. Our implementation requests the number of predators as input from the user, initializes the prey at position $<5,5>$ and puts the predators in random positions. 
 
 The agents then move randomly on the grid until two predators move into the same position (Collision) or a predator catches the prey (Catch). These two are the only possible absorbing states. We should note, that, if two predators collide and the prey is caught in the same time-step, the predators' collision is more "important" and defines the reward distribution.
 
 
+\subsection{Results}
+Table~\ref{table:multirandom}, presents the results we had in the first part of the exercise. In this random implementation predator(s) and prey always act randomly. Adding more predators to this particular case o random actions by all agents does reduce the number of steps needed to catch the prey but dramatically increases the number of collisions between predators. In the last column of the table we present the average number of needed time-steps for the predator(s) to catch the prey. The results of this random implementation are exactly as we expected.
 \begin{table}[h]
 \begin{center}
 \caption{Multiple Agents' Random Implementation}
@@ -101,12 +103,6 @@ The agents then move randomly on the grid until two predators move into the same
 \label{table:multirandom} 
 \end{center} 
 \end{table} 
-\begin{center}
-
-\end{center}
-
-Table~\ref{table:multirandom}, presents the results we had in the first part of the exercise. In this random implementation predator(s) and prey always act randomly. Adding more predators to this particular case o random actions by all agents does reduce the number of steps needed to catch the prey but dramatically increases the number of collisions between predators. In the last column of the table we present the average number of needed time-steps for the predator(s) to catch the prey. The results of this random implementation are exactly as we expected.
- 
 
 \section{Exercise 2}
 
@@ -114,12 +110,6 @@ Table~\ref{table:multirandom}, presents the results we had in the first part of 
 In the first part of the second exercise, we made both prey and predators "intelligent" by implementing the \textit{Q-Learning} algorithm on every agent. That means that all agents save and use their own Q(s,a) table, from which they choose the next action using $\epsilon$-greedy action selection.
 
 All predator now, have their own learning algorithm which will lead them to choose worthy actions for their own success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in cases that a predator manage to catch the prey. For the prey, we only expect to be smart enough and to avoid being caught. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes only with one predator.
-
-\begin{itemize}
-\item 1,2,3 predators
-\item why doesnt work for more predators
-\item different values for alpha
-\end{itemize}
 
 We have seen, that independent \textit{Q-Learning} has very nice results in this multi-agent framework. However, the space complexity of this algorithm makes it computationally intractable in environments that there is a big number of agents. For example, in our problem and a number of four agents, each agent is going to need to save in its Q-table up to $1.071.794.405$ state-action pairs, given that each agent has $121$ possible states, and the selected agent has $5$ actions. Table~\ref{table:complexity}, presents how the number grows exponentially as the number of agents goes up in our state space. We were able to implement independent \textit{Q-Learning} even for four agents, three predators and one prey, considering prey's position always at $<5,5>$, and transform its action to predators' movement. Running the same algorithm for five agents was unfeasible, due to memory limitations.
 
@@ -142,7 +132,25 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 \end{center} 
 \end{table} 
 
+\subsubsection{Results}
+Figure~\ref{q2}, illustrates our results in independent \textit{Q-Learning}
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=0.49\textwidth]{figures/q207.eps}\	
+    \includegraphics[width=0.49\textwidth]{figures/q205.eps} \\
+    \includegraphics[width=0.5\textwidth]{figures/q202.eps} \\
+    \caption{A picture of a gull.}
+    \label{q2}
+\end{figure}
 
+Figure~\ref{qtest}, 
+\begin{figure}[t!]
+  \centering
+    \includegraphics[width=0.49\textwidth]{figures/q2init.eps}\	
+    \includegraphics[width=0.49\textwidth]{figures/q2learnfast.eps}
+    \caption{A picture of a gull.}
+    \label{qtest}
+\end{figure}
 
 
 \subsection{Minimax Q-Learning}
@@ -175,6 +183,7 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 \item The value of the state s will be equal with the maximized value of variable from the linear program m: $V[s] = m$
 \item Learning rate will be always decayed in each update: $\alpha = \alpha \times decay$. $decay \in (0,1)$ is the variable we use to reduce the value of $\alpha$.
 \end{itemize}
+\subsection{Results}
 
 
 \section{WoLF-PHC}
@@ -189,5 +198,10 @@ Next, agent has to update its average policy. Every state has a counter which in
 \bar{\pi}(s,b) \leftarrow \bar{\pi}(s,b) + \cfrac{1}{V} (\pi(s,b) - \bar{\pi}(s,b)), \forall b
 \]
 ,where $V$ is the number of visits in this state. A big difference from the other learning algorithms is on the policy update. In general this algorithm uses two variables to change the probability of choosing the taken action. $\delta_{win}$, $\delta_{lose}$, the first one is used whenever agent chose an action which was better than the average policy and the second for the opposite case. This unique way to update the policy being followed by the agent is the main characteristic of this algorithm.
+\subsection{Results}
+
 \section{Conclusion}
+In this last assignment of the Autonomous Agents course, we implemented and experimented on different learning algorithms that can be used in multi-agent frameworks. We comprehend how more than one agents can explode the space complexity of these specific algorithms, considering that fact, we can understand the reason why planning and learning in multi-agent system have triggered a great research interest the last decade.
+
+
 \end{document}

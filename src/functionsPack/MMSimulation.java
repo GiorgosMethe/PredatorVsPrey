@@ -28,8 +28,8 @@ public class MMSimulation {
 					5), null, 0.5, 0.7);
 			env.worldState.add(Predator);
 			env.worldState.add(Prey);
-			Predator.initializeQtable(env.worldState);
-			Prey.initializeQtable(env.worldState);
+			Predator.initializeqTable(env.worldState);
+			Prey.initializeqTable(env.worldState);
 
 			int steps = 0;
 			for (int episode = 0; episode < numiter; episode++) {

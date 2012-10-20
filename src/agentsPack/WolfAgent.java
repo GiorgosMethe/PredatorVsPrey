@@ -39,8 +39,6 @@ public class WolfAgent extends Agent {
 		this.piTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
 		this.piaTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
 		int mySelf = WhoAmI(worldstate);
-		System.out.println(mySelf);
-
 		for (int i = 0; i < this.qTable.length; i++) {
 			Coordinate MyState = IndexToMyPos(i, mySelf);
 			this.qTable[i] = new Vector<StateActionPair>();

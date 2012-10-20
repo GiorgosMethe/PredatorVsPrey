@@ -35,17 +35,17 @@ public class MQPredator extends Predator {
 			// given my position i know the coordinates of my actions
 			// every action initialized
 			this.qTable[i] = new Vector<StateActionPair>();
-			this.qTable[i].add(new StateActionPair(MyState.getEast(), 15, 1));
-			this.qTable[i].add(new StateActionPair(MyState.getNorth(), 15, 2));
-			this.qTable[i].add(new StateActionPair(MyState.getSouth(), 15, 3));
-			this.qTable[i].add(new StateActionPair(MyState.getWest(), 15, 4));
-			this.qTable[i].add(new StateActionPair(MyState, 15, 5));
+			this.qTable[i].add(new StateActionPair(MyState.getEast(), 0, 1));
+			this.qTable[i].add(new StateActionPair(MyState.getNorth(), 0, 2));
+			this.qTable[i].add(new StateActionPair(MyState.getSouth(), 0, 3));
+			this.qTable[i].add(new StateActionPair(MyState.getWest(), 0, 4));
+			this.qTable[i].add(new StateActionPair(MyState, 0, 5));
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am predator " + mySelf + " it took me "
-				+ ((end - start))
-				+ " ms to initialize my Qtable, Number of states: "
-				+ this.qTable.length);
+//		System.out.println("I am predator " + mySelf + " it took me "
+//				+ ((end - start))
+//				+ " ms to initialize my Qtable, Number of states: "
+//				+ this.qTable.length);
 	}
 
 	public StateActionPair chooseEGreedyAction(double epsilon,

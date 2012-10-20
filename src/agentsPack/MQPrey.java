@@ -33,9 +33,9 @@ public class MQPrey extends Prey {
 			this.qTable[i].add(new StateActionPair(MyState, 15, 5));
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("I am prey it took me " + ((end - start))
-				+ " ms to initialize my Qtable, Number of states: "
-				+ this.qTable.length);
+//		System.out.println("I am prey it took me " + ((end - start))
+//				+ " ms to initialize my Qtable, Number of states: "
+//				+ this.qTable.length);
 	}
 
 	public StateActionPair chooseEGreedyAction(double epsilon,
