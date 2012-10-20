@@ -2,8 +2,6 @@ package agentsPack;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
-
 import org.apache.commons.math.optimization.GoalType;
 import org.apache.commons.math.optimization.OptimizationException;
 import org.apache.commons.math.optimization.RealPointValuePair;
@@ -11,9 +9,7 @@ import org.apache.commons.math.optimization.linear.LinearConstraint;
 import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
 import org.apache.commons.math.optimization.linear.Relationship;
 import org.apache.commons.math.optimization.linear.SimplexSolver;
-
 import actionPack.MMStateActionPair;
-import actionPack.RandomAction;
 import actionPack.StateActionPair;
 import environmentPack.Coordinate;
 
@@ -38,31 +34,31 @@ public class MMAgent extends Predator {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void initializeQtable(Vector<Agent> worldstate) {
+	public void initializeqTable(Vector<Agent> worldstate) {
 
-		int QtableSize = (int) Math.pow(11, (2 * (worldstate.size())));
-		qTable = (Vector<MMStateActionPair>[]) new Vector[QtableSize];
-		piTable = (Vector<StateActionPair>[]) new Vector[QtableSize];
-		vTable = new double[QtableSize];
+		int qTableSize = (int) Math.pow(11, (2 * (worldstate.size())));
+		this.qTable = (Vector<MMStateActionPair>[]) new Vector[qTableSize];
+		this.piTable = (Vector<StateActionPair>[]) new Vector[qTableSize];
+		this.vTable = new double[qTableSize];
 		// find my position on the world state vector
 		int mySelf = WhoAmI(worldstate);
-		for (int i = 0; i < qTable.length; i++) {
+		for (int i = 0; i < this.qTable.length; i++) {
 			// add my actions in this state
 			// my position is given through the following:
 			Coordinate MyState = IndexToMyPos(i, mySelf);
 			Coordinate OtherAgentState;
 			OtherAgentState = IndexToMyPos(i, 1 - mySelf);
 			// initialize pi table
-			piTable[i] = new Vector<StateActionPair>();
-			piTable[i].add(new StateActionPair(MyState.getEast(), 0.2, 1));
-			piTable[i]
+			this.piTable[i] = new Vector<StateActionPair>();
+			this.piTable[i].add(new StateActionPair(MyState.getEast(), 0.2, 1));
+			this.piTable[i]
 					.add(new StateActionPair(MyState.getNorth(), 0.2, 2));
-			piTable[i]
+			this.piTable[i]
 					.add(new StateActionPair(MyState.getSouth(), 0.2, 3));
-			piTable[i].add(new StateActionPair(MyState.getWest(), 0.2, 4));
-			piTable[i].add(new StateActionPair(MyState, 0.2, 5));
+			this.piTable[i].add(new StateActionPair(MyState.getWest(), 0.2, 4));
+			this.piTable[i].add(new StateActionPair(MyState, 0.2, 5));
 			// initialize v table
-			vTable[i] = new Double(1.0);
+			this.vTable[i] = new Double(1.0);
 			// initialize q table
 			Vector<StateActionPair> TempOtherAgentActions = new Vector<StateActionPair>();
 			TempOtherAgentActions.add(new StateActionPair(OtherAgentState
@@ -77,10 +73,10 @@ public class MMAgent extends Predator {
 					5));
 
 			int j = 0;
-			qTable[i] = new Vector<MMStateActionPair>();
-			for (StateActionPair Aa : piTable[i]) {
+			this.qTable[i] = new Vector<MMStateActionPair>();
+			for (StateActionPair Aa : this.piTable[i]) {
 				for (StateActionPair oAa : TempOtherAgentActions) {
-					qTable[i]
+					this.qTable[i]
 							.add(new MMStateActionPair(Aa, oAa, 1.0, j++));
 				}
 			}
@@ -94,21 +90,21 @@ public class MMAgent extends Predator {
 			double rand = Math.random();
 			double step = 0.2;
 			double counter = step;
-			for (int ii = 0; ii < piTable[StateToIndex(worldState)].size(); ii++) {
+			for (int ii = 0; ii < this.piTable[StateToIndex(worldState)].size(); ii++) {
 				if (counter >= rand) {
-					return piTable[StateToIndex(worldState)].elementAt(ii);
+					return this.piTable[StateToIndex(worldState)].elementAt(ii);
 				}
 				counter += step;
 			}
 		} else {
 			double rand = Math.random();
 			double counter = new Double(
-					piTable[StateToIndex(worldState)].elementAt(0).Value);
-			for (int ii = 0; ii < piTable[StateToIndex(worldState)].size(); ii++) {
+					this.piTable[StateToIndex(worldState)].elementAt(0).Value);
+			for (int ii = 0; ii < this.piTable[StateToIndex(worldState)].size(); ii++) {
 				if (counter >= rand) {
-					return piTable[StateToIndex(worldState)].elementAt(ii);
+					return this.piTable[StateToIndex(worldState)].elementAt(ii);
 				}
-				counter += piTable[StateToIndex(worldState)]
+				counter += this.piTable[StateToIndex(worldState)]
 						.elementAt(ii + 1).Value;
 			}
 		}
@@ -162,30 +158,27 @@ public class MMAgent extends Predator {
 	public void UpdateMiniMax(Vector<Agent> worldState,
 			StateActionPair myAction, StateActionPair otherAgentAction,
 			double reward, boolean b) {
-
 		int oldStateIndex = OldStateToIndex(worldState);
 		int newStateIndex = StateToIndex(worldState);
 		int actionsId = -1;
-		for (int i = 0; i < qTable[oldStateIndex].size(); i++) {
-			if (qTable[oldStateIndex].elementAt(i).myAction.id == myAction.id) {
-				if (qTable[oldStateIndex].elementAt(i).otherAction.id == otherAgentAction.id) {
+		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
+			if (this.qTable[oldStateIndex].elementAt(i).myAction.id == myAction.id) {
+				if (this.qTable[oldStateIndex].elementAt(i).otherAction.id == otherAgentAction.id) {
 					actionsId = i;
 					break;
 				}
 			}
 		}
-		qTable[oldStateIndex].elementAt(actionsId).Value = (1 - alpha)
-				* qTable[oldStateIndex].elementAt(actionsId).Value + alpha
-				* (reward + gamma * vTable[newStateIndex]);
-
+		this.qTable[oldStateIndex].elementAt(actionsId).Value = (1 - this.alpha)
+				* this.qTable[oldStateIndex].elementAt(actionsId).Value
+				+ this.alpha
+				* (reward + this.gamma * this.vTable[newStateIndex]);
 		double[][] AV = new double[5][5];
-		for (int i = 0; i < qTable[oldStateIndex].size(); i++) {
-			AV[qTable[oldStateIndex].elementAt(i).myAction.id - 1][qTable[oldStateIndex]
-					.elementAt(i).otherAction.id - 1] = qTable[oldStateIndex]
-							.elementAt(i).Value;
-
+		for (int i = 0; i < this.qTable[oldStateIndex].size(); i++) {
+			AV[this.qTable[oldStateIndex].elementAt(i).myAction.id - 1][this.qTable[oldStateIndex]
+					.elementAt(i).otherAction.id - 1] = this.qTable[oldStateIndex]
+					.elementAt(i).Value;
 		}
-
 		LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] {
 				1, 0, 0, 0, 0, 0 }, 0);
 		Collection<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
@@ -206,7 +199,6 @@ public class MMAgent extends Predator {
 					(-1) * AV[0][i], (-1) * AV[1][i], (-1) * AV[2][i],
 					(-1) * AV[3][i], (-1) * AV[4][i] }, Relationship.LEQ, 0));
 		}
-
 		boolean flag = false;
 		RealPointValuePair solution = null;
 		try {
@@ -217,14 +209,15 @@ public class MMAgent extends Predator {
 			flag = true;
 		}
 		// get the solution
-		if(!flag){
+		if (!flag) {
 			double[] max = solution.getPoint();
-			for (int i = 0; i < piTable[oldStateIndex].size(); i++) {
-				piTable[oldStateIndex].elementAt(i).Value = max[piTable[oldStateIndex].elementAt(i).id];
+			for (int i = 0; i < this.piTable[oldStateIndex].size(); i++) {
+				this.piTable[oldStateIndex].elementAt(i).Value = max[this.piTable[oldStateIndex]
+						.elementAt(i).id];
 			}
-			vTable[oldStateIndex] = max[0];
+			this.vTable[oldStateIndex] = max[0];
+			System.out.println(max[0]);
 		}
-		alpha = alpha * 0.99996;
-
-		}
+		this.alpha = 0.5;
 	}
+}
