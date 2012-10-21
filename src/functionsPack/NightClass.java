@@ -1,5 +1,8 @@
 package functionsPack;
 
+import functionsPack.MQSimulation;
+import functionsPack.WolfSimulation;
+
 public class NightClass {
 
 	/**
@@ -8,9 +11,9 @@ public class NightClass {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		WolfSimulation.RunWolflearning(0.3,0.15);
-		
-		MQSimulation.MultiRun(3);
+//		WolfSimulation.RunWolflearning(0.3,0.15);
+//		
+//		MQSimulation.MultiRun(3);
 		
 		MMSimulation.RunMiniMaxQlearning(0.5);
 		

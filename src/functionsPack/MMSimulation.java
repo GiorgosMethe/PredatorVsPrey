@@ -18,6 +18,8 @@ public class MMSimulation {
 		
 		
 		for(int iterA=0;iterA<numKati;iterA++){
+			
+			System.out.println(iterA);
 			Environment env = new Environment();
 			MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
 					new Coordinate(0, 0), null, 1, 0.7);
