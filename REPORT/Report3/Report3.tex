@@ -258,24 +258,24 @@ Next, we did \textit{minimax Q-learning} but now all agents utilize the learning
 We expected to see better results, taking into consideration the fact that the prey's trip chance would make it easier for the predator to catch.
 
 
-\section{WoLF-PHC}
-In the final part of the exercise we chose to implement \textit{Wolf-Policy Hill Climbing}. This algorithm is described in detail in the slides of the Autonomous Agents course. In addition, the paper \textit{``Efficient Learning in Games'', by Raghav Aras, Alain Dutech and Francois Charpillet}, was really useful for us in order to implement this algorithm.
+\section{Exercise 3: WoLF-PHC}
+For the final part of the exercise we chose to implement \textit{WoLF-Policy Hill Climbing}. This algorithm is described in detail in the slides of the Autonomous Agents course. In addition, the paper \textit{``Efficient Learning in Games'', by Raghav Aras, Alain Dutech and Francois Charpillet}, was really useful for us in order to implement this algorithm.
 
-The general idea behind this algorithm is that, each agent chooses its actions using the $\pi$-table with respect to the probability of each action. Next, each agent updates its Q-table:
+The general idea behind this algorithm is that each agent chooses its actions using the $\pi$-table with respect to the probability of each action. Next, each agent updates its Q-table:
 \[
 Q_{t+1}(s,a) \leftarrow (1-\alpha)Q_{t}(s,a)+\alpha(r + \gamma \max_{a'}Q(s',a'))
 \]
-Next, each agent has to update its average policy. Every state has a counter which indicates the times it was visited by the agent in the past. Using this counter, agents are able to update the value of the their current states's policy for all possible actions:
+Next, each agent has to update its average policy $\bar\pi$. A counter is associated with every state, tracking the number of visits by the agent in the past. Using this counter, agents are able to update the value of their current state's policy for all possible actions:
 \[
-\bar{\pi}(s,b) \leftarrow \bar{\pi}(s,b) + \cfrac{1}{V} (\pi(s,b) - \bar{\pi}(s,b)), \forall b
+ \forall b : \bar{\pi}(s,b) \leftarrow \bar{\pi}(s,b) + \frac{1}{V} (\pi(s,b) - \bar{\pi}(s,b))
 \]
-,where $V$ is the number of visits in this state. An important difference from the other learning algorithms is observed at the policy update. In general this algorithm uses two variables to change the probability of choosing the next action. $\delta_{win}$, $\delta_{lose}$, the first one is used whenever agent chose an action which was better than the average policy and the second for the opposite case. This unique way to update the policy being followed by the agent is the main characteristic of this algorithm.
+where $V$ is the number of visits in this state. An important difference from the other learning algorithms is observed at the policy update. This algorithm uses $\delta_{win}$ and $\delta_{lose}$ to change the probability of choosing the next action. $\delta_{win}$ is used whenever the agent choose an action which has a higher value than the average policy, and $\delta_{lose}$ is used when $\pi(s,a) < \bar\pi(s,a)$. This unique way to update the policy being followed by the agent is the main characteristic of this algorithm.
 
 
 \subsection{Results}
-Figures~\ref{w111}, ~\ref{w112}, ~\ref{w113}, and, ~\ref{w114}, present the results we have in \textit{WoLF-PHC} learning algorithm. We can see four different implementations with different parameters for $\delta$ variable. This parameter is the most important parameter of this algorithm. Through testing we realize that the performance of this algorithm depends heavily on the ratio: $\dfrac{\delta_{lose}}{\delta_{win}}$.
+Figures~\ref{w111}, ~\ref{w112}, ~\ref{w113} and~\ref{w114} present the results we have found with \textit{WoLF-PHC} learning algorithm. We can see four different implementations with different values for $\delta$. Through testing we realize that the performance of this algorithm depends heavily on the ratio $\dfrac{\delta_{lose}}{\delta_{win}}$.
 
-Then, we took the best parameters from the above experiments for, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$ and perform the same experiment for two predators, and one prey now. Figure~\ref{w2}, presents the results. \textit{WoLF-PHC}, converges to an average positive $50$ steps after two million episodes. So, it is clear that predators learn how not to collide with each other. Unfortunately, we were not able to perform the same test for more more episodes, but we believe that the learning process is depicted clear enough in this figure.
+Then we took the best parameters from the above experiments, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$ and perform the same experiment for two predators and one prey. Figure~\ref{w2} presents the results. \textit{WoLF-PHC} converges to an average of $50$ steps after two million episodes. It is clear that predators learn how not to collide with each other. Unfortunately, we were not able to perform the same test for more episodes, but we believe that the learning process is depicted clear enough in this figure. % Why not for more? Buggy code? Too long runtime? Too much memory?
 
 \subsubsection{Observations}
 \begin{itemize}
@@ -285,9 +285,9 @@ Then, we took the best parameters from the above experiments for, $\delta_{lose}
 \item In Figure~\ref{w114}, we used a ratio $\dfrac{\delta_{lose}}{\delta_{win}} = 5$. Same converge with the previous implementation, in an average of $39$ steps. Lots of random placed peaks up to 3000 steps (Are not shown in the figure due to scale equality of the four figures).
 \end{itemize}
 
-The first thing we want to mention is that, the convergence speed of this learning algorithm mainly depends on how large values we used for $\delta_{win}$. As $\delta_{win}$ is decreased, the algorithm converged in less average steps. This happened because for every visited state each agent just adds a small value in the best policy causing the same effect $\alpha$ parameter has in pure \textit{Q-Learning}.
+The first thing we want to mention is that the convergence speed of this learning algorithm mainly depends on the values we used for $\delta_{win}$. As $\delta_{win}$ is decreased, the algorithm converged in less average steps. This happened because for every visited state each agent just adds a small value in the best policy causing the same effect the learning rate $\alpha$ has in pure \textit{Q-Learning}.
 
-Second, we have noticed an increasing number of peaks as the ratio $\dfrac{\delta_{lose}}{\delta_{win}}$ is going up. A big ratio means that, agents are able to perform huge changes in their policies as $\delta_{lose}$ is now a lot bigger than the $\delta_{win}$. For example, prey is always ``disappointed'' from its policy and tries to change it causing these "abnormal" peaks.
+Second, we have noticed an increasing number of peaks as the ratio $\dfrac{\delta_{lose}}{\delta_{win}}$ is going up. A big ratio means that agents are able to perform huge changes in their policies as $\delta_{lose}$ is now a lot bigger than the $\delta_{win}$. One can imagine this to mean that the prey is always disappointed from its policy and tries to change it causing these ``abnormal'' peaks.
 
 \begin{figure}[ht!]
   \centering
@@ -327,6 +327,6 @@ Second, we have noticed an increasing number of peaks as the ratio $\dfrac{\delt
 \newpage
 
 \section{Conclusion}
-In this last assignment of the Autonomous Agents course, we implemented and experimented on different learning algorithms that can be used in multi-agent frameworks. We comprehend how more than one agents can dramatically increase the space complexity of these specific algorithms, and, considering that fact, we understood the reason why planning and learning in multi-agent systems have triggered a great research interest over the last decade.
+In this last assignment of the Autonomous Agents course, we implemented and experimented on different learning algorithms that can be used for multi-agent frameworks. We understand how more than one agents can dramatically increase the space complexity of these specific algorithms, and, considering that fact, we understood the reason why planning and learning in multi-agent systems have triggered a great research interest over the last decade.
 
 \end{document}
