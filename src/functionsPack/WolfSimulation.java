@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import matPack.MatFileGenerator;
 import actionPack.StateActionPair;
-import agentsPack.MMAgent;
 import agentsPack.WolfAgent;
 import environmentPack.Coordinate;
 import environmentPack.Environment;

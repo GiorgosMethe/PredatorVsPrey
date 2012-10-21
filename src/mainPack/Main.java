@@ -8,12 +8,14 @@ import agentsPack.MCoffPredator;
 import agentsPack.QPredator;
 import agentsPack.SarsaPredator;
 import environmentPack.Coordinate;
+import functionsPack.MMSimulation;
 import functionsPack.MQSimulation;
 import functionsPack.MultiAgentSimulation;
 import functionsPack.PolicyEvaluation;
 import functionsPack.PolicyIteration;
 import functionsPack.RandomSimulation;
 import functionsPack.ValueIteration;
+import functionsPack.WolfSimulation;
 
 public class Main {
 
@@ -43,18 +45,20 @@ public class Main {
 			System.out.println("8. Off-policy Monte Carlo learning");
 			System.out.println("9. Multi Agent Random");
 			System.out.println("10. Multi Agent Q-Learning");
-			System.out.println("11. Exit");
+			System.out.println("11. Minimax-Q Learning");
+			System.out.println("12. WoLF");
+			System.out.println("13. Exit");
 
 			String choice = null;
 			do {
-				System.out.print("\nGive your choice (1-11):");
+				System.out.print("\nGive your choice (1-13):");
 				try {
 					choice = reader.readLine();
 					choiceInt = Integer.parseInt(choice);
 				} catch (Exception e) {
 
 				}
-			} while (choiceInt < 1 || choiceInt > 12);
+			} while (choiceInt < 1 || choiceInt > 14);
 
 			if (choiceInt == 1) {
 
@@ -457,8 +461,18 @@ public class Main {
 				mq.MultiRun(no);
 
 			}
-
 			else if (choiceInt == 11) {
+				
+				MMSimulation.RunMiniMaxQlearning(0.7);
+
+			}
+			else if (choiceInt == 12) {
+
+				WolfSimulation.RunWolflearning(0.3,0.15);
+
+			}
+
+			else if (choiceInt == 13) {
 
 				System.out.println("Oh whyy???!!! :(");
 
@@ -468,7 +482,7 @@ public class Main {
 
 			}
 
-		} while (choiceInt != 9);
+		} while (choiceInt != 13);
 
 	}
 

@@ -112,7 +112,6 @@ public class WolfAgent extends Agent {
 	}
 
 	public int WhoAmI(Vector<Agent> worldState) {
-		int jj = -1;
 		int mySelf = 0;
 		for (int j = 0; j < worldState.size(); j++) {
 			if (this == worldState.elementAt(j)) {

@@ -85,7 +85,7 @@ The agents then move randomly on the grid until two predators move into the same
 
 
 \subsection{Results}
-Table~\ref{table:multirandom}, presents the results we had in the first part of the exercise. In this random implementation predator(s) and prey always act randomly. Adding more predators to this particular case o random actions by all agents does reduce the number of steps needed to catch the prey but dramatically increases the number of collisions between predators. In the last column of the table we present the average number of needed time-steps for the predator(s) to catch the prey. The results of this random implementation are exactly as we expected.
+Table~\ref{table:multirandom}, presents the results we had in the first part of the exercise. In this random implementation predator(s) and prey always act randomly. Adding more predators to this particular case of random actions by all agents does reduce the number of steps needed to catch the prey but dramatically increases the number of collisions between predators. In the last column of the table we present the average number of needed time-steps for the predator(s) to catch the prey. The results of this random implementation are exactly as we expected.
 \begin{table}[h]
 \begin{center}
 \caption{Multiple Agents' Random Implementation}
@@ -107,10 +107,10 @@ Table~\ref{table:multirandom}, presents the results we had in the first part of 
 \subsection{Independent Q-Learning}
 In the first part of the second exercise, we made both prey and predators "intelligent" by implementing the \textit{Q-Learning} algorithm on every agent. That means that all agents save and use their own Q(s,a) table, from which they choose the next action using $\epsilon$-greedy action selection.
 
-All predator now, have their own learning algorithm which will lead them to choose worthy actions for their own success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in cases that a predator manage to catch the prey. For the prey, we only expect to be smart enough and to avoid being caught. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes only with one predator.
+All predators now, have their own learning ability which will lead them to choose actions aiming to their individual success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in case a predator manages to catch the prey. Considerng the prey, we only expect it to be smart enough so as to avoid getting caught. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes against only one predator.
 
 
-We have seen, that independent \textit{Q-Learning} has very nice results in this multi-agent framework. However, the space complexity of this algorithm makes it computationally intractable in environments that there is a big number of agents. For example, in our problem and a number of four agents, each agent is going to need to save in its Q-table up to $1.071.794.405$ state-action pairs, given that each agent has $121$ possible states, and the selected agent has $5$ actions. Table~\ref{table:complexity}, presents how the number grows exponentially as the number of agents goes up in our state space. We were able to implement independent \textit{Q-Learning} even for four agents, three predators and one prey, considering prey's position always at $<5,5>$, and transform its action to predators' movement. Running the same algorithm for five agents was unfeasible, due to memory limitations.
+We have seen, that independent \textit{Q-Learning} has satisfying results in this multi-agent framework. However, the space complexity of this algorithm makes it computationally intractable in environments that there is a big number of agents. For example, in our 11x11 grid, adding four agents, means  each agent is going to need to save up to $1.071.794.405$ state-action pairs in its Q-table, given that each agent has $121$ possible states, and the selected agent has $5$ actions. Table~\ref{table:complexity}, presents how the number grows exponentially as the number of agents increases in our grid world. We were able to implement independent \textit{Q-Learning} even for four agents, three predators and one prey, considering prey's position always at $<5,5>$, and transform its action to predators' movement. Running the same algorithm for five agents was unfeasible, due to memory limitations.
 
 
 \begin{table}[h]
@@ -130,6 +130,11 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 \label{table:complexity} 
 \end{center} 
 \end{table} 
+
+
+
+
+\newpage
 
 \subsubsection{Results}
 
@@ -155,8 +160,8 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 \end{figure}
 
 In this phase, we are going to illustrate through the following figures the performance that independent learning had in this multi-agent system. 
-Figure~\ref{q21}, ~\ref{q22}, and, ~\ref{q23} illustrate our results in independent \textit{Q-Learning} with different values for learning rate, $\alpha = 0.7$, $\alpha = 0.5$, $\alpha = 0.2$, respectively. In addition, $\gamma$ parameter is always fixed at $0.7$, as we have seen it to perform really good for single agent {Q-Learning}. We can figure out that, as the $\alpha$ goes down, independent \textit{Q-Learning} needs more episodes to converge. All of the three versions converge almost at the same number of steps, indicating that an optimal policy has been found in all the three cases.   
-One more interesting thing that these figures indicate, is the negative number of steps. Every time that there is a collision between the predators, we are saving the number of steps multiplied by $-1$ to be able to illustrate better their learning process. At the beginning of predators' learning we can see that, there is a random movement resulting in a big number of collisions between them. After one thousand episodes predators have learned how to avoid collisions and are focusing only about catching the prey as quick as possible. This is the reason why we see the number of steps to grow fast at the first one thousand episodes.
+Figure~\ref{q21}, ~\ref{q22}, and, ~\ref{q23} illustrate our results in independent \textit{Q-Learning} with different values for learning rate, $\alpha = 0.7$, $\alpha = 0.5$, $\alpha = 0.2$, respectively. In addition, $\gamma$ parameter is always fixed at $0.7$, as we have seen it to perform really well for single agent {Q-Learning}. We can figure out that, as $\alpha$ is decreased, independent \textit{Q-Learning} needs more episodes to converge. All of the three versions converge almost at the same number of steps, indicating that an optimal policy has been found in all the three cases.   
+One more interesting thing that these figures indicate, is the negative number of steps. Every time that there is a collision between the predators, we are saving the number of steps multiplied by $-1$ to be able to clearly illustrate their learning process. At the beginning of predators' learning we can see that, there is a random movement resulting in a big number of collisions between them. After one thousand episodes predators have learnt to avoid collisions and are focusing only on catching the prey as quick as possible. Lastly, the peak that appears in all figures indicates the end of the exploring phase (predators are still testing "bad" moves and paths), and the start of the exploiting phase, where predators have enough knowledge on how to avoid collisions and start chosing optimal paths towards the prey.
 
 \begin{figure}[ht!]
   \centering
@@ -166,7 +171,7 @@ One more interesting thing that these figures indicate, is the negative number o
     \label{qtest}
 \end{figure}
 
-We also did some changes in the parameters of the independent \textit{Q-Learning} algorithm in order to watch its behavior under certain circumstances. Figure~\ref{qtest}, presents these two tests. In the first case, each agent initialized its Q-table with zero values ( pessimistic ). As we expected, the algorithm converged really fast, as the predators found an optimal policy fast enough without any need of further exploration. In the second case, predators had a the learning rate was different for predators and prey. Predators learned fast a policy but prey was learning with a slow rate resulting in the continuous improvement of its policy. We can see that after the $1000$ episodes, the average number of steps increases continuously.
+We also tried some changes in the parameters of the independent \textit{Q-Learning} algorithm in order to watch the agents' behavior under certain circumstances. Figure~\ref{qtest}, presents these two tests. In the first case, each agent initialized its Q-table with zero values (pessimistic). As we expected, the algorithm converged really fast, as the predators found an optimal policy fast enough without any need of further exploration. In the second case, predators' learning rate was significantly higher from the prey's. Predators learnt an optimal path really fast while the prey was still trying to improve its choices. We can see that after $1000$ episodes, the average number of steps increases continuously, indicating that the prey has at that moment started to find an optimal path aswell.
 
 
 \subsection{Minimax Q-Learning}
@@ -174,9 +179,9 @@ We also did some changes in the parameters of the independent \textit{Q-Learning
 In the second part of the first exercise we implemented the \textit{minimax Q-Learning} algorithm, as described in the paper: \textit{"Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994}.
 
 \subsubsection{Description}
-First, the algorithm discussed in that paper is only described in a zero-sum two player Markov game. The obvious goal of both agents is to maximize their expected sum of discounted rewards, just like in an MDP. However, this algorithm discriminates the two agents by introducing a single reward function $R(s,a,o)$, which each agent tries to maximize and the other one (opponent) tries to minimize it. So, for example, when the game is in state $s$, the predator will consider the prey will pick the optimal action $o$ which means the worst action for its opponent. As a consequence, the predator will choose the next possible action $s$ that maximizes its reward, always considering the worst case scenario. On the other hand, the prey will consider the predator picking the next possible action that is optimal. Generally, it is a fact that in the minimax-Q algorithm each agent considers its opponent to be optimal (picking the optimal actions each time), and defines its next action according to that. 
+First, the algorithm discussed in that paper is only described in a zero-sum two player Markov game. The obvious goal of both agents is to maximize their expected sum of discounted rewards, just like in an MDP. However, this algorithm discriminates the two agents by introducing a single reward function $R(s,a,o)$, which each agent tries to maximize and the other one (opponent) tries to minimize. So, for example, when the game is in state $s$, the predator will consider the prey choosing the optimal action $o$ which will minimize the expected reward of its opponent. As a consequence, the predator will choose the next possible action $s$ that maximizes its reward, always considering the worst case scenario. On the other hand, the prey will consider the predator picking the next possible action that is optimal. Generally, it is a fact that in the minimax-Q algorithm each agent considers its opponent to be optimal (picking the optimal actions each time), and defines its next action according to that. 
 
-The \textit{minimax Q-Learning} algorithm consists of three parts: 	Initialization, choosing the next action and learning. Each agent initializes its own $Q[s,a,o]$ table, with initial value, $1$. For each possible state s, it also initializes the state value $V[s]$ table with initial value of $1$, as well. The probability between all the possible actions $a \in A$ deriving from each state $s$ is distributed equally, with $P(s,a_{i}) = 1/|A|$ $\forall a_i \in A$, and is also saved in the $\pi$-table, $pi[s,a]$. Learning rate $\alpha$ is also initialized as $1$ and will descend as the steps in each episode goes on. That means, the agents learn based on their immediate past in the beginning of the algorithm, but they consider their past to become more important in the next stages as they do not learn if learning rate becomes very low.
+The \textit{minimax Q-Learning} algorithm consists of three parts: 	Initialization, choosing the next action and learning. Each agent initializes its own $Q[s,a,o]$ table, with initial value, $1$. For each possible state s, it also initializes the state value $V[s]$ table with initial value of $1$, as well. The probability between all the possible actions $a \in A$ deriving from each state $s$ is distributed equally, with $P(s,a_{i}) = 1/|A|$ $\forall a_i \in A$, and is also saved in the $\pi$-table, $pi[s,a]$. Learning rate $\alpha$ is also initialized as $1$ and will descend as the steps in each episode goes on. That means, the agents learn based on their immediate past in the beginning of the algorithm, but they consider their past to become more important in the next stages as they do not learn anymore if learning rate becomes very low.
 
 After the initialization of the data, each agent will have to choose its next action. That depends on a variable $\epsilon$, so as, agents choose the action with maximum probability in the $pi[s,a]$ table with probability $1-\epsilon$, but they choose a random action among the possible ones with probability $\epsilon$. This is very similar to $\epsilon$-greedy action selection, but this time, the action is chosen based on its probability of being chosen and not on its expected reward. The learning part of the algorithm is described below:
 
@@ -190,7 +195,9 @@ Q_{t+1}[s,a,o] = (1-\alpha)\times Q_t[s,a,o] + \alpha \times (r + \gamma \times 
 \[
 pi[s,.] = \arg\max_{pi'[s,.]} {(\min_{o'} \sum_{a'} (pi[s,a'] \times Q[s,a',o']))}
 \]
-In fact we need to maximize what our opponent agent wants to minimize. The maximization term goes to the probabilities of choosing our set of actions, given that our opponent is going to minimize it. For the linear programming we used $6$ variables. One for the opponent's minimization $m$, and the remaining $5$ for our actions, $p_1$,$p_2$,\ldots,$p_5$. Linear programming needs constraints in order to maximize the given linear combination of variables. Our main function to maximize was $f(m)$, and the constraints were:
+In fact we need to maximize what our opponent agent wants to minimize. The maximization term goes to the probabilities of choosing our set of actions, given that our opponent is going to minimize it. 
+
+For the necessary linear programming part we used $6$ variables. One for the opponent's minimization $m$, and the remaining $5$ for our actions, $p_1$,$p_2$,\ldots,$p_5$. Linear programming needs constraints in order to maximize the given linear combination of variables. Our main function to maximize was $f(m)$, and the constraints were:
 \begin{itemize}
 \item $ \sum_{i}{p_i} = 1.0$
 \item $ p_i \geq 0.0$
@@ -203,27 +210,30 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 
 \subsection{Results}
 
-\begin{figure}[ht!]
-  \centering
+\begin{figure}[h]
+\begin{center}
     \includegraphics[width=0.7\textwidth]{figures/minimax0505.eps}
     \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$.}
     \label{m11}
+\end{center}
 \end{figure}
-~
-\begin{figure}[ht!]
-  \centering
+
+\begin{figure}[h]
+\begin{center}
 	\includegraphics[width=0.7\textwidth]{figures/minimax0707.eps}
    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$.}
     \label{m22}
+\end{center}
 \end{figure}
-~
-\begin{figure}[ht!]
-  \centering
+
+\begin{figure}[h]
+\begin{center}
     \includegraphics[width=0.49\textwidth]{figures/mm05.eps}\	
     \includegraphics[width=0.49\textwidth]{figures/mm07.eps}\\
     \includegraphics[width=0.5\textwidth]{figures/mm09.eps}
     \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(\textit{Minimax Q-Learning})), \textbf{Left}: $\alpha = 0.5$, $\gamma = 0.7$, \textbf{Right}: $\alpha = 0.7$, $\gamma = 0.7$, \textbf{Middle}: $\alpha = 0.9$, $\gamma = 0.7$.}
     \label{m13}
+\end{center}
 \end{figure}
 
 First, we wanted to test our implementation of the \textit{Minimax Q-learning} algorithm. We have done so by using predators which learn according to this method, and a prey with a random policy. Figure~\ref{m11} and Figure~\ref{m22}, shows the results we have in the approach with the random prey. We can see that, algorithm converges to a optimal policy for the predator. Although, we can see some peaks in the graph. The main characteristic of the \textit{Minimax Q-learning} is that we always consider our opponent to be optimal. This means that even predator was competing with a random prey, it was doing actions in respect that prey's best action. Therefore, we have a good reason why this is happening.
