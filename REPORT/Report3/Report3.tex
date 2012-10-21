@@ -42,12 +42,11 @@
 \addtolength{\topmargin}{-.375in}
 \addtolength{\textheight}{0.75in}
 
-
 \newcommand{\resheading}[1]{{\large \colorbox{mygrey}{\begin{minipage}{\textwidth}{\textbf{#1 \vphantom{p\^{E}}}}\end{minipage}}}}
 
 \newcommand{\mywebheader}{
   \begin{tabular}{@{}p{5in}p{4in}}
-  {\resheading{Assignment 3: Multi Agent Planning and Learning}} & {\Large 19 October, 2012}\\\vspace{0.2cm}
+  {\resheading{Assignment 3: Multi Agent Planning and Learning}} & {\Large 21 October, 2012}\\\vspace{0.2cm}
   \end{tabular}}
 
 \begin{document}
@@ -65,8 +64,6 @@
 {\Large Patrick de Kok} \\ \vspace{0.1cm}
 {\Large Marios Tzakris}
 \end{center}
-
-
 
 
 \section{Introduction}
@@ -111,6 +108,7 @@ In the first part of the second exercise, we made both prey and predators "intel
 
 All predator now, have their own learning algorithm which will lead them to choose worthy actions for their own success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in cases that a predator manage to catch the prey. For the prey, we only expect to be smart enough and to avoid being caught. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes only with one predator.
 
+
 We have seen, that independent \textit{Q-Learning} has very nice results in this multi-agent framework. However, the space complexity of this algorithm makes it computationally intractable in environments that there is a big number of agents. For example, in our problem and a number of four agents, each agent is going to need to save in its Q-table up to $1.071.794.405$ state-action pairs, given that each agent has $121$ possible states, and the selected agent has $5$ actions. Table~\ref{table:complexity}, presents how the number grows exponentially as the number of agents goes up in our state space. We were able to implement independent \textit{Q-Learning} even for four agents, three predators and one prey, considering prey's position always at $<5,5>$, and transform its action to predators' movement. Running the same algorithm for five agents was unfeasible, due to memory limitations.
 
 
@@ -133,26 +131,40 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 \end{table} 
 
 \subsubsection{Results}
-Figure~\ref{q2}, illustrates our results in independent \textit{Q-Learning}
-\begin{figure}[t!]
+In this phase, we are going to illustrate through the following figures the performance that independent learning had in this multi-agent system. Figure~\ref{q2}, illustrates our results in independent \textit{Q-Learning}. Figure~\ref{q21}
+Figure~\ref{q22}
+Figure~\ref{q23}
+Figure~\ref{qtest}
+\begin{figure}[h!]
   \centering
-    \includegraphics[width=0.49\textwidth]{figures/q207.eps}\	
-    \includegraphics[width=0.49\textwidth]{figures/q205.eps} \\
-    \includegraphics[width=0.5\textwidth]{figures/q202.eps} \\
-    \caption{A picture of a gull.}
-    \label{q2}
+    \includegraphics[width=0.6\textwidth]{figures/q207.eps}
+    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$.}
+    \label{q21}
 \end{figure}
-
-Figure~\ref{qtest}, 
-\begin{figure}[t!]
+~
+\begin{figure}[h!]
+  \centering
+	\includegraphics[width=0.6\textwidth]{figures/q205.eps}
+   \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.5$.}
+    \label{q22}
+\end{figure}
+~
+\begin{figure}[h!]
+  \centering
+	\includegraphics[width=0.6\textwidth]{figures/q202.eps}
+    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.2$.}
+    \label{q23}
+\end{figure}
+~
+\begin{figure}[h!]
   \centering
     \includegraphics[width=0.49\textwidth]{figures/q2init.eps}\	
     \includegraphics[width=0.49\textwidth]{figures/q2learnfast.eps}
-    \caption{A picture of a gull.}
+    \caption{\textbf{Left:} Further testing of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$, Q-initialization to zero value. \textbf{Right:} Further testing of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators ($\alpha = 0.9$), 1 prey ($\alpha = 0.1$)).}
     \label{qtest}
 \end{figure}
 
-
+\newpage
 \subsection{Minimax Q-Learning}
 
 In the second part of the first exercise we implemented the \textit{minimax Q-Learning} algorithm, as described in the paper: \textit{"Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994}.
@@ -184,7 +196,21 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 \item Learning rate will be always decayed in each update: $\alpha = \alpha \times decay$. $decay \in (0,1)$ is the variable we use to reduce the value of $\alpha$.
 \end{itemize}
 \subsection{Results}
-
+Figure~\ref{m11}
+Figure~\ref{m22}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{figures/minimax0505.eps}
+    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$.}
+    \label{m11}
+\end{figure}
+~
+\begin{figure}[h!]
+  \centering
+	\includegraphics[width=0.6\textwidth]{figures/minimax0707.eps}
+   \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$.}
+    \label{m22}
+\end{figure}
 
 \section{WoLF-PHC}
 In the final part of the exercise we chose to implement \textit{Wolf-Policy Hill Climbing}. This algorithm is described in detail in the slides of the Autonomous Agents course. In addition, the paper \textit{``Efficient Learning in Games'', by Raghav Aras, Alain Dutech and Francois Charpillet}, was really useful for us in order to implement this algorithm.
@@ -198,10 +224,42 @@ Next, agent has to update its average policy. Every state has a counter which in
 \bar{\pi}(s,b) \leftarrow \bar{\pi}(s,b) + \cfrac{1}{V} (\pi(s,b) - \bar{\pi}(s,b)), \forall b
 \]
 ,where $V$ is the number of visits in this state. A big difference from the other learning algorithms is on the policy update. In general this algorithm uses two variables to change the probability of choosing the taken action. $\delta_{win}$, $\delta_{lose}$, the first one is used whenever agent chose an action which was better than the average policy and the second for the opposite case. This unique way to update the policy being followed by the agent is the main characteristic of this algorithm.
+
+
 \subsection{Results}
+Figure~\ref{w111}
+Figure~\ref{w112}
+Figure~\ref{w113}
+Figure~\ref{w114}
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.7\textwidth]{figures/w07070502.eps}
+    \caption{A picture of a gull.}
+    \label{w111}
+\end{figure}
+~
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.7\textwidth]{figures/w070703015.eps}
+        \caption{A picture of a gull.}
+    \label{w112}
+\end{figure}
+~
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.7\textwidth]{figures/w0707015005.eps}
+        \caption{A picture of a gull.}
+    \label{w113}
+\end{figure}
+~
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.7\textwidth]{figures/w070701002.eps}
+        \caption{A picture of a gull.}
+    \label{w114}
+\end{figure}
 
 \section{Conclusion}
 In this last assignment of the Autonomous Agents course, we implemented and experimented on different learning algorithms that can be used in multi-agent frameworks. We comprehend how more than one agents can explode the space complexity of these specific algorithms, considering that fact, we can understand the reason why planning and learning in multi-agent system have triggered a great research interest the last decade.
-
 
 \end{document}

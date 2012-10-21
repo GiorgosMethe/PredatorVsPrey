@@ -14,20 +14,14 @@ import environmentPack.Environment;
 public class MQSimulation {
 	final private static int[] PredatorPos = { 0, 0, 10, 10, 10, 0, 0, 10 };
 
-
-	public static void main(String[] Args) {
-		MultiRun(2);
-	}
-
 	public static void MultiRun(int num) {
 
-		int numKati = 20;
-		int numiter = 100000;
+		int numKati = 5;
+		int numiter = 100000000;
 		double[][] output = new double[numiter][numKati];
 		
 		for(int iterA=0;iterA<numKati;iterA++){
 			
-			System.out.println(iterA);
 			boolean flag = false;
 			boolean preyTrap = false;
 			boolean absorbing = false;
@@ -56,7 +50,6 @@ public class MQSimulation {
 			for (int episode = 0; episode < numiter; episode++) {
 
 				int steps = 0;
-				// System.out.println("------------");
 				int j = 0;
 				for (Agent a : env.worldState) {
 					((MQPredator) a).position.setX(PredatorPos[j]);

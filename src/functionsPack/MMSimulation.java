@@ -10,22 +10,19 @@ import environmentPack.Environment;
 
 public class MMSimulation {
 
-	public static void main(String[] Args) {
-		RunMiniMaxQlearning();
-	}
+	public static void RunMiniMaxQlearning(double gamma) {
 
-
-	public static void RunMiniMaxQlearning() {
-
-		int numKati = 1;
-		int numiter = 100000;
+		int numKati = 5;
+		int numiter = 20000;
 		double[][] output = new double[numiter][numKati];
+		
+		
 		for(int iterA=0;iterA<numKati;iterA++){
 			Environment env = new Environment();
 			MMAgent Predator = new MMAgent("", new Coordinate(0, 0),
-					new Coordinate(0, 0), null, 0.5, 0.7);
+					new Coordinate(0, 0), null, 1, 0.7);
 			MMAgent Prey = new MMAgent("", new Coordinate(5, 5), new Coordinate(5,
-					5), null, 0.5, 0.7);
+					5), null, 1, 0.7);
 			env.worldState.add(Predator);
 			env.worldState.add(Prey);
 			Predator.initializeqTable(env.worldState);
@@ -60,9 +57,9 @@ public class MMSimulation {
 					Predator.position.setX(PredAction.Action.getX());
 					Predator.position.setY(PredAction.Action.getY());
 
+					reward = 0.0;
 					if (Coordinate.compareCoordinates(Prey.position, Predator.position)) {
 						output[episode][iterA] = steps;
-						System.out.println(episode+":"+steps);
 						reward = 10.0;
 						Flag = true;
 					}
@@ -82,7 +79,7 @@ public class MMSimulation {
 		}
 		try {
 			MatFileGenerator.write(kati,
-					"MultiAgentMiniMaxQ");
+					"MultiAgentMiniMaxQdecay"+String.valueOf(gamma));
 			System.out.println("Mat file created");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

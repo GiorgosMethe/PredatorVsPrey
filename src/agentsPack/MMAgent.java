@@ -196,8 +196,8 @@ public class MMAgent extends Predator {
 				Relationship.GEQ, 0));
 		for (int i = 0; i < 5; i++) {
 			constraints.add(new LinearConstraint(new double[] { 1,
-					(-1) * AV[0][i], (-1) * AV[1][i], (-1) * AV[2][i],
-					(-1) * AV[3][i], (-1) * AV[4][i] }, Relationship.LEQ, 0));
+					-AV[0][i], -AV[1][i], -AV[2][i],
+					-AV[3][i], -AV[4][i] }, Relationship.LEQ, 0));
 		}
 		boolean flag = false;
 		RealPointValuePair solution = null;
@@ -216,8 +216,7 @@ public class MMAgent extends Predator {
 						.elementAt(i).id];
 			}
 			this.vTable[oldStateIndex] = max[0];
-			System.out.println(max[0]);
 		}
-		this.alpha = 0.5;
+		this.alpha *= 0.99996;
 	}
 }
