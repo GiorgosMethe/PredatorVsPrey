@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Users/parismavromoustakos/Documents/eclipse/PredatorVsPrey/lib/jamtio/jamtio.jar"/>
-	<classpathentry kind="lib" path="/Users/parismavromoustakos/Documents/eclipse/PredatorVsPrey/lib/commons-math-2.2/commons-math-2.2.jar"/>
+	<classpathentry kind="lib" path="lib/jamtio/jamtio.jar"/>
+	<classpathentry kind="lib" path="lib/commons-math-2.2/commons-math-2.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
