@@ -69,11 +69,11 @@
 
 \section{Introduction}
 
-In this last assignment, we added multiple predators to the environment, while making the prey intelligent, therefore, harder to catch. Our previous implementations already considered the prey to be an agent, for that reason we only made minor changes to our prey's functions, allowing it to use learning methods just like the predators. The prey will now move with equal probability towards all directions, always, with a chance to trip, it stays in the same position independently from the action that it chooses, otherwise one predator would never be able to catch it.
+In this last assignment, we added multiple predators to the environment, while making the prey learn.  By doing so, it should be harder to catch. Our previous implementations already considered the prey to be an agent, but it only used a random policy. Because of our earlier design decisions we only made minor changes to the prey's functions, allowing it to use learning methods just as predator agents do. The prey starts off with a probabilistic policy, where each action has the same probability to be chosen.  However, there is a $0.2$ chance that the prey trips, and no action is performed.  This tripping probability will overrule every policy; without this, it might always outrun the predator.
 
-What we also changed is that the prey and predator(s) move simultaneously, in a single time-step. That means, the agents can be next to each other and swap positions, without considering their next move to be "safe" or not.
+Another update is that the prey and predators now move simultaneously.  First, we coded their moves asynchronously. Because the actions are handled in a single time-step, the agents can be next to each other and swap positions, without having them bump into eachother.
 
-Last, we now consider this implementation to be a zero-sum Markov game, because predators are going to receive a negative $-10$ reward if they crash into each other, while the prey will be receiving a positive $+10$ reward. Beside that, the predators will receive reward $+10$ for catching the prey which gets $-10$ for getting caught.
+Last, we now consider this implementation to be a zero-sum Markov game, because when the predators (collectively) receive a reward, the prey receives the same reward, multiplied by $-1$.  Predators receive a negative $-10$ reward if they crash into each other, while the prey receives a positive $+10$ reward in that case. Beside that, the predators will receive reward $+10$ for catching the prey.  When this happens, the prey gets $-10$ for getting caught.
 
 
 
