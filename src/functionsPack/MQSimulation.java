@@ -16,8 +16,8 @@ public class MQSimulation {
 
 	public static void MultiRun(int num) {
 
-		int numKati = 5;
-		int numiter = 100000000;
+		int numKati = 1;
+		int numiter = 5000000;
 		double[][] output = new double[numiter][numKati];
 		
 		for(int iterA=0;iterA<numKati;iterA++){

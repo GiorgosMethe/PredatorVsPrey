@@ -135,21 +135,21 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 
 \begin{figure}[ht!]
   \centering
-    \includegraphics[width=0.6\textwidth]{figures/q207.eps}
+    \includegraphics[width=0.7\textwidth]{figures/q207.eps}
     \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$.}
     \label{q21}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
-	\includegraphics[width=0.6\textwidth]{figures/q205.eps}
+	\includegraphics[width=0.7\textwidth]{figures/q205.eps}
    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.5$.}
     \label{q22}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
-	\includegraphics[width=0.6\textwidth]{figures/q202.eps}
+	\includegraphics[width=0.7\textwidth]{figures/q202.eps}
     \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.2$.}
     \label{q23}
 \end{figure}
@@ -174,9 +174,9 @@ We also did some changes in the parameters of the independent \textit{Q-Learning
 In the second part of the first exercise we implemented the \textit{minimax Q-Learning} algorithm, as described in the paper: \textit{"Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994}.
 
 \subsubsection{Description}
-First, the algorithm discussed in that paper is only described in a zero-sum two player markov game. The obvious goal of both agents is to maximize their expected sum of discounted rewards, just like in an MDP. However, this algorithm discriminates the two agents by introducing a single reward function $R(s,a,o)$, which each agent tries to maximize and the other one (opponent) tries to minimize it. So, for example, when the game is in state $s$, the predator will consider the prey will pick the optimal action $o$ which means the worst action for its opponent. As a consequence, the predator will choose the next possible action $s$ that maximizes its reward, always considering the worst case scenario. On the other hand, the prey will consider the predator picking the next possible action that is optimal. Generally, it is a fact that in the minimax-Q algorithm each agent considers its opponent to be optimal (picking the optimal actions each time), and defines its next action according to that. 
+First, the algorithm discussed in that paper is only described in a zero-sum two player Markov game. The obvious goal of both agents is to maximize their expected sum of discounted rewards, just like in an MDP. However, this algorithm discriminates the two agents by introducing a single reward function $R(s,a,o)$, which each agent tries to maximize and the other one (opponent) tries to minimize it. So, for example, when the game is in state $s$, the predator will consider the prey will pick the optimal action $o$ which means the worst action for its opponent. As a consequence, the predator will choose the next possible action $s$ that maximizes its reward, always considering the worst case scenario. On the other hand, the prey will consider the predator picking the next possible action that is optimal. Generally, it is a fact that in the minimax-Q algorithm each agent considers its opponent to be optimal (picking the optimal actions each time), and defines its next action according to that. 
 
-The \textit{minimax Q-Learning} algorithm consists of three parts: 	Initialisation, choosing the next action and learning. Each agent initializes its own $Q[s,a,o]$ table, with initial value, $1$. For each possible state s, it also initializes the state value $V[s]$ table with initial value of $1$, as well. The probability between all the possible actions $a \in A$ deriving from each state $s$ is distributed equally, with $P(s,a_{i}) = 1/|A|$ $\forall a_i \in A$, and is also saved in the $\pi$-table, $pi[s,a]$. Learning rate $\alpha$ is also initialized as $1$ and will descend as the steps in each episode goes on. That means, the agents learn based on their immediate past in the beginning of the algorithm, but they consider their past to become more important in the next stages as they do not learn if learning rate becomes very low.
+The \textit{minimax Q-Learning} algorithm consists of three parts: 	Initialization, choosing the next action and learning. Each agent initializes its own $Q[s,a,o]$ table, with initial value, $1$. For each possible state s, it also initializes the state value $V[s]$ table with initial value of $1$, as well. The probability between all the possible actions $a \in A$ deriving from each state $s$ is distributed equally, with $P(s,a_{i}) = 1/|A|$ $\forall a_i \in A$, and is also saved in the $\pi$-table, $pi[s,a]$. Learning rate $\alpha$ is also initialized as $1$ and will descend as the steps in each episode goes on. That means, the agents learn based on their immediate past in the beginning of the algorithm, but they consider their past to become more important in the next stages as they do not learn if learning rate becomes very low.
 
 After the initialization of the data, each agent will have to choose its next action. That depends on a variable $\epsilon$, so as, agents choose the action with maximum probability in the $pi[s,a]$ table with probability $1-\epsilon$, but they choose a random action among the possible ones with probability $\epsilon$. This is very similar to $\epsilon$-greedy action selection, but this time, the action is chosen based on its probability of being chosen and not on its expected reward. The learning part of the algorithm is described below:
 
@@ -205,14 +205,14 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 
 \begin{figure}[ht!]
   \centering
-    \includegraphics[width=0.6\textwidth]{figures/minimax0505.eps}
+    \includegraphics[width=0.7\textwidth]{figures/minimax0505.eps}
     \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$.}
     \label{m11}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
-	\includegraphics[width=0.6\textwidth]{figures/minimax0707.eps}
+	\includegraphics[width=0.7\textwidth]{figures/minimax0707.eps}
    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$.}
     \label{m22}
 \end{figure}
@@ -228,6 +228,8 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 
 First, we wanted to test our implementation of the \textit{Minimax Q-learning} algorithm. We have done so by using predators which learn according to this method, and a prey with a random policy. Figure~\ref{m11} and Figure~\ref{m22}, shows the results we have in the approach with the random prey. We can see that, algorithm converges to a optimal policy for the predator. Although, we can see some peaks in the graph. The main characteristic of the \textit{Minimax Q-learning} is that we always consider our opponent to be optimal. This means that even predator was competing with a random prey, it was doing actions in respect that prey's best action. Therefore, we have a good reason why this is happening.
 
+%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+%here it is the part that we have to discuss why we have so fucking results
 Next, we did the same but now both agents learn using the \textit{Minimax Q-learning} algorithm. Figure~\ref{m13},  presents our results in this part of the assignment. Although, we tested our implementation for possible bugs, we do not have a clear idea why it this thing happening. Algorithm does not seem to converge. Both agents use the policy that it is generated by the linear program in each update. Both agents use random actions with probability $p_{random} = 0.1$. The red line indicates that more than 300 steps is needed by the predator in average to catch the prey. This is not normal as the prey holds a probability to trip in every action that it takes.
 
 
@@ -246,37 +248,58 @@ Next, agent has to update its average policy. Every state has a counter which in
 
 
 \subsection{Results}
-Figure~\ref{w111}
-Figure~\ref{w112}
-Figure~\ref{w113}
-Figure~\ref{w114}
+Figures~\ref{w111}, ~\ref{w112}, ~\ref{w113}, and, ~\ref{w114}, present the results we have in \textit{WoLF-PHC} learning algorithm. We can see four different implementations with different parameters for $\delta$ variable. This parameter is the most important parameter of this algorithm. Through testing we realize that the performance of this algorithm depends heavily on the ratio: $\dfrac{\delta_{lose}}{\delta_{win}}$.
+
+Then, we took the best parameters from the above experiments for, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$ and perform the same experiment for two predators, and one prey now. Figure~\ref{w2}, presents the results. \textit{WoLF-PHC}, converges to an average positive $50$ steps after two million episodes. So, it is clear that predators learn how not to collide with each other. Unfortunately, we were not able to perform the same test for more more episodes, but we believe that the learning process is depicted clear enough in this figure.
+
+\subsubsection{Observations}
+\begin{itemize}
+\item In Figure~\ref{w111}, we used a ratio $\dfrac{\delta_{lose}}{\delta_{win}} = 2.5$. Fast converge of the algorithm in an average of $76$ steps.
+\item In Figure~\ref{w112}, we used a ratio $\dfrac{\delta_{lose}}{\delta_{win}} = 2$. Slower converge than the first implementation , in an average of $54$ steps. Few random placed peaks up to 300 steps.
+\item In Figure~\ref{w113}, we used a ratio $\dfrac{\delta_{lose}}{\delta_{win}} = 3$. Slower converge than the first two implementations, in an average of $35$ steps. More random placed peaks up to 900 steps.
+\item In Figure~\ref{w114}, we used a ratio $\dfrac{\delta_{lose}}{\delta_{win}} = 5$. Same converge with the previous implementation, in an average of $39$ steps. Lots of random placed peaks up to 3000 steps (Are not shown in the figure due to scale equality of the four figures).
+\end{itemize}
+
+The first thing we want to mention is that, the converge speed of this learning algorithm is mainly depends on how big values we used for $\delta_{win}$. As $\delta_{win}$ went down, algorithm converged in a better average of steps. This happened because for every visited state is giving agent just adds a small value in the best policy causing the same effect $\alpha$ parameter has in pure \textit{Q-Learning}.
+
+Second, we have noticed an increasing number of peaks as the ratio $\dfrac{\delta_{lose}}{\delta_{win}}$ is going up. A big ratio means that, agents are able to perform huge changes in their policies as $\delta_{lose}$ is now a lot bigger than the $\delta_{win}$. For example, prey is always ``disappointed'' from its policy and tries to change it causing these abnormal peaks.
+
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/w07070502.eps}
-    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$.}
+    \caption{Performance of  \textit{WoLF-PHC} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$, $\delta_{lose} = 0.5$, $\delta_{win} = 0.2$.}
     \label{w111}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/w070703015.eps}
-        \caption{A picture of a gull.}
+       \caption{Performance of  \textit{WoLF-PHC} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$.}
     \label{w112}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/w0707015005.eps}
-        \caption{A picture of a gull.}
+        \caption{Performance of  \textit{WoLF-PHC} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$, $\delta_{lose} = 0.15$, $\delta_{win} = 0.05$.}
     \label{w113}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/w070701002.eps}
-        \caption{A picture of a gull.}
+        \caption{Performance of  \textit{WoLF-PHC} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$, $\delta_{lose} = 0.1$, $\delta_{win} = 0.02$.}
     \label{w114}
 \end{figure}
+~
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.9\textwidth]{figures/w2.eps}
+        \caption{Performance of  \textit{WoLF-PHC} algorithm, multi-agent environment (2 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$.}
+    \label{w2}
+\end{figure}
+
+\newpage
 
 \section{Conclusion}
 In this last assignment of the Autonomous Agents course, we implemented and experimented on different learning algorithms that can be used in multi-agent frameworks. We comprehend how more than one agents can explode the space complexity of these specific algorithms, considering that fact, we can understand the reason why planning and learning in multi-agent system have triggered a great research interest the last decade.
