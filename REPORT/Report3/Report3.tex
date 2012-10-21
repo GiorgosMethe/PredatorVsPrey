@@ -112,7 +112,7 @@ Q-learning assumes the environment is stationary.  Because other agents are mode
 
 All predators now have their own learning ability which will lead them to choose actions aiming to their individual success. Considering the reward function discussed above, we expect a cooperative behavior among the predators, as all predators will get a positive reward in case a predator manages to catch the prey. Considering the prey, we only expect it to be smart enough so as to avoid getting caught without tripping. In this implementation, $P_{trip}$ (the chance of the prey tripping) becomes important, as it allows the predators to move faster than the prey, thus getting a bigger chance to catch it. If this probability was not taken into consideration, the prey would always run away, especially when it competes against only one predator.
 
-%%% Shouldn't this section be in the results section?
+
 We have seen that independent \textit{Q-Learning} has satisfying results in this multi-agent framework. However, the space complexity of this algorithm makes it computationally intractable in environments that there is a big number of agents. For example, in our $11 \times 11$ grid, adding four agents, means  each agent is going to need to save up to $11^{2 \times 4} \times 5 = 1.071.794.405$ state-action pairs in its Q-table, given that each agent has $11^2 = 121$ possible positions, and thus states, and the selected agent has $5$ actions. Table~\ref{table:complexity} presents how the number grows exponentially as the number of agents increases in our grid world. We were able to implement independent \textit{Q-Learning} even for four agents, three predators and one prey, considering prey's position always at $<5,5>$, and transform its action to predators' movement. Running the same algorithm for five agents was unfeasible, due to memory limitations of our laptops and the university computers..
 
 
@@ -144,35 +144,37 @@ We have seen that independent \textit{Q-Learning} has satisfying results in this
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/q207.eps}
-    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$.}
+    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$. Episodes to converge $\sim3000$.}
     \label{q21}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.7\textwidth]{figures/q205.eps}
-   \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.5$.}
+   \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.5$. Episodes to converge $\sim5000$.}
     \label{q22}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.7\textwidth]{figures/q202.eps}
-    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.2$.}
+    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.2$. Episodes to converge $\sim8500$.}
     \label{q23}
 \end{figure}
 ~
 \begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.7\textwidth]{figures/iq3.eps}
-    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (3 predators, 1 prey), $\alpha = 0.2$.}
+    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (3 predators, 1 prey), $\alpha = 0.2$. Episodes to converge $\gg 5\times 10^6$.}
     \label{q33}
 \end{figure}
 
-In this section, we are going to illustrate through the following figures the performance that independent learning had in this multi-agent system. 
+\footnotetext[1]{Normalized number of steps is a an average over the 20 neighbors for each episode. Given a sequence of steps for each episode $S(e)$, $s_{normalized}(e) = \cfrac{1}{20+1}\sum_{i=-10}^{10}s(e+i)$.}
+
+In this section, we are going to illustrate through the following figures the performance\footnotemark that independent learning had in this multi-agent system. 
 Figure~\ref{q21}, \ref{q22}, \ref{q23}, and \ref{q33} illustrate our results in \textit{independent Q-Learning} with a learning rate of $\alpha = 0.7$, $\alpha = 0.5$, $\alpha = 0.2$, respectively. In addition, the discount factor $\gamma$ is always fixed at $0.7$, as we have seen it to perform really well for single agent Q-Learning. We can figure out that, as $\alpha$ is decreased, independent \textit{Q-Learning} needs more episodes to converge. All of the three versions converge almost at the same number of steps, indicating that an optimal policy has been found in all the three cases.   
-% Okay, it converges. But to how many steps on average? After how many episodes? Diederik told us to report that!
-One more interesting thing that these figures indicate, is the negative number of steps. Every time that there is a collision between the predators, we are saving the number of steps multiplied by $-1$ to be able to clearly illustrate their learning process. At the beginning of predators' learning we can see that there is a random movement resulting in a big number of collisions between them. After one thousand episodes, the predators have learnt to avoid collisions and are focusing only on catching the prey as quick as possible. Lastly, the peak that appears in all figures indicates the transition from the exploring phase (predators are still testing "bad" moves and paths) to the exploiting phase, where predators have enough knowledge on how to avoid collisions and start chosing optimal paths towards the prey.
+
+One more interesting thing that these figures indicate, is the negative number of steps. Every time that there is a collision between the predators, we are saving the number of steps multiplied by $-1$ to be able to clearly illustrate their learning process. At the beginning of predators' learning we can see that there is a random movement resulting in a big number of collisions between them. After one thousand episodes, the predators have learnt to avoid collisions and are focusing only on catching the prey as quick as possible. Lastly, the peak that appears in all figures indicates the transition from the exploring phase (predators are still testing "bad" moves and paths) to the exploiting phase, where predators have enough knowledge on how to avoid collisions and start choosing optimal paths towards the prey.
 
 \begin{figure}[ht!]
   \centering
@@ -182,9 +184,7 @@ One more interesting thing that these figures indicate, is the negative number o
     \label{qtest}
 \end{figure}
 
-We also tried some changes in the parameters of the independent \textit{Q-Learning} algorithm in order to watch the agents' behavior under certain circumstances. Figure~\ref{qtest} presents these two tests. In the first case, each agent initialized its Q-table with zero values (pessimistic). As we expected, the algorithm converged really fast,
-% Again, to what!
- as the predators found an optimal policy fast enough without any need of further exploration. In the second case, the learning rate of the predators was significantly higher from the prey's. Predators learnt an optimal path really fast while the prey was still trying to improve its choices. We can see that after $1000$ episodes, the average number of steps increases continuously, indicating that the prey has at that moment started to find an optimal path aswell.
+We also tried some changes in the parameters of the independent \textit{Q-Learning} algorithm in order to watch the agents' behavior under certain circumstances. Figure~\ref{qtest} presents these two tests. In the first case, each agent initialized its Q-table with zero values (pessimistic). As we expected, the algorithm converged really fast, to an average of 25 steps, as the predators found an optimal policy fast enough without any need of further exploration. In the second case, the learning rate of the predators was significantly higher from the prey's. Predators learnt an optimal path really fast while the prey was still trying to improve its choices. We can see that after $1000$ episodes, the average number of steps increases continuously, indicating that the prey has at that moment started to find an optimal path as well.
 
 
 \subsection{Minimax Q-Learning}
@@ -226,7 +226,7 @@ For the necessary linear programming part we used $6$ variables. One is used to 
 \begin{figure}[h]
 \begin{center}
     \includegraphics[width=0.7\textwidth]{figures/minimax0505.eps}
-    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$.}
+    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$. Episodes to converge $\sim8000$.}
     \label{m11}
 \end{center}
 \end{figure}
@@ -234,7 +234,7 @@ For the necessary linear programming part we used $6$ variables. One is used to 
 \begin{figure}[h]
 \begin{center}
 	\includegraphics[width=0.7\textwidth]{figures/minimax0707.eps}
-   \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$.}
+   \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$. Episodes to converge $\sim6500$.}
     \label{m22}
 \end{center}
 \end{figure}
@@ -249,13 +249,9 @@ For the necessary linear programming part we used $6$ variables. One is used to 
 \end{center}
 \end{figure}
 
-First, we wanted to test our implementation of the \textit{minimax Q-learning} algorithm. We have done so by using predators which learn according to this method, and a prey with a random policy. Figure~\ref{m11} and Figure~\ref{m22} shows the results we have in the approach with the random prey. We can see that the algorithm converges to an optimal policy for the predator,%
-% Converging to how many steps? After how many episodes?
-although, we see some peaks in the graph. This occurs because the main characteristic of the \textit{minimax Q-learning} is that we always consider our opponent to be optimal. This means that, even though the predator was competing against a prey which moved randomly, it was choosing actions according to what the predator assumed to be the prey's optimal next possible action. This might lead the predator to non-optimal choices.
+First, we wanted to test our implementation of the \textit{minimax Q-learning} algorithm. We have done so by using predators which learn according to this method, and a prey with a random policy. Figure~\ref{m11} and Figure~\ref{m22} shows the results we have in the approach with the random prey. We can see that the algorithm converges to an optimal policy for the predator, although, we see some peaks in the graph. This occurs because the main characteristic of the \textit{minimax Q-learning} is that we always consider our opponent to be optimal. This means that, even though the predator was competing against a prey which moved randomly, it was choosing actions according to what the predator assumed to be the prey's optimal next possible action. This might lead the predator to non-optimal choices.
 
-Next, we did \textit{minimax Q-learning} but now all agents utilize the learning method. Figure~\ref{m13}  presents our results of this experiment. The results are clearly unsatisfying even though we tried to make sure there are no bugs in the algorithm implementation that cause this behavior. It is obvious that the predator does not seem to converge to a faster (optimal) path. Both agents use the policy that it is generated by the linear program in each update, and both agents use random actions with probability $p_{random} = 0.1$. The red line indicates that more than 300 steps are needed for the predator in average to catch the prey. %
-% This is the first time we mention the red line. Might want to do that from the first plot?
-We expected to see better results, taking into consideration the fact that the prey's trip chance would make it easier for the predator to catch.
+Next, we did \textit{minimax Q-learning} but now all agents utilize the learning method. Figure~\ref{m13}  presents our results of this experiment. The results are clearly unsatisfying even though we tried to make sure there are no bugs in the algorithm implementation that cause this behavior. It is obvious that the predator does not seem to converge to a faster (optimal) path. Both agents use the policy that it is generated by the linear program in each update, and both agents use random actions with probability $p_{random} = 0.1$. The red line indicates that more than 300 steps are needed for the predator in average to catch the prey. We expected to see better results, taking into consideration the fact that the prey's trip chance would make it easier for the predator to catch.
 
 
 \section{Exercise 3: WoLF-PHC}
@@ -275,7 +271,7 @@ where $V$ is the number of visits in this state. An important difference from th
 \subsection{Results}
 Figures~\ref{w111}, ~\ref{w112}, ~\ref{w113} and~\ref{w114} present the results we have found with \textit{WoLF-PHC} learning algorithm. We can see four different implementations with different values for $\delta$. Through testing we realize that the performance of this algorithm depends heavily on the ratio $\dfrac{\delta_{lose}}{\delta_{win}}$.
 
-Then we took the best parameters from the above experiments, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$ and perform the same experiment for two predators and one prey. Figure~\ref{w2} presents the results. \textit{WoLF-PHC} converges to an average of $50$ steps after two million episodes. It is clear that predators learn how not to collide with each other. Unfortunately, we were not able to perform the same test for more episodes, but we believe that the learning process is depicted clear enough in this figure. % Why not for more? Buggy code? Too long runtime? Too much memory?
+Then we took the best parameters from the above experiments, $\delta_{lose} = 0.3$, $\delta_{win} = 0.15$ and perform the same experiment for two predators and one prey. Figure~\ref{w2} presents the results. \textit{WoLF-PHC} converges to an average of $50$ steps after two million episodes. It is clear that predators learn how not to collide with each other. Unfortunately, we were not able to perform the same test for more episodes due to long run-time of the algorithm, although, we believe that the learning process is depicted clear enough in this figure.
 
 \subsubsection{Observations}
 \begin{itemize}
