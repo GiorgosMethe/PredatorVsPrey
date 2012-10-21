@@ -29,9 +29,13 @@ public class MMSimulation {
 			env.worldState.add(Prey);
 			Predator.initializeqTable(env.worldState);
 			Prey.initializeqTable(env.worldState);
-
+			System.out.println();
 			int steps = 0;
 			for (int episode = 0; episode < numiter; episode++) {
+				if((episode+1)%2000 == 0){
+					System.out.print(".");
+				}
+				
 				Prey.old.setX(5);
 				Prey.old.setY(5);
 				Prey.position.setX(5);

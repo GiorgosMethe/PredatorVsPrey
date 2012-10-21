@@ -21,6 +21,7 @@
 \usepackage{ifpdf}
 \usepackage{lmodern}
 \usepackage{amsthm}
+\usepackage{epstopdf}
 \usetikzlibrary{positioning}
 
 \hypersetup{
@@ -131,32 +132,33 @@ We have seen, that independent \textit{Q-Learning} has very nice results in this
 \end{table} 
 
 \subsubsection{Results}
-In this phase, we are going to illustrate through the following figures the performance that independent learning had in this multi-agent system. Figure~\ref{q2}, illustrates our results in independent \textit{Q-Learning}. Figure~\ref{q21}
-Figure~\ref{q22}
-Figure~\ref{q23}
-Figure~\ref{qtest}
-\begin{figure}[h!]
+
+\begin{figure}[ht!]
   \centering
     \includegraphics[width=0.6\textwidth]{figures/q207.eps}
     \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.7$.}
     \label{q21}
 \end{figure}
 ~
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.6\textwidth]{figures/q205.eps}
    \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.5$.}
     \label{q22}
 \end{figure}
 ~
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.6\textwidth]{figures/q202.eps}
     \caption{Performance of independent \textit{Q-Learning} algorithm, multi-agent environment (2 predators, 1 prey), $\alpha = 0.2$.}
     \label{q23}
 \end{figure}
-~
-\begin{figure}[h!]
+
+In this phase, we are going to illustrate through the following figures the performance that independent learning had in this multi-agent system. 
+Figure~\ref{q21}, ~\ref{q22}, and, ~\ref{q23} illustrate our results in independent \textit{Q-Learning} with different values for learning rate, $\alpha = 0.7$, $\alpha = 0.5$, $\alpha = 0.2$, respectively. In addition, $\gamma$ parameter is always fixed at $0.7$, as we have seen it to perform really good for single agent {Q-Learning}. We can figure out that, as the $\alpha$ goes down, independent \textit{Q-Learning} needs more episodes to converge. All of the three versions converge almost at the same number of steps, indicating that an optimal policy has been found in all the three cases.   
+One more interesting thing that these figures indicate, is the negative number of steps. Every time that there is a collision between the predators, we are saving the number of steps multiplied by $-1$ to be able to illustrate better their learning process. At the beginning of predators' learning we can see that, there is a random movement resulting in a big number of collisions between them. After one thousand episodes predators have learned how to avoid collisions and are focusing only about catching the prey as quick as possible. This is the reason why we see the number of steps to grow fast at the first one thousand episodes.
+
+\begin{figure}[ht!]
   \centering
     \includegraphics[width=0.49\textwidth]{figures/q2init.eps}\	
     \includegraphics[width=0.49\textwidth]{figures/q2learnfast.eps}
@@ -164,7 +166,9 @@ Figure~\ref{qtest}
     \label{qtest}
 \end{figure}
 
-\newpage
+We also did some changes in the parameters of the independent \textit{Q-Learning} algorithm in order to watch its behavior under certain circumstances. Figure~\ref{qtest}, presents these two tests. In the first case, each agent initialized its Q-table with zero values ( pessimistic ). As we expected, the algorithm converged really fast, as the predators found an optimal policy fast enough without any need of further exploration. In the second case, predators had a the learning rate was different for predators and prey. Predators learned fast a policy but prey was learning with a slow rate resulting in the continuous improvement of its policy. We can see that after the $1000$ episodes, the average number of steps increases continuously.
+
+
 \subsection{Minimax Q-Learning}
 
 In the second part of the first exercise we implemented the \textit{minimax Q-Learning} algorithm, as described in the paper: \textit{"Markov games as a framework for multi-agent reinforcement learning" by M.L. Littman, 1994}.
@@ -195,22 +199,37 @@ In fact we need to maximize what our opponent agent wants to minimize. The maxim
 \item The value of the state s will be equal with the maximized value of variable from the linear program m: $V[s] = m$
 \item Learning rate will be always decayed in each update: $\alpha = \alpha \times decay$. $decay \in (0,1)$ is the variable we use to reduce the value of $\alpha$.
 \end{itemize}
+
+
 \subsection{Results}
-Figure~\ref{m11}
-Figure~\ref{m22}
-\begin{figure}[h!]
+
+\begin{figure}[ht!]
   \centering
     \includegraphics[width=0.6\textwidth]{figures/minimax0505.eps}
     \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.5$, $\gamma = 0.5$.}
     \label{m11}
 \end{figure}
 ~
-\begin{figure}[h!]
+\begin{figure}[ht!]
   \centering
 	\includegraphics[width=0.6\textwidth]{figures/minimax0707.eps}
    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(random)), $\alpha = 0.7$, $\gamma = 0.7$.}
     \label{m22}
 \end{figure}
+~
+\begin{figure}[ht!]
+  \centering
+    \includegraphics[width=0.49\textwidth]{figures/mm05.eps}\	
+    \includegraphics[width=0.49\textwidth]{figures/mm07.eps}\\
+    \includegraphics[width=0.5\textwidth]{figures/mm09.eps}
+    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{Minimax Q-Learning}), 1 prey(\textit{Minimax Q-Learning})), \textbf{Left}: $\alpha = 0.5$, $\gamma = 0.7$, \textbf{Right}: $\alpha = 0.7$, $\gamma = 0.7$, \textbf{Middle}: $\alpha = 0.9$, $\gamma = 0.7$.}
+    \label{m13}
+\end{figure}
+
+First, we wanted to test our implementation of the \textit{Minimax Q-learning} algorithm. We have done so by using predators which learn according to this method, and a prey with a random policy. Figure~\ref{m11} and Figure~\ref{m22}, shows the results we have in the approach with the random prey. We can see that, algorithm converges to a optimal policy for the predator. Although, we can see some peaks in the graph. The main characteristic of the \textit{Minimax Q-learning} is that we always consider our opponent to be optimal. This means that even predator was competing with a random prey, it was doing actions in respect that prey's best action. Therefore, we have a good reason why this is happening.
+
+Next, we did the same but now both agents learn using the \textit{Minimax Q-learning} algorithm. Figure~\ref{m13},  presents our results in this part of the assignment. Although, we tested our implementation for possible bugs, we do not have a clear idea why it this thing happening. Algorithm does not seem to converge. Both agents use the policy that it is generated by the linear program in each update. Both agents use random actions with probability $p_{random} = 0.1$. The red line indicates that more than 300 steps is needed by the predator in average to catch the prey. This is not normal as the prey holds a probability to trip in every action that it takes.
+
 
 \section{WoLF-PHC}
 In the final part of the exercise we chose to implement \textit{Wolf-Policy Hill Climbing}. This algorithm is described in detail in the slides of the Autonomous Agents course. In addition, the paper \textit{``Efficient Learning in Games'', by Raghav Aras, Alain Dutech and Francois Charpillet}, was really useful for us in order to implement this algorithm.
@@ -234,7 +253,7 @@ Figure~\ref{w114}
 \begin{figure}[ht!]
   \centering
     \includegraphics[width=0.7\textwidth]{figures/w07070502.eps}
-    \caption{A picture of a gull.}
+    \caption{Performance of  \textit{Minimax Q-Learning} algorithm, multi-agent environment (1 predator(\textit{WoLF-PHC}), 1 prey(\textit{WoLF-PHC})), $\alpha = 0.7$, $\gamma = 0.7$.}
     \label{w111}
 \end{figure}
 ~

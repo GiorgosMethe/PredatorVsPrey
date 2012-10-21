@@ -13,11 +13,11 @@ public class WolfSimulation {
 
 	public static void RunWolflearning(double deltaLose,double deltaWin) {
 
-		int numKati = 5;
-		int numiter = 10000000;
+		int numKati = 1;
+		int numiter = 2000000;
 		double[][] output = new double[numiter][numKati];
 		for(int iterA=0;iterA<numKati;iterA++){
-			System.out.println(iterA);
+			
 			Environment env = new Environment();
 			WolfAgent Predator1 = new WolfAgent("", new Coordinate(10, 10),
 					new Coordinate(10, 10), null, 0.7, 0.7, deltaLose, deltaWin);
@@ -31,11 +31,12 @@ public class WolfSimulation {
 			Predator1.initialize(env.worldState);
 			Predator.initialize(env.worldState);
 			Prey.initialize(env.worldState);
-
+			System.out.println(iterA);
 
 			int steps = 0;
 			for (int episode = 0; episode < numiter; episode++) {
-				
+
+				System.out.println(episode);
 				Prey.old.setX(5);
 				Prey.old.setY(5);
 				Prey.position.setX(5);
@@ -90,7 +91,6 @@ public class WolfSimulation {
 					Prey.updateWolf(env.worldState, PreyAction, -reward, Flag );
 				} while (!Flag);
 			}
-			System.out.println(".");
 		}
 		double[] kati = new double[numiter];
 		for(int i=0;i<numiter;i++){
